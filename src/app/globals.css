@@ -2,6 +2,20 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer components {
+  .input-common {
+    @apply w-full px-3 py-2 bg-opacityLight-5 text-neutral-100 border border-opacityLight-10 rounded-lg outline-none focus:border-opacityLight-30 focus:bg-opacityLight-10;
+  }
+
+  .primary-button {
+    @apply px-4 py-2 bg-greenish-600 text-white rounded-lg uppercase hover:bg-greenish-500;
+  }
+
+  .loading-button {
+    @apply cursor-wait bg-greenish-700 hover:bg-greenish-700 text-neutral-300;
+  }
+}
+
 :root {
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;
@@ -16,15 +30,6 @@
   }
 }
 
-body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
-}
 
 @layer utilities {
   .text-balance {
