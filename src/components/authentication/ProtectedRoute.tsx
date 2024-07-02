@@ -23,10 +23,6 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
     return <div>Loading... Please wait.</div>;
   }
 
-  if (!user && pathname !== '/login') {
-    return null;
-  }
-
   return <>{children}</>;
 };
 
