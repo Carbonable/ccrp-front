@@ -8,7 +8,7 @@ export async function login(username: string, password: string) {
   if (BACKEND_URL === undefined) {
     throw new Error('No backend setup');
   }
-  console.log(`${BACKEND_URL}/auth/login`)
+
   const response = await fetch(`${BACKEND_URL}/auth/login`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
