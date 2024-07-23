@@ -7,7 +7,9 @@ export default function LoginLayout({
 }>) {
   return (
     <BaseLayout>
-      {children}
+      <div className="p-4 md:p-12 z-0 max-w-screen-2xl mx-auto min-h-screen">
+        {children}
+      </div>
     </BaseLayout>
   );
 }

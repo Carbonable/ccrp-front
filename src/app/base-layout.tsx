@@ -17,7 +17,7 @@ export default function BaseLayout({
   return (
     <html lang="en">
       <body className={`${inter.className} bg-neutral-800 text-neutral-100`}>
-        <main className="p-4 md:p-12 z-0 max-w-screen-2xl mx-auto min-h-screen">
+        <main>
           {children}
         </main>
       </body>
