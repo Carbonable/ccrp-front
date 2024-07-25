@@ -27,7 +27,7 @@ export default function NavLinkInside({link, setOpenMenu}: {link: MenuLink, setO
     }
 
     return (
-        <Link key={link.label} className="uppercase font-inter text-base" href={link.href} onClick={() => setOpenMenu(false)} >
+        <Link prefetch key={link.label} className="uppercase font-inter text-base" href={link.href} onClick={() => setOpenMenu(false)} >
             <div className={`w-full flex justify-start items-center ${isActive ? "" : "hover:brightness-125"}`}>
                 <div className={`w-[3px] h-[48px] ${isActive ? "bg-primary" : "bg-transparent"}`}></div>
                 <div className={`flex justify-start items-center pl-6 w-full ${isActive ? "text-primary bg-menu-selected" : "text-neutral-200"}`}>
