@@ -49,7 +49,7 @@ export async function getUserData() {
   })
 
   if (!response.ok) {
-    throw new Error('No user found');
+    return null;
   }
 
   const userData = await response.json();
