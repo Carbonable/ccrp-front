@@ -1,6 +1,8 @@
+'use client';
 import MenuWrapper from "@/components/menu/MenuWrapper";
 import BaseLayout from "./base-layout";
-import dynamic from 'next/dynamic'
+import dynamic from 'next/dynamic';
+import { usePathname } from "next/navigation";
 
 const AuthProviderClient = dynamic(() => import('@/components/authentication/AuthProviderClient'), {
   ssr: false,
@@ -11,6 +13,20 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+
+  const pathname = usePathname();
+
+  if (pathname === "/login") {
+    return (
+      <BaseLayout>
+        <AuthProviderClient>
+          <div className="p-4 md:p-12 z-0 max-w-screen-2xl mx-auto min-h-screen">
+            {children}
+          </div>
+        </AuthProviderClient>
+      </BaseLayout>
+    );
+  }
 
   return (
     <BaseLayout>
