@@ -6,9 +6,16 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "compile": "graphql-codegen",
+    "watch": "graphql-codegen -w"
   },
   "dependencies": {
+    "@apollo/client": "^3.11.4",
+    "@apollo/experimental-nextjs-app-support": "^0.11.2",
+    "@graphql-codegen/cli": "^5.0.2",
+    "@graphql-codegen/client-preset": "^4.3.3",
+    "@graphql-tools/schema": "^10.0.6",
     "@heroicons/react": "^2.1.5",
     "@nextui-org/react": "^2.4.6",
     "framer-motion": "^11.3.17",

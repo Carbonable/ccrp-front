@@ -58,6 +58,9 @@ const config: Config = {
           90: 'rgba(11, 13, 19, 0.9)',
         }
       },
+      backgroundImage: {
+        'planification': "linear-gradient(50.39deg, rgba(11, 13, 19, 0.5) 15.27%, rgba(19, 21, 28, 0.5) 46.91%, rgba(31, 33, 40, 0.5) 91.42%), url('/assets/images/backgrounds/bg-planification.png');",
+      },
     },
   },
   plugins: [nextui()],
