@@ -1,7 +1,12 @@
+import Banner from "@/components/dashboard/business-unit-allocation/Banner";
+
+
 export default function BusinessUnitsAllocationPage() {
   return (
     <div>
-      <h1>Business Units Allocation</h1>
+      <div className="relative mt-8">
+        <Banner />
+      </div>
     </div>
   )
 }
