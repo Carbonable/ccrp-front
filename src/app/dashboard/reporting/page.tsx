@@ -1,7 +1,9 @@
+import ProjectsImpact from "@/components/reporting/ProjectsImpact";
+
 export default function ReportingPage() {
     return (
       <div>
-        <h1>Reporting</h1>
+        <ProjectsImpact />
       </div>
     )
   }
