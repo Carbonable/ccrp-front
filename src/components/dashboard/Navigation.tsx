@@ -17,7 +17,7 @@ const DashboardNavigationTabs = () => {
     >
       <Tab 
         key="/dashboard" 
-        title={<Link href="/dashboard" prefetch>Net Zero Overview</Link>} 
+        title={<Link href="/" prefetch>Net Zero Overview</Link>} 
       />
       <Tab 
         key="/dashboard/business-units-allocation" 
