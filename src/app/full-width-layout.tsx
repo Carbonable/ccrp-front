@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   description: "Your carbon assets portfolio manager by Carbonable",
 };
 
-export default function BaseLayout({
+export default function FullWidthLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
