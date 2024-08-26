@@ -20,6 +20,7 @@ export async function login(username: string, password: string) {
   }
 
   const userData = await response.json();
+  console.log(userData);
   cookies().set('user', JSON.stringify(userData), { httpOnly: true });
   return userData;
 }
@@ -40,7 +41,7 @@ export async function getUserData() {
     throw new Error('No backend setup');
   }
   const token = await getUserToken();
-  const response = await fetch(`${BACKEND_URL}/auth/profile`, {
+  const response = await fetch(`${BACKEND_URL}/user/profile`, {
     method: 'GET',
     headers: { 
       'Content-Type': 'application/json' ,

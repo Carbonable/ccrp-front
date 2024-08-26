@@ -47,7 +47,7 @@ export default function ProjectsList() {
                     {projects.map((project: Project, idx: number) => (
                         <a 
                             key={`project_${project.id}_${idx}`}
-                            href={`/portfolio/${project.slug}`}
+                            href={`/projects/${project.slug}`}
                             className="overflow-hidden text-ellipsis"
                         >
                             <img src={project.metadata?.sft_image_url} alt={`${project.name} project`} />

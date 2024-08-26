@@ -4,6 +4,7 @@ import BaseLayout from "./base-layout";
 import dynamic from 'next/dynamic';
 import { usePathname } from "next/navigation";
 import { ApolloWrapper } from "./ApolloWrapper";
+import FullWidthLayout from "./full-width-layout";
 
 const AuthProviderClient = dynamic(() => import('@/components/authentication/AuthProviderClient'), {
   ssr: false,
@@ -26,6 +27,21 @@ export default function RootLayout({
           </div>
         </AuthProviderClient>
       </BaseLayout>
+    );
+  }
+
+  if (pathname.includes("/projects")) {
+    return (
+      <FullWidthLayout>
+        <AuthProviderClient>
+          <MenuWrapper />
+          <ApolloWrapper>
+            <div className="ml-0 mt-[66px] lg:mt-0 lg:pl-[222px] lg:mx-auto max-w-full min-h-screen">
+              {children}
+            </div>
+        </ApolloWrapper>
+        </AuthProviderClient>
+      </FullWidthLayout>
     );
   }
 
