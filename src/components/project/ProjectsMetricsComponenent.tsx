@@ -58,10 +58,9 @@ export default function ProjectsMetricsComponenent({loading, error, data, refetc
         )
     }
 
-
     return (
         <div className="mt-12 w-full">
-            <div className="relative mt-4 font-inter grid grid-cols-2 gap-x-10 gap-y-14">
+            <div className="relative mt-4 font-inter grid grid-cols-2 gap-x-10 gap-y-16">
                 <div className="col-span-2 md:col-span-1">
                     <ProjectsColors colors={metrics.colors} />
                 </div>

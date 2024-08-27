@@ -50,3 +50,7 @@ export function BackButton({ children, href, className }: LinkButtonProps) {
 export function GreenButton({ children, className, onClick, disabled }: ButtonProps) {
   return <button disabled={disabled} className={greenButton + className} onClick={onClick}>{children}</button>;
 }
+
+export function MapButton({ children, className, onClick }: ButtonProps) {
+  return <button className={`font-inter rounded-lg text-neutral-50 py-2 px-4 text-center focus:outline-none border border-neutral-500 bg-opacityDark-70 hover:bg-opacityDark-60 ` + className} onClick={onClick}>{children}</button>;
+}

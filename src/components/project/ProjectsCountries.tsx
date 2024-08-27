@@ -1,5 +1,6 @@
 import { LocalizationRepartition } from "@/graphql/__generated__/graphql";
 import { getNumericPercentage } from "@/utils/utils";
+import { SmallTitle } from "../common/Title";
 
 
 export default function ProjectsCountries({ countries }: { countries: LocalizationRepartition[] }) {
@@ -12,6 +13,7 @@ export default function ProjectsCountries({ countries }: { countries: Localizati
     
     return (
         <div>
+            <SmallTitle title="Projects Countries" />
             <div className="w-full h-full md:mt-4 md:max-h-[420px] md:overflow-x-scroll">
                 {countriesToSort.map((country, index) => (
                     <ProjectCountriesDetails key={index} country={country} />

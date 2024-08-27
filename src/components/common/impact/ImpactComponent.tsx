@@ -7,17 +7,8 @@ import { LinkSecondary } from "../Button";
 
 export default function ImpactComponent({ loading, error, data, refetch, link }: { loading: boolean, error: ApolloError | undefined, data: any, refetch: any, link?: string }) {
     const cssBlock = "border border-neutral-500 rounded-xl px-6 py-4 bg-neutral-700"
-    
-    const refetchData = () => {
-        refetch({
-            view: {
-                company_id: CARBONABLE_COMPANY_ID
-            }
-        });
-    }
 
     const metrics: ImpactMetrics = data?.getImpactMetrics;
-    console.log(metrics, error?.message)
 
     if (loading) {
         return (
@@ -38,7 +29,7 @@ export default function ImpactComponent({ loading, error, data, refetch, link }:
     if (error) {
         return (
             <div className="mt-12 w-full">
-                <ErrorReload refetchData={refetchData} />
+                <ErrorReload refetchData={refetch} />
             </div>
         )
     }
