@@ -1,16 +1,26 @@
 'use client';
 
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { BackButton, GreenButton } from "../common/Button";
 import { Project } from "@/graphql/__generated__/graphql";
 import ProjectInfo from "./ProjectInfo";
+import { useProject } from "@/context/ProjectContext";
 
-export default function ProjectHeader({ project }: { project: Project }) {
+export default function ProjectHeader() {
   const [isOpen, setIsOpen] = useState(false);
+  const { project } = useProject();
 
-    const handleAction = () => {
-        setIsOpen(true);
-    }
+  const handleAction = () => {
+    setIsOpen(true);
+  }
+
+  if (project === undefined) {
+    return (
+      <>
+        Loading...
+      </>
+    )
+  }
 
   return (
     <div className="bg-project-info">

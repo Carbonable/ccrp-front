@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { ArrowTopRightOnSquareIcon } from "@heroicons/react/24/outline";
 import Image from "next/image";
-import { MenuLink } from "@/types/Link";
+import { MenuLink } from "@/types/link";
 
 export default function NavLinkOutside({link}: {link: MenuLink}) {
     const [isShown, setIsShown] = useState(true);

@@ -2,7 +2,8 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react'
 import { login as loginAction, logout as logoutAction, getUserToken, getUserData } from '@/actions/authentication/auth'
-import { User } from '@/types/User'
+import { User } from '@/types/user';
+
 
 interface AuthContextType {
   user: User | null,
@@ -11,7 +12,7 @@ interface AuthContextType {
   loading: boolean,
 }
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined)
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);

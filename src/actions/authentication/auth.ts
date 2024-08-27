@@ -20,7 +20,6 @@ export async function login(username: string, password: string) {
   }
 
   const userData = await response.json();
-  console.log(userData);
   cookies().set('user', JSON.stringify(userData), { httpOnly: true });
   return userData;
 }
