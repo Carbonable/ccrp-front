@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import ProtectedRoute from '@/components/authentication/ProtectedRoute'
-import { useAuth } from "@/context/AuthContext";
+import ProtectedRoute from "@/components/authentication/ProtectedRoute";
+import { useUser } from "@clerk/nextjs";
 import DashboardNavigationTabs from "@/components/dashboard/Navigation";
 
 export default function Layout({
@@ -9,19 +9,17 @@ export default function Layout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const { user, loading } = useAuth();
-
-  if (loading) {
-    return <div>Loading...</div>
+  const { user } = useUser();
+  let userName = "loading_dashboard";
+  if (user) {
+    userName = user.fullName ?? user.firstName!;
   }
-  
   return (
-    <div className='mt-8'>
-      <ProtectedRoute key={user ? user.username : 'loading_dashboard'}>
+    <div className="mt-8">
+      <ProtectedRoute key={userName}>
         <DashboardNavigationTabs />
         <div>{children}</div>
       </ProtectedRoute>
-      
     </div>
-  )
+  );
 }

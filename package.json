@@ -13,6 +13,7 @@
   "dependencies": {
     "@apollo/client": "^3.11.4",
     "@apollo/experimental-nextjs-app-support": "^0.11.2",
+    "@clerk/nextjs": "^5.3.6",
     "@graphql-codegen/cli": "^5.0.2",
     "@graphql-codegen/client-preset": "^4.3.3",
     "@graphql-tools/schema": "^10.0.6",

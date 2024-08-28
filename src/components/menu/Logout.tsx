@@ -1,17 +1,25 @@
-'use client';
+"use client";
 
-import { useAuth } from "@/context/AuthContext";
+import { SignOutButton, useUser } from "@clerk/nextjs";
+import { SignedIn, UserButton } from "@clerk/nextjs";
 import LogoutButton from "../common/Logout";
 
 export default function Logout() {
-    const { user } = useAuth();
+  const { user } = useUser();
 
-    if (!user) return null;
+  if (!user) return null;
 
-    return (
-        <div className="text-sm">
-            <div>Welcome, {user.username}</div>
-            <div className="text-red-800 hover:text-red-700 cursor-pointer mt-1"><LogoutButton /></div>  
+  const userName = user.fullName ?? user.firstName!;
+
+  return (
+    <div className="text-sm">
+      <div>Welcome, {userName}</div>
+      <SignedIn>
+        <UserButton />
+        <div className="text-red-800 hover:text-red-700 cursor-pointer mt-1">
+          <SignOutButton />
         </div>
-    )
+      </SignedIn>
+    </div>
+  );
 }
