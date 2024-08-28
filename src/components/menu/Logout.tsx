@@ -2,7 +2,6 @@
 
 import { SignOutButton, useUser } from "@clerk/nextjs";
 import { SignedIn, UserButton } from "@clerk/nextjs";
-import LogoutButton from "../common/Logout";
 
 export default function Logout() {
   const { user } = useUser();
