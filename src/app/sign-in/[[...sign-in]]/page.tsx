@@ -1,9 +1,11 @@
-import dynamic from 'next/dynamic';
-
-const LoginForm = dynamic(() => import('@/components/authentication/Login'), {
-  ssr: false,
-})
-
+import dynamic from "next/dynamic";
+import {
+  SignInButton,
+  SignedIn,
+  UserButton,
+  SignedOut,
+  SignIn,
+} from "@clerk/nextjs";
 
 export default function LoginPage() {
   return (
@@ -15,7 +17,9 @@ export default function LoginPage() {
         Powered by <span className="text-greenish-500">Carbonable</span>
       </h2>
       <div className="mt-12 md:w-8/12 mx-auto">
-        <LoginForm />
+        <SignedOut>
+          <SignIn />
+        </SignedOut>
       </div>
     </div>
   );
