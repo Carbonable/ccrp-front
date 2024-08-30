@@ -1,5 +1,5 @@
 export default function CircleProgress({rate, size, bgColor, progressColor}: {rate?: number | undefined | any, size: number, bgColor: string, progressColor: string}) {
-    if (!rate || rate === 0) return null;
+    if (!rate || rate === 0 || rate === "NaN %") return null;
 
     return (
         <div className="relative w-[60px] h-[60px] rounded-full bg-neutral-500 ml-auto mr-3"
