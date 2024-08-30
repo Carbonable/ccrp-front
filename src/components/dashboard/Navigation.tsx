@@ -1,16 +1,25 @@
 'use client';
 
-import React from 'react';
+import { useEffect, useState } from 'react';
 import { Tabs, Tab } from "@nextui-org/react";
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 
 const DashboardNavigationTabs = () => {
+  const [selectedKey, setSelectedKey] =useState<string>('/dashboard');
   const pathname = usePathname();
+
+  useEffect(() => {
+    setSelectedKey(pathname);
+
+    if (pathname.includes('/business-units-allocation')) {
+      setSelectedKey('/dashboard/business-units-allocation');
+    }
+  }, [pathname]);
 
   return (
     <Tabs 
-        selectedKey={pathname}
+        selectedKey={selectedKey}
         classNames={{ 
             tabList: 'bg-opacityLight-5 text-neutral-100',
         }}

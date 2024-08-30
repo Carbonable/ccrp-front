@@ -33,7 +33,7 @@ export default function DecarbonizationMap() {
     return (
         <BusinessUnitWrapper>
             {businessUnits.map((businessUnit: BusinessUnit, idx: number) => (
-                <a key={`block_${businessUnit.id}`} href={`/businessunit/${businessUnit.id}`} className="outline-none">
+                <a key={`block_${businessUnit.id}`} href={`/dashboard/business-units-allocation/${businessUnit.id}`} className="outline-none">
                     <Block block={businessUnit} />
                 </a>
             ))}

@@ -3,8 +3,7 @@ import { MenuLink } from "@/types/link";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import path from "path";
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function NavLinkInside({link, setOpenMenu}: {link: MenuLink, setOpenMenu: (open: boolean) => void}) {
     const [isShown, setIsShown] = useState(true);
