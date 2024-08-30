@@ -3,13 +3,21 @@ import { MenuLink } from "@/types/link";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import path from "path";
+import { use, useEffect, useState } from "react";
 
 export default function NavLinkInside({link, setOpenMenu}: {link: MenuLink, setOpenMenu: (open: boolean) => void}) {
     const [isShown, setIsShown] = useState(true);
     const pathName = usePathname();
+    const [isActive, setIsActive] = useState(false);
 
-    const isActive = pathName === link.href;
+    useEffect(() => {
+        setIsActive(pathName.includes(link.href));
+
+        if (pathName.includes('/projects') && link.href === '/portfolio') {
+            setIsActive(true);
+        }
+    }, [pathName, link.href]);
 
     if (link.isOpen === false) {
         return (
