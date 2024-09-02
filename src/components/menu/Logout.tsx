@@ -12,11 +12,10 @@ export default function Logout() {
 
   return (
     <div className="text-sm">
-      <div>Welcome, {userName}</div>
       <SignedIn>
-        <UserButton />
-        <div className="text-red-800 hover:text-red-700 cursor-pointer mt-1">
-          <SignOutButton />
+        <div className="flex items-center justify-start">
+          <UserButton />
+          <div className="ml-2 text-ellipsis overflow-hidden">{userName}</div>
         </div>
       </SignedIn>
     </div>

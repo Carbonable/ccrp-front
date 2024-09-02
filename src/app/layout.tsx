@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { ApolloWrapper } from "./ApolloWrapper";
 import FullWidthLayout from "./full-width-layout";
 import { ClerkProvider } from "@clerk/nextjs";
+import { dark } from '@clerk/themes'
 
 export default function RootLayout({
   children,
@@ -16,7 +17,11 @@ export default function RootLayout({
   if (pathname === "/login") {
     return (
       <BaseLayout>
-        <ClerkProvider>
+        <ClerkProvider
+          appearance={{
+            baseTheme: dark,
+          }}
+        >
           <div className="p-4 md:p-12 z-0 max-w-screen-2xl mx-auto">
             {children}
           </div>
@@ -28,7 +33,11 @@ export default function RootLayout({
   if (pathname.includes("/projects")) {
     return (
       <FullWidthLayout>
-        <ClerkProvider>
+        <ClerkProvider
+          appearance={{
+            baseTheme: dark,
+          }}
+        >
           <MenuWrapper />
           <ApolloWrapper>
             <div className="ml-0 mt-[66px] lg:mt-0 lg:pl-[222px] lg:mx-auto max-w-full min-h-screen">
@@ -42,7 +51,11 @@ export default function RootLayout({
 
   return (
     <BaseLayout>
-      <ClerkProvider>
+      <ClerkProvider
+          appearance={{
+            baseTheme: dark,
+          }}
+        >
         <MenuWrapper />
         <ApolloWrapper>
           <div className="p-4 ml-0 mt-[66px] md:p-8 lg:p-4 lg:mt-0 lg:pl-[240px] lg:mx-auto max-w-full lg:max-w-6xl xl:max-w-7xl 2xl:max-w-8xl min-h-screen">
