@@ -33,5 +33,13 @@ export const links = [
         isOpen: true,
         outsideLink: false,
         icon: 'baseline'
-    }
+    },
 ];
+
+export const adminLink = {
+    href: '/admin',
+    label: 'Admin',
+    isOpen: true,
+    outsideLink: false,
+    icon: 'admin'
+};
