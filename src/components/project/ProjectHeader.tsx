@@ -1,18 +1,12 @@
 'use client';
 
-import { useContext, useState } from "react";
 import { BackButton, GreenButton } from "../common/Button";
-import { Project } from "@/graphql/__generated__/graphql";
 import ProjectInfo from "./ProjectInfo";
 import { useProject } from "@/context/ProjectContext";
+import ProjectAllocationButton from "../allocation/ProjectAllocationModal";
 
 export default function ProjectHeader() {
-  const [isOpen, setIsOpen] = useState(false);
   const { project } = useProject();
-
-  const handleAction = () => {
-    setIsOpen(true);
-  }
 
   if (project === undefined) {
     return (
@@ -33,7 +27,7 @@ export default function ProjectHeader() {
           <div className="order-2 lg:order-1 lg:col-span-2">
             <ProjectInfo name={project.name} data={project.global_data} />
             <div className="mt-4">
-              <GreenButton className="w-full" onClick={handleAction}>Allocate</GreenButton>
+              <ProjectAllocationButton projectId={project.id} />
             </div>
           </div>
         </div>
