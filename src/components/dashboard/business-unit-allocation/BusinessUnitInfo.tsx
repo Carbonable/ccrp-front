@@ -1,16 +1,12 @@
 'use client';
 
-import { SecondaryButton } from "@/components/common/Button";
 import { BusinessUnit } from "@/graphql/__generated__/graphql";
 import { BUSINESS_UNITS_DETAILS } from "@/graphql/queries/business-units";
 import { useQuery } from "@apollo/client";
-import { useState } from "react";
+import BUAllocationButton from "../../allocation/BUAllocationModal";
 
 export default function BusinessUnitInfo({id}: { id: string }) {
-  const [isOpen, setIsOpen] = useState(false);
-  const openAllocation = () => {
-    setIsOpen(true);
-  }
+
   const { loading, error, data } = useQuery(BUSINESS_UNITS_DETAILS, {
     variables: {
       id
@@ -26,9 +22,6 @@ export default function BusinessUnitInfo({id}: { id: string }) {
           <div className="text-xl uppercase">
             Loading...
           </div>
-          <div className="text-right">
-            <SecondaryButton>Add allocation</SecondaryButton>
-          </div>
         </div>
       </>
     )
@@ -42,9 +35,6 @@ export default function BusinessUnitInfo({id}: { id: string }) {
         <div className="flex justify-between items-center mt-12 px-4">
           <div className="text-xl uppercase">
             Error: {error.message}
-          </div>
-          <div className="text-right">
-            <SecondaryButton>Add allocation</SecondaryButton>
           </div>
         </div>
       </>
@@ -62,7 +52,7 @@ export default function BusinessUnitInfo({id}: { id: string }) {
         </div>
       </div>
       <div className="text-right">
-        <SecondaryButton onClick={openAllocation}>Add allocation</SecondaryButton>
+        <BUAllocationButton businessUnitId={id} />
       </div>
     </div>
   )
