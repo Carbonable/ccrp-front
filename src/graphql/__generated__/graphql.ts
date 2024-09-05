@@ -37,7 +37,7 @@ export type Allocation = {
 
 export type AllocationAvailability = {
   __typename?: 'AllocationAvailability';
-  available_percent?: Maybe<Scalars['Int']['output']>;
+  available_percent?: Maybe<Scalars['Float']['output']>;
   available_units?: Maybe<Scalars['Int']['output']>;
 };
 

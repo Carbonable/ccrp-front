@@ -1,16 +1,15 @@
-'use client';
+"use client";
 
 import { BusinessUnit } from "@/graphql/__generated__/graphql";
 import { BUSINESS_UNITS_DETAILS } from "@/graphql/queries/business-units";
 import { useQuery } from "@apollo/client";
 import BUAllocationButton from "../../allocation/BUAllocationModal";
 
-export default function BusinessUnitInfo({id}: { id: string }) {
-
+export default function BusinessUnitInfo({ id }: { id: string }) {
   const { loading, error, data } = useQuery(BUSINESS_UNITS_DETAILS, {
     variables: {
-      id
-    }
+      id,
+    },
   });
 
   const businessUnit: BusinessUnit = data?.businessUnitDetails;
@@ -19,12 +18,10 @@ export default function BusinessUnitInfo({id}: { id: string }) {
     return (
       <>
         <div className="flex justify-between items-center mt-12 px-4">
-          <div className="text-xl uppercase">
-            Loading...
-          </div>
+          <div className="text-xl uppercase">Loading...</div>
         </div>
       </>
-    )
+    );
   }
 
   if (error) {
@@ -33,20 +30,16 @@ export default function BusinessUnitInfo({id}: { id: string }) {
     return (
       <>
         <div className="flex justify-between items-center mt-12 px-4">
-          <div className="text-xl uppercase">
-            Error: {error.message}
-          </div>
+          <div className="text-xl uppercase">Error: {error.message}</div>
         </div>
       </>
-    )
+    );
   }
 
   return (
     <div className="flex justify-between items-start">
       <div>
-        <div className="text-xl uppercase">
-          {businessUnit.name}
-        </div>
+        <div className="text-xl uppercase">{businessUnit.name}</div>
         <div className="text-neutral-200 font-light">
           {businessUnit.description}
         </div>
@@ -55,5 +48,5 @@ export default function BusinessUnitInfo({id}: { id: string }) {
         <BUAllocationButton businessUnitId={id} />
       </div>
     </div>
-  )
+  );
 }
