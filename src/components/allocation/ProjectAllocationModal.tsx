@@ -16,6 +16,7 @@ import Available from "./Available";
 import AllocateButton from "./AllocateButton";
 import { GET_PROJECT_WITHOUT_VINTAGES } from "@/graphql/queries/projects";
 import BUList from "./BUList";
+import { onlyPositiveInteger } from "./utils";
 
 export default function ProjectAllocationButton({
   projectId,
@@ -30,7 +31,7 @@ export default function ProjectAllocationButton({
     available_percent: number;
     available_units: number;
   }>();
-  const [amount, setAmount] = useState(0);
+  const [amountPerc, setAmountPerc] = useState(0);
   const [hasError, setHasError] = useState(false);
 
   const { loading, error, data } = useQuery(GET_PROJECT_WITHOUT_VINTAGES, {
@@ -42,18 +43,24 @@ export default function ProjectAllocationButton({
 
   const project: Project = data?.projectBy;
 
-  const handleAmountChange = (e: any) => {
-    if (e.target.value > 100) {
-      setAmount(100);
+  const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+
+    const isValidInteger = /^[0-9]*$/.test(value);
+
+    if (!isValidInteger) {
+      setHasError(true);
       return;
     }
-
-    if (e.target.value < 0) {
-      setAmount(0);
+    const parsedValue = parseInt(value, 10);
+    if (parsedValue > 100) {
+      setAmountPerc(100);
+      return;
+    } else if (parsedValue < 0) {
+      setAmountPerc(0);
       return;
     }
-
-    setAmount(e.target.value);
+    setAmountPerc(parsedValue);
     setHasError(false);
   };
 
@@ -148,11 +155,12 @@ export default function ProjectAllocationButton({
                               : ""
                           }`}
                           type="number"
-                          value={amount}
+                          value={amountPerc}
                           max={100}
                           name="amount"
                           aria-label="Amount"
                           onChange={handleAmountChange}
+                          onKeyDown={onlyPositiveInteger}
                         />
                       </div>
                       <div className="flex items-center mt-1 ml-1 uppercase text-left text-neutral-200 text-xs">
@@ -170,7 +178,8 @@ export default function ProjectAllocationButton({
                         <div className="ml-4">
                           To allocate
                           <span className="text-neutral-50 font-bold ml-1">
-                            {(amount * availableObject?.available_units!) / 100}{" "}
+                            {(amountPerc * availableObject?.available_units!) /
+                              100}{" "}
                             Units
                           </span>
                         </div>
@@ -187,7 +196,7 @@ export default function ProjectAllocationButton({
               <ModalFooter>
                 <div className="w-full text-right my-8">
                   <AllocateButton
-                    amount={amount}
+                    amount={amountPerc}
                     businessUnitId={selectedBU?.id}
                     projectId={project.id}
                     hasError={hasError}
