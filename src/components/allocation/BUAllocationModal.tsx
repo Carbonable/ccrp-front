@@ -27,7 +27,10 @@ export default function BUAllocationButton({
   const [selectedProject, setSelectedProject] = useState<Project | undefined>(
     undefined
   );
-  const [availableUnits, setAvailableUnits] = useState(0);
+  const [availableObject, setAvailableObject] = useState<{
+    available_percent: number;
+    available_units: number;
+  }>();
   const [amount, setAmount] = useState(0);
   const [hasError, setHasError] = useState(false);
 
@@ -40,8 +43,8 @@ export default function BUAllocationButton({
   const businessUnit: BusinessUnit = data?.businessUnitDetails;
 
   const handleAmountChange = (e: any) => {
-    if (e.target.value > availableUnits) {
-      setAmount(availableUnits);
+    if (e.target.value > availableObject?.available_percent!) {
+      setAmount(availableObject?.available_percent!);
       return;
     }
 
@@ -136,7 +139,7 @@ export default function BUAllocationButton({
                       </div>
                       <div className="mt-8 font-light">
                         <div className="text-left text-neutral-200 uppercase">
-                          Amount units to allocate
+                          Percentage to allocate
                         </div>
                       </div>
                       <div className="mt-1 w-full relative">
@@ -148,7 +151,7 @@ export default function BUAllocationButton({
                           }`}
                           type="number"
                           value={amount}
-                          max={isNaN(availableUnits) ? 0 : availableUnits}
+                          max={availableObject?.available_percent}
                           name="amount"
                           aria-label="Amount"
                           onChange={handleAmountChange}
@@ -161,8 +164,15 @@ export default function BUAllocationButton({
                             <Available
                               businessUnitId={businessUnitId}
                               projectId={selectedProject?.id}
-                              setAvailableUnits={setAvailableUnits}
+                              setAvailableObject={setAvailableObject}
                             />{" "}
+                            Units
+                          </span>
+                        </div>
+                        <div className="ml-4">
+                          To allocate
+                          <span className="text-neutral-50 font-bold ml-1">
+                            {(amount * availableObject?.available_units!) / 100}{" "}
                             Units
                           </span>
                         </div>

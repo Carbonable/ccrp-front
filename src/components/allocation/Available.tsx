@@ -7,16 +7,17 @@ import { useEffect } from "react";
 interface AvailableProps {
   projectId: string | undefined;
   businessUnitId: string | undefined | any;
-  setAvailableUnits: (n: number) => void;
+  setAvailableObject: (available: {
+    available_percent: number;
+    available_units: number;
+  }) => void;
 }
 
 export default function Available({
   projectId,
   businessUnitId,
-  setAvailableUnits,
+  setAvailableObject,
 }: AvailableProps) {
-  console.log("ProjId: ", projectId, "BuId", businessUnitId);
-
   const { loading, error, data } = useQuery(AVAILABLE_ALLOCATION, {
     variables: {
       project_id: projectId,
@@ -25,11 +26,16 @@ export default function Available({
   });
 
   const available: AllocationAvailability = data?.availableToAllocate;
-  console.log("Available", JSON.stringify(available));
 
   useEffect(() => {
-    if (available && typeof available.available_units === "number") {
-      setAvailableUnits(available.available_units);
+    if (available) {
+      const { available_percent, available_units } = available;
+      if (
+        typeof available_percent === "number" &&
+        typeof available_units === "number"
+      ) {
+        setAvailableObject({ available_percent, available_units });
+      }
     }
   }, [available]);
 
