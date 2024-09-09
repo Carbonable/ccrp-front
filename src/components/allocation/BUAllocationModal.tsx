@@ -45,12 +45,11 @@ export default function BUAllocationButton({
   const businessUnit: BusinessUnit = data?.businessUnitDetails;
 
   const handleAmountChange = (e: any) => {
-    if (e.target.value > availableObject?.available_percent!) {
-      setAmount(availableObject?.available_percent!);
+    if (e.target.value > 100) {
+      setAmount(100);
 
       return;
     }
-
     if (e.target.value < 0) {
       setAmount(0);
       return;

@@ -43,10 +43,10 @@ export default function ProjectAllocationButton({
   const project: Project = data?.projectBy;
 
   const handleAmountChange = (e: any) => {
-    // if (e.target.value > availableObject?.available_percent!) {
-    //   setAmount(availableObject?.available_percent!);
-    //   return;
-    // }
+    if (e.target.value > 100) {
+      setAmount(100);
+      return;
+    }
 
     if (e.target.value < 0) {
       setAmount(0);
@@ -172,7 +172,6 @@ export default function ProjectAllocationButton({
                           <span className="text-neutral-50 font-bold ml-1">
                             {(amount * availableObject?.available_units!) / 100}{" "}
                             Units
-
                           </span>
                         </div>
                       </div>
