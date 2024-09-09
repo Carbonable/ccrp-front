@@ -27,10 +27,12 @@ export default function BUAllocationButton({
   const [selectedProject, setSelectedProject] = useState<Project | undefined>(
     undefined
   );
+
   const [availableObject, setAvailableObject] = useState<{
     available_percent: number;
     available_units: number;
   }>();
+
   const [amount, setAmount] = useState(0);
   const [hasError, setHasError] = useState(false);
 
@@ -45,6 +47,7 @@ export default function BUAllocationButton({
   const handleAmountChange = (e: any) => {
     if (e.target.value > availableObject?.available_percent!) {
       setAmount(availableObject?.available_percent!);
+
       return;
     }
 
@@ -151,7 +154,7 @@ export default function BUAllocationButton({
                           }`}
                           type="number"
                           value={amount}
-                          max={availableObject?.available_percent}
+                          max={100}
                           name="amount"
                           aria-label="Amount"
                           onChange={handleAmountChange}

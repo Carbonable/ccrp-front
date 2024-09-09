@@ -7,10 +7,12 @@ import { useEffect } from "react";
 interface AvailableProps {
   projectId: string | undefined;
   businessUnitId: string | undefined | any;
+
   setAvailableObject: (available: {
     available_percent: number;
     available_units: number;
   }) => void;
+
 }
 
 export default function Available({
@@ -18,6 +20,7 @@ export default function Available({
   businessUnitId,
   setAvailableObject,
 }: AvailableProps) {
+
   const { loading, error, data } = useQuery(AVAILABLE_ALLOCATION, {
     variables: {
       project_id: projectId,
@@ -36,6 +39,7 @@ export default function Available({
       ) {
         setAvailableObject({ available_percent, available_units });
       }
+
     }
   }, [available]);
 

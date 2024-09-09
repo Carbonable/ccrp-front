@@ -149,7 +149,7 @@ export default function ProjectAllocationButton({
                           }`}
                           type="number"
                           value={amount}
-                          max={availableObject?.available_percent}
+                          max={100}
                           name="amount"
                           aria-label="Amount"
                           onChange={handleAmountChange}
@@ -172,6 +172,7 @@ export default function ProjectAllocationButton({
                           <span className="text-neutral-50 font-bold ml-1">
                             {(amount * availableObject?.available_units!) / 100}{" "}
                             Units
+
                           </span>
                         </div>
                       </div>
