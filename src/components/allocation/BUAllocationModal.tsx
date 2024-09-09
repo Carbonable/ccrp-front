@@ -47,7 +47,6 @@ export default function BUAllocationButton({
   const handleAmountChange = (e: any) => {
     if (e.target.value > 100) {
       setAmount(100);
-
       return;
     }
     if (e.target.value < 0) {
