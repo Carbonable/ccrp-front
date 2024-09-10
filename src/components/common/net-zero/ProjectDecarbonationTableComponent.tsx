@@ -76,10 +76,10 @@ export default function ProjectDecarbonationTableComponent({
                 numberOfColumns={11}
               />
             )}
+            {error && <ErrorReloadTable refetchData={refetchData} />}
             {!loading && !error && (
               <ProjectedDecarbonationLoaded annual={annual} />
             )}
-            {error && <ErrorReloadTable refetchData={refetchData} />}
           </tbody>
         </table>
       </div>
