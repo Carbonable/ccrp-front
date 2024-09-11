@@ -1,16 +1,16 @@
-'use client'
+'use client';
 
-import { useState } from "react";
-import Header from "./Header";
-import Menu from "./Menu";
+import { useState } from 'react';
+import Header from './Header';
+import Menu from './Menu';
 
 export default function MenuWrapper() {
-    const [openMenu, setOpenMenu] = useState(false);
+  const [openMenu, setOpenMenu] = useState(false);
 
-    return (
-        <>
-            <Header openMenu={openMenu} setOpenMenu={setOpenMenu} />
-            <Menu openMenu={openMenu} setOpenMenu={setOpenMenu} />
-        </>
-    )
+  return (
+    <>
+      <Header openMenu={openMenu} setOpenMenu={setOpenMenu} />
+      <Menu openMenu={openMenu} setOpenMenu={setOpenMenu} />
+    </>
+  );
 }

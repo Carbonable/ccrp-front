@@ -1,18 +1,13 @@
 // src/app/projects/[slug]/page.tsx (Server Component)
-import { notFound } from "next/navigation";
-import ProjectPageClient from "./ProjectPageClient"; // Client-side component
-import { client } from "@/utils/sanity/client"; // Sanity client
+import { notFound } from 'next/navigation';
+import ProjectPageClient from './ProjectPageClient'; // Client-side component
+import { client } from '@/utils/sanity/client'; // Sanity client
 
-export default async function ProjectPage({
-  params,
-}: {
-  params: { slug: string };
-}) {
+export default async function ProjectPage({ params }: { params: { slug: string } }) {
   // Fetch data from Sanity (server-side)
-  const result = await client.fetch(
-    `*[_type == "project" && slug.current == $slug]`,
-    { slug: params.slug }
-  );
+  const result = await client.fetch(`*[_type == "project" && slug.current == $slug]`, {
+    slug: params.slug,
+  });
 
   // Handle case where no project is found
   if (!result || result.length === 0 || !result[0].title) {

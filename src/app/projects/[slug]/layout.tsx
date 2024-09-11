@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import ProjectHeader from "@/components/project/ProjectHeader";
-import ProjectNavigationTabs from "@/components/project/Navigation";
-import { ProjectProvider } from "@/context/ProjectContext";
+import ProjectHeader from '@/components/project/ProjectHeader';
+import ProjectNavigationTabs from '@/components/project/Navigation';
+import { ProjectProvider } from '@/context/ProjectContext';
 
 export default function Layout({
   params,
@@ -15,7 +15,7 @@ export default function Layout({
     <div>
       <ProjectProvider slug={params.slug}>
         <ProjectHeader />
-        <div className="p-8 lg:mx-auto max-w-full lg:max-w-6xl xl:max-w-7xl 2xl:max-w-8xl min-h-screen">
+        <div className="2xl:max-w-8xl min-h-screen max-w-full p-8 lg:mx-auto lg:max-w-6xl xl:max-w-7xl">
           <ProjectNavigationTabs slug={params.slug} />
           {children}
         </div>

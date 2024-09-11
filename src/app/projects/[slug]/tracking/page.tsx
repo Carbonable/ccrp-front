@@ -1,31 +1,29 @@
-"use client";
+'use client';
 
-import { getDmrvData } from "@/actions/dmrv/dmrv";
-import { Coordinates, Dmrv, Ndvi, Rgb } from "@/types/dmrv";
-import { useEffect, useRef, useState } from "react";
-import mapboxgl from "mapbox-gl";
-import Title from "@/components/common/Title";
+import { getDmrvData } from '@/actions/dmrv/dmrv';
+import { Coordinates, Dmrv, Ndvi, Rgb } from '@/types/dmrv';
+import { useEffect, useRef, useState } from 'react';
+import mapboxgl from 'mapbox-gl';
+import Title from '@/components/common/Title';
 import {
   ChevronLeftIcon,
   ChevronRightIcon,
   QuestionMarkCircleIcon,
-} from "@heroicons/react/24/outline";
-import { ValueProps } from "@/types/select";
-import { MapButton } from "@/components/common/Button";
-import MapSelect from "@/components/tracking/MapSelect";
-import TrackingSlider from "@/components/tracking/TrackingSlider";
-import TrackingModal from "@/components/tracking/TrackingModal";
-import moment from "moment";
+} from '@heroicons/react/24/outline';
+import { ValueProps } from '@/types/select';
+import { MapButton } from '@/components/common/Button';
+import MapSelect from '@/components/tracking/MapSelect';
+import TrackingSlider from '@/components/tracking/TrackingSlider';
+import TrackingModal from '@/components/tracking/TrackingModal';
+import moment from 'moment';
 
 export enum TrackingIndicator {
-  NDVI = "ndvi",
-  RGB = "rgb",
+  NDVI = 'ndvi',
+  RGB = 'rgb',
 }
 
-export default function TrackingPage({
-  params,
-}: Readonly<{ params: { slug: string } }>) {
-  mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_KEY || "";
+export default function TrackingPage({ params }: Readonly<{ params: { slug: string } }>) {
+  mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_KEY || '';
   const [dmrvData, setDmrvData] = useState<Dmrv | null>(null);
 
   useEffect(() => {
@@ -34,7 +32,7 @@ export default function TrackingPage({
         const data = await getDmrvData(params.slug);
         setDmrvData(data);
       } catch (error) {
-        console.error("Error fetching DMRV data:", error);
+        console.error('Error fetching DMRV data:', error);
       }
     };
 
@@ -44,27 +42,18 @@ export default function TrackingPage({
   const mapContainer = useRef<any>(null);
   const map = useRef<mapboxgl.Map | null>(null);
   const [bounds, setBounds] = useState<number[] | undefined | any>(undefined);
-  const [coordinates, setCoordinates] = useState<Coordinates | undefined | any>(
-    undefined
-  );
+  const [coordinates, setCoordinates] = useState<Coordinates | undefined | any>(undefined);
   const [ndvis, setNdvis] = useState<Ndvi[] | undefined>(undefined);
   const [rgbs, setRgbs] = useState<Rgb[] | undefined>(undefined);
-  const [selectedIndicator, setSelectedIndicator] = useState<
-    ValueProps | undefined
-  >(undefined);
+  const [selectedIndicator, setSelectedIndicator] = useState<ValueProps | undefined>(undefined);
   const [selectIndicators, setSelectIndicators] = useState<any[]>([]);
   const [mapLoaded, setMapLoaded] = useState<boolean>(true);
-  const [selectedDateIndex, setSelectedDateIndex] = useState<
-    number | undefined
-  >(undefined);
-  const [selectedImageIndex, setSelectedImageIndex] = useState<
-    number | undefined
-  >(undefined);
+  const [selectedDateIndex, setSelectedDateIndex] = useState<number | undefined>(undefined);
+  const [selectedImageIndex, setSelectedImageIndex] = useState<number | undefined>(undefined);
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   useEffect(() => {
-    if (dmrvData === null || dmrvData?.hasOwnProperty("indicators") === false)
-      return;
+    if (dmrvData === null || dmrvData?.hasOwnProperty('indicators') === false) return;
 
     const selectData = [];
 
@@ -79,11 +68,7 @@ export default function TrackingPage({
   }, [dmrvData]);
 
   useEffect(() => {
-    if (
-      dmrvData === undefined ||
-      dmrvData === null ||
-      dmrvData?.hasOwnProperty("ndvis") === false
-    )
+    if (dmrvData === undefined || dmrvData === null || dmrvData?.hasOwnProperty('ndvis') === false)
       return;
 
     setBounds(dmrvData.bounds);
@@ -103,7 +88,7 @@ export default function TrackingPage({
     )
       return;
 
-    const source = map.current?.getSource("data-viz") as mapboxgl.ImageSource;
+    const source = map.current?.getSource('data-viz') as mapboxgl.ImageSource;
     if (source === undefined) return;
 
     switch (selectedIndicator.id) {
@@ -131,7 +116,7 @@ export default function TrackingPage({
     // Init the map
     map.current = new mapboxgl.Map({
       container: mapContainer.current,
-      style: "mapbox://styles/mapbox/satellite-v9",
+      style: 'mapbox://styles/mapbox/satellite-v9',
       center: [bounds[0][1], bounds[1][0]],
     });
 
@@ -146,7 +131,7 @@ export default function TrackingPage({
       setMapLoaded(true);
     }, 5000);
 
-    map.current.on("load", () => {
+    map.current.on('load', () => {
       if (map.current === null) return;
 
       map.current.fitBounds(
@@ -154,20 +139,20 @@ export default function TrackingPage({
           [bounds[0][1], bounds[0][0]], // southwestern corner of the bounds
           [bounds[1][1], bounds[1][0]], // northeastern corner of the bounds
         ],
-        { padding: { top: 20, bottom: 90, left: 0, right: 0 } }
+        { padding: { top: 20, bottom: 90, left: 0, right: 0 } },
       );
 
       // Add a data source to display the delimited project area
-      map.current.addSource("delimitation", {
-        type: "geojson",
+      map.current.addSource('delimitation', {
+        type: 'geojson',
         data: {
-          type: "FeatureCollection",
+          type: 'FeatureCollection',
           features: [
             {
-              type: "Feature",
+              type: 'Feature',
               properties: {},
               geometry: {
-                type: "Polygon",
+                type: 'Polygon',
                 coordinates: [coordinates],
               },
             },
@@ -176,13 +161,13 @@ export default function TrackingPage({
       });
 
       map.current.addLayer({
-        id: "outline",
-        type: "line",
-        source: "delimitation",
+        id: 'outline',
+        type: 'line',
+        source: 'delimitation',
         layout: {},
         paint: {
-          "line-color": "#000",
-          "line-width": 6,
+          'line-color': '#000',
+          'line-width': 6,
         },
       });
 
@@ -194,8 +179,8 @@ export default function TrackingPage({
       const minLat = Math.min(...latitudes);
 
       // Add a source for the data viz
-      map.current.addSource("data-viz", {
-        type: "image",
+      map.current.addSource('data-viz', {
+        type: 'image',
         url: ndvis[selectedImageIndex].image,
         coordinates: [
           [minLon, maxLat],
@@ -206,12 +191,12 @@ export default function TrackingPage({
       });
 
       map.current.addLayer({
-        id: "layer-layer",
-        type: "raster",
-        source: "data-viz",
-        layout: { visibility: "visible" },
+        id: 'layer-layer',
+        type: 'raster',
+        source: 'data-viz',
+        layout: { visibility: 'visible' },
         paint: {
-          "raster-fade-duration": 0,
+          'raster-fade-duration': 0,
         },
       });
     });
@@ -226,11 +211,7 @@ export default function TrackingPage({
     );
   }
 
-  if (
-    dmrvData === null ||
-    selectedDateIndex === undefined ||
-    ndvis === undefined
-  ) {
+  if (dmrvData === null || selectedDateIndex === undefined || ndvis === undefined) {
     return (
       <>
         <Title title="Tracking" isBeta={true} />
@@ -243,47 +224,41 @@ export default function TrackingPage({
     <>
       <Title title="Tracking" isBeta={true} />
       <div className="relative w-full">
-        <div className="text-neutral-100 overflow-auto whitespace-break-spaces">
+        <div className="overflow-auto whitespace-break-spaces text-neutral-100">
           <div className="mt-2">
-            We&apos;re excited to release the Beta version of our digital
-            Monitoring feature. Utilizing satellite imagery and artificial
-            intelligence, this innovative tool offers real-time data and
-            sophisticated analysis on the performance and evolution of carbon
-            removal projects. Through the implementation of this feature (dMRV),
-            our aim is to enhance the integrity and accountability of carbon
-            removal initiatives. Our collaboration with independent third-party
-            providers ensures precision and transparency, maintaining an
-            unbiased approach.
+            We&apos;re excited to release the Beta version of our digital Monitoring feature.
+            Utilizing satellite imagery and artificial intelligence, this innovative tool offers
+            real-time data and sophisticated analysis on the performance and evolution of carbon
+            removal projects. Through the implementation of this feature (dMRV), our aim is to
+            enhance the integrity and accountability of carbon removal initiatives. Our
+            collaboration with independent third-party providers ensures precision and transparency,
+            maintaining an unbiased approach.
           </div>
           <div className="mt-2">
-            Please note, as a Beta feature, digital Monitoring is a work in
-            progress. It represents our commitment to constant improvement and
-            evolution, as we refine this solution to optimally serve our clients
-            and the environment. Our objective is to deliver comprehensive
-            tracking and reporting on the carbon sequestration and biodiversity
+            Please note, as a Beta feature, digital Monitoring is a work in progress. It represents
+            our commitment to constant improvement and evolution, as we refine this solution to
+            optimally serve our clients and the environment. Our objective is to deliver
+            comprehensive tracking and reporting on the carbon sequestration and biodiversity
             protection across all Carbonable projects.
           </div>
           <div className="mt-2">
-            In interpreting the data, it&apos;s important to consider the
-            effects of seasonal changes on vegetation and leaf growth.
-            Year-on-year comparisons typically provide a more accurate view of
-            carbon removal dynamics than month-to-month comparisons. Given that
-            weather conditions can significantly vary from year to year,
-            examining broader trends, rather than strict comparisons, is key to
-            a robust understanding of these dynamics.
+            In interpreting the data, it&apos;s important to consider the effects of seasonal
+            changes on vegetation and leaf growth. Year-on-year comparisons typically provide a more
+            accurate view of carbon removal dynamics than month-to-month comparisons. Given that
+            weather conditions can significantly vary from year to year, examining broader trends,
+            rather than strict comparisons, is key to a robust understanding of these dynamics.
           </div>
           <div className="mt-2">
-            Also, when it comes to monitoring Blue Carbon Projects - initiatives
-            that focus on carbon sequestration in coastal ecosystems such as
-            mangroves, salt marshes, and seagrass meadows - current metrics
-            might not be as directly applicable due to their tidal nature.
-            Vegetation and water levels can fluctuate dramatically throughout
-            the day affecting considerably the indicator readings.{" "}
+            Also, when it comes to monitoring Blue Carbon Projects - initiatives that focus on
+            carbon sequestration in coastal ecosystems such as mangroves, salt marshes, and seagrass
+            meadows - current metrics might not be as directly applicable due to their tidal nature.
+            Vegetation and water levels can fluctuate dramatically throughout the day affecting
+            considerably the indicator readings.{' '}
           </div>
         </div>
 
-        <div ref={mapContainer} className="h-[33vh] w-full mt-8 relative">
-          <div className="absolute top-4 left-4 w-fit z-10">
+        <div ref={mapContainer} className="relative mt-8 h-[33vh] w-full">
+          <div className="absolute left-4 top-4 z-10 w-fit">
             {selectedIndicator !== undefined && (
               <MapSelect
                 values={selectIndicators}
@@ -292,18 +267,18 @@ export default function TrackingPage({
               />
             )}
           </div>
-          <div className="absolute top-4 right-4 w-fit z-10">
+          <div className="absolute right-4 top-4 z-10 w-fit">
             {selectedIndicator !== undefined && (
               <MapButton
-                className="flex flex-nowrap justify-center items-center"
+                className="flex flex-nowrap items-center justify-center"
                 onClick={() => setIsOpen(true)}
               >
-                Learn More <QuestionMarkCircleIcon className="w-5 ml-2" />
+                Learn More <QuestionMarkCircleIcon className="ml-2 w-5" />
               </MapButton>
             )}
           </div>
           {mapLoaded && (
-            <div className="absolute bottom-0 left-0 w-full z-10">
+            <div className="absolute bottom-0 left-0 z-10 w-full">
               <TrackingSlider
                 data={dmrvData.ndvis}
                 setSelectedImageIndex={setSelectedImageIndex}
@@ -314,27 +289,23 @@ export default function TrackingPage({
           )}
         </div>
         {mapLoaded && (
-          <div className="absolute bottom-[-12px] w-full z-50">
-            <div className="w-[24px] h-[24px] flex justify-center items-center bg-opacityLight-80 rounded-full mx-auto">
+          <div className="absolute bottom-[-12px] z-50 w-full">
+            <div className="mx-auto flex h-[24px] w-[24px] items-center justify-center rounded-full bg-opacityLight-80">
               <ChevronLeftIcon className="w-[20px] text-neutral-900" />
-              <ChevronRightIcon className="w-[20px]  text-neutral-900" />
+              <ChevronRightIcon className="w-[20px] text-neutral-900" />
             </div>
           </div>
         )}
       </div>
       {mapLoaded && (
-        <div className="w-fit mx-auto mt-6 py-2 pl-3 pr-2 border border-neutral-300 bg-opacityLight-10 rounded-xl text-sm">
-          {moment(ndvis[selectedDateIndex].date).format("MMM. Do YYYY")}{" "}
-          <span className="border border-neutral-300 bg-opacityLight-10 rounded-lg py-1 px-2 ml-2 text-xs">
+        <div className="mx-auto mt-6 w-fit rounded-xl border border-neutral-300 bg-opacityLight-10 py-2 pl-3 pr-2 text-sm">
+          {moment(ndvis[selectedDateIndex].date).format('MMM. Do YYYY')}{' '}
+          <span className="ml-2 rounded-lg border border-neutral-300 bg-opacityLight-10 px-2 py-1 text-xs">
             🌳 {Math.round(ndvis[selectedDateIndex].value * 100)}%
           </span>
         </div>
       )}
-      <TrackingModal
-        isOpen={isOpen}
-        setIsOpen={setIsOpen}
-        indicator={selectedIndicator}
-      />
+      <TrackingModal isOpen={isOpen} setIsOpen={setIsOpen} indicator={selectedIndicator} />
     </>
   );
 }

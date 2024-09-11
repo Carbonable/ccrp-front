@@ -1,5 +1,5 @@
 'use server';
-import { FileType } from "@/types/admin";
+import { FileType } from '@/types/admin';
 
 interface UploadResult {
   success: boolean;
@@ -7,8 +7,8 @@ interface UploadResult {
 }
 
 export async function uploadFile(formData: FormData, token: string): Promise<UploadResult> {
-  'use server'
-  
+  'use server';
+
   const file = formData.get('file') as File | null;
   const type = formData.get('type') as string | null;
 
@@ -22,7 +22,7 @@ export async function uploadFile(formData: FormData, token: string): Promise<Upl
     const response = await fetch(endpoint, {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${token}`,
+        Authorization: `Bearer ${token}`,
       },
       body: formData,
     });
@@ -35,6 +35,9 @@ export async function uploadFile(formData: FormData, token: string): Promise<Upl
     return { success: true, message: `${type} file uploaded successfully` };
   } catch (error) {
     console.error('Upload error:', error);
-    return { success: false, message: `Error uploading ${type} file: ${error instanceof Error ? error.message : String(error)}` };
+    return {
+      success: false,
+      message: `Error uploading ${type} file: ${error instanceof Error ? error.message : String(error)}`,
+    };
   }
 }

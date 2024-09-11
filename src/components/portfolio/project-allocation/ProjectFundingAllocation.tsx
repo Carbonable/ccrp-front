@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import CompanyAssetsAllocationComponent from "@/components/common/allocation/CompanyAssetsAllocationComponent";
-import { GET_COMPANY_ALLOCATIONS } from "@/graphql/queries/allocation";
-import { CARBONABLE_COMPANY_ID, RESULT_PER_PAGE } from "@/utils/constant";
-import { useQuery } from "@apollo/client";
-import { useEffect, useState } from "react";
+import CompanyAssetsAllocationComponent from '@/components/common/allocation/CompanyAssetsAllocationComponent';
+import { GET_COMPANY_ALLOCATIONS } from '@/graphql/queries/allocation';
+import { CARBONABLE_COMPANY_ID, RESULT_PER_PAGE } from '@/utils/constant';
+import { useQuery } from '@apollo/client';
+import { useEffect, useState } from 'react';
 
 export default function ProjectFundingAllocation() {
   const [currentPage, setCurrentPage] = useState(1);

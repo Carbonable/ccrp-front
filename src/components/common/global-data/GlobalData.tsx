@@ -1,5 +1,5 @@
-import { GlobalKPI } from "@/components/KPI";
-import { GlobalData } from "@/graphql/__generated__/graphql";
+import { GlobalKPI } from '@/components/KPI';
+import { GlobalData } from '@/graphql/__generated__/graphql';
 
 interface GlobalKPIProps {
   loading: boolean;
@@ -8,12 +8,7 @@ interface GlobalKPIProps {
   refetch: () => void;
 }
 
-export default function GlobalDataComponent({
-  loading,
-  error,
-  data,
-  refetch,
-}: GlobalKPIProps) {
+export default function GlobalDataComponent({ loading, error, data, refetch }: GlobalKPIProps) {
   if (error) {
     console.error(error);
   }
@@ -25,7 +20,7 @@ export default function GlobalDataComponent({
   const globalData: GlobalData = data?.getGlobalData;
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mt-4">
+    <div className="mt-4 grid grid-cols-2 gap-2 md:grid-cols-4">
       <GlobalKPI
         title="Target (current year)"
         kpi={globalData?.target}

@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import { GreenButton, SecondaryButton } from "@/components/common/Button";
-import { BusinessUnit, Project } from "@/graphql/__generated__/graphql";
-import { useQuery } from "@apollo/client";
+import { GreenButton, SecondaryButton } from '@/components/common/Button';
+import { BusinessUnit, Project } from '@/graphql/__generated__/graphql';
+import { useQuery } from '@apollo/client';
 import {
   Modal,
   ModalContent,
@@ -10,23 +10,17 @@ import {
   ModalBody,
   ModalFooter,
   useDisclosure,
-} from "@nextui-org/react";
-import { useState } from "react";
-import Available from "./Available";
-import AllocateButton from "./AllocateButton";
-import { GET_PROJECT_WITHOUT_VINTAGES } from "@/graphql/queries/projects";
-import BUList from "./BUList";
-import { onlyPositiveInteger } from "./utils";
+} from '@nextui-org/react';
+import { useState } from 'react';
+import Available from './Available';
+import AllocateButton from './AllocateButton';
+import { GET_PROJECT_WITHOUT_VINTAGES } from '@/graphql/queries/projects';
+import BUList from './BUList';
+import { onlyPositiveInteger } from './utils';
 
-export default function ProjectAllocationButton({
-  projectId,
-}: {
-  projectId: string;
-}) {
+export default function ProjectAllocationButton({ projectId }: { projectId: string }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
-  const [selectedBU, setSelectedBU] = useState<BusinessUnit | undefined>(
-    undefined
-  );
+  const [selectedBU, setSelectedBU] = useState<BusinessUnit | undefined>(undefined);
   const [availableObject, setAvailableObject] = useState<{
     available_percent: number;
     available_units: number;
@@ -36,7 +30,7 @@ export default function ProjectAllocationButton({
 
   const { loading, error, data } = useQuery(GET_PROJECT_WITHOUT_VINTAGES, {
     variables: {
-      field: "id",
+      field: 'id',
       value: projectId,
     },
   });
@@ -72,9 +66,9 @@ export default function ProjectAllocationButton({
           isOpen={isOpen}
           onOpenChange={onOpenChange}
           classNames={{
-            body: "py-6",
-            backdrop: "bg-opacityLight-5 backdrop-opacity-40",
-            base: "bg-neutral-900 text-neutral-100",
+            body: 'py-6',
+            backdrop: 'bg-opacityLight-5 backdrop-opacity-40',
+            base: 'bg-neutral-900 text-neutral-100',
           }}
         >
           <ModalContent>
@@ -95,9 +89,9 @@ export default function ProjectAllocationButton({
           isOpen={isOpen}
           onOpenChange={onOpenChange}
           classNames={{
-            body: "py-6",
-            backdrop: "bg-opacityLight-5 backdrop-opacity-40",
-            base: "bg-neutral-900 text-neutral-100",
+            body: 'py-6',
+            backdrop: 'bg-opacityLight-5 backdrop-opacity-40',
+            base: 'bg-neutral-900 text-neutral-100',
           }}
         >
           <ModalContent>
@@ -117,9 +111,9 @@ export default function ProjectAllocationButton({
         isOpen={isOpen}
         onOpenChange={onOpenChange}
         classNames={{
-          body: "py-6",
-          backdrop: "bg-opacityLight-5 backdrop-opacity-40",
-          base: "bg-neutral-900 text-neutral-100",
+          body: 'py-6',
+          backdrop: 'bg-opacityLight-5 backdrop-opacity-40',
+          base: 'bg-neutral-900 text-neutral-100',
         }}
       >
         <ModalContent>
@@ -127,32 +121,25 @@ export default function ProjectAllocationButton({
             <>
               <ModalBody>
                 <div className="px-6">
-                  <div className="text-center w-full mx-auto mt-8">
+                  <div className="mx-auto mt-8 w-full text-center">
                     <div className="relative w-full">
                       <div
-                        className={`relative w-full rounded-2xl py-4 px-6 text-left font-inter border border-opacityLight-10 bg-allocation-bu`}
+                        className={`font-inter bg-allocation-bu relative w-full rounded-2xl border border-opacityLight-10 px-6 py-4 text-left`}
                       >
-                        <div className="text-lg uppercase text-neutral-200">
-                          {project.name}
-                        </div>
+                        <div className="text-lg uppercase text-neutral-200">{project.name}</div>
                       </div>
                       <div className="mt-8">
-                        <BUList
-                          selectedBU={selectedBU}
-                          setSelectedBU={setSelectedBU}
-                        />
+                        <BUList selectedBU={selectedBU} setSelectedBU={setSelectedBU} />
                       </div>
                       <div className="mt-8 font-light">
-                        <div className="text-left text-neutral-200 uppercase">
+                        <div className="text-left uppercase text-neutral-200">
                           Percentage to allocate
                         </div>
                       </div>
-                      <div className="mt-1 w-full relative">
+                      <div className="relative mt-1 w-full">
                         <input
-                          className={`bg-opacityLight-5 text-left outline-0 border border-opacityLight-10 px-3 py-3 rounded-xl w-full focus:border-neutral-300 ${
-                            hasError
-                              ? "border-red-500 focus:border-red-500"
-                              : ""
+                          className={`w-full rounded-xl border border-opacityLight-10 bg-opacityLight-5 px-3 py-3 text-left outline-0 focus:border-neutral-300 ${
+                            hasError ? 'border-red-500 focus:border-red-500' : ''
                           }`}
                           type="number"
                           value={amountPerc}
@@ -163,38 +150,35 @@ export default function ProjectAllocationButton({
                           onKeyDown={onlyPositiveInteger}
                         />
                       </div>
-                      <div className="flex items-center mt-1 ml-1 uppercase text-left text-neutral-200 text-xs">
+                      <div className="ml-1 mt-1 flex items-center text-left text-xs uppercase text-neutral-200">
                         <div className="">
                           Available
-                          <span className="text-neutral-50 font-bold ml-1">
+                          <span className="ml-1 font-bold text-neutral-50">
                             <Available
                               businessUnitId={selectedBU?.id}
                               projectId={project.id}
                               setAvailableObject={setAvailableObject}
-                            />{" "}
+                            />{' '}
                             Units
                           </span>
                         </div>
                         <div className="ml-4">
                           To allocate
-                          <span className="text-neutral-50 font-bold ml-1">
-                            {(amountPerc * availableObject?.available_units!) /
-                              100}{" "}
-                            Units
+                          <span className="ml-1 font-bold text-neutral-50">
+                            {(amountPerc * availableObject?.available_units!) / 100} Units
                           </span>
                         </div>
                       </div>
-                      <div className="mt-8 px-8 py-6 bg-neutral-800 rounded-xl border border-opacityLight-10 text-left text-sm">
-                        Carbon units will be allocated to this business unit on
-                        a fifo basis, based on target and other business units
-                        allocations.
+                      <div className="mt-8 rounded-xl border border-opacityLight-10 bg-neutral-800 px-8 py-6 text-left text-sm">
+                        Carbon units will be allocated to this business unit on a fifo basis, based
+                        on target and other business units allocations.
                       </div>
                     </div>
                   </div>
                 </div>
               </ModalBody>
               <ModalFooter>
-                <div className="w-full text-right my-8">
+                <div className="my-8 w-full text-right">
                   <AllocateButton
                     amount={amountPerc}
                     businessUnitId={selectedBU?.id}

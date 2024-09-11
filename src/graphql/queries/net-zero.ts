@@ -1,13 +1,13 @@
-import { gql } from "@apollo/client";
+import { gql } from '@apollo/client';
 
 export const GET_GLOBAL_DATA = gql`
-query GetGlobalData($view: VisualizationViewType) {
+  query GetGlobalData($view: VisualizationViewType) {
     getGlobalData(view: $view) {
-        target
-        actual
-        debt
-        number_of_projects
-        invested_amount
+      target
+      actual
+      debt
+      number_of_projects
+      invested_amount
     }
   }
 `;
@@ -15,13 +15,13 @@ query GetGlobalData($view: VisualizationViewType) {
 export const NET_ZERO_PLANNING = gql`
   query NetZeroPlanning($view: VisualizationViewType) {
     netZeroPlanning(view: $view) {
-        vintage
-        ex_ante_count
-        ex_post_count
-        emission
-        target
-        actual
-        retired
+      vintage
+      ex_ante_count
+      ex_post_count
+      emission
+      target
+      actual
+      retired
     }
   }
 `;
@@ -83,17 +83,17 @@ export const FINANCIAL_ANALYSIS = gql`
     financialAnalysis(view: $view, pagination: $pagination) {
       data {
         year
-        all_time_avg_issued_price,
-        all_time_avg_purchased_price,
-        all_time_avg_price,
-        avg_issued_price,
-        avg_purchased_price,
-        avg_price,
-        cumulative_emission_debt,
-        cumulative_total_amount,
-        emission_debt,
-        total_amount,
-        total_issued_amount,
+        all_time_avg_issued_price
+        all_time_avg_purchased_price
+        all_time_avg_price
+        avg_issued_price
+        avg_purchased_price
+        avg_price
+        cumulative_emission_debt
+        cumulative_total_amount
+        emission_debt
+        total_amount
+        total_issued_amount
         total_purchased_amount
       }
       page_info {

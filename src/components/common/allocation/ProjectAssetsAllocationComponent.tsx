@@ -1,15 +1,12 @@
-"use client";
-import {
-  PageInfo,
-  ProjectCarbonAssetAllocationData,
-} from "@/graphql/__generated__/graphql";
-import { ErrorReloadTable, NoDataTable } from "../ErrorReload";
-import SquaredInitials from "../SquaredInitials";
-import TableLoading from "@/components/table/TableLoading";
-import { RESULT_PER_PAGE } from "@/utils/constant";
-import { SecondaryButton } from "../Button";
-import PaginationComponent from "../Pagination";
-import { useEffect, useState } from "react";
+'use client';
+import { PageInfo, ProjectCarbonAssetAllocationData } from '@/graphql/__generated__/graphql';
+import { ErrorReloadTable, NoDataTable } from '../ErrorReload';
+import SquaredInitials from '../SquaredInitials';
+import TableLoading from '@/components/table/TableLoading';
+import { RESULT_PER_PAGE } from '@/utils/constant';
+import { SecondaryButton } from '../Button';
+import PaginationComponent from '../Pagination';
+import { useEffect, useState } from 'react';
 
 //TODO check actual and allocation_amount
 
@@ -49,14 +46,12 @@ export default function ProjectAssetsAllocationComponent({
   };
 
   return (
-    <div className="w-full mt-8">
-      <div className="mt-4 w-full font-inter text-sm overflow-x-scroll border border-neutral-600">
-        <table className="table-auto text-left min-w-full">
-          <thead className="bg-neutral-500 text-neutral-100 whitespace-nowrap h-10">
+    <div className="mt-8 w-full">
+      <div className="font-inter mt-4 w-full overflow-x-scroll border border-neutral-600 text-sm">
+        <table className="min-w-full table-auto text-left">
+          <thead className="h-10 whitespace-nowrap bg-neutral-500 text-neutral-100">
             <tr className="table-style">
-              <th className="px-4 sticky left-0 z-10 bg-neutral-500">
-                Business Unit
-              </th>
+              <th className="sticky left-0 z-10 bg-neutral-500 px-4">Business Unit</th>
               <th className="px-4">Allocated (t)</th>
               <th className="px-4">Allocation amount ($)</th>
               <th className="px-4">Target (%)</th>
@@ -66,17 +61,10 @@ export default function ProjectAssetsAllocationComponent({
             </tr>
           </thead>
           <tbody>
-            {loading && (
-              <TableLoading
-                resultsPerPage={RESULT_PER_PAGE}
-                numberOfColumns={6}
-              />
-            )}
+            {loading && <TableLoading resultsPerPage={RESULT_PER_PAGE} numberOfColumns={6} />}
             {error && <ErrorReloadTable refetchData={refetchData} />}
             {!loading && !error && (
-              <ProjectFundingAllocationLoaded
-                carbonAssetAllocation={carbonAssetAllocation}
-              />
+              <ProjectFundingAllocationLoaded carbonAssetAllocation={carbonAssetAllocation} />
             )}
           </tbody>
         </table>
@@ -103,38 +91,31 @@ function ProjectFundingAllocationLoaded({
 
   return (
     <>
-      {carbonAssetAllocation.map(
-        (allocation: ProjectCarbonAssetAllocationData, idx: number) => {
-          return (
-            <tr
-              key={`projection_${idx}`}
-              className="border-b h-12 last:border-b-0 border-neutral-600 bg-neutral-800 hover:brightness-110 items-center text-neutral-200 whitespace-nowrap group"
-            >
-              <td className="px-4 sticky left-0 z-10 bg-neutral-800">
-                <div className="flex items-center justify-start text-neutral-100 w-max">
-                  <div className="p-2">
-                    <SquaredInitials
-                      text={allocation.business_unit.name}
-                      color="random"
-                    />
-                  </div>
-                  <div className="ml-2 font-bold">
-                    {allocation.business_unit.name}
-                  </div>
+      {carbonAssetAllocation.map((allocation: ProjectCarbonAssetAllocationData, idx: number) => {
+        return (
+          <tr
+            key={`projection_${idx}`}
+            className="group h-12 items-center whitespace-nowrap border-b border-neutral-600 bg-neutral-800 text-neutral-200 last:border-b-0 hover:brightness-110"
+          >
+            <td className="sticky left-0 z-10 bg-neutral-800 px-4">
+              <div className="flex w-max items-center justify-start text-neutral-100">
+                <div className="p-2">
+                  <SquaredInitials text={allocation.business_unit.name} color="random" />
                 </div>
-              </td>
-              <td className="px-4">{allocation.allocated}</td>
-              <td className="px-4">{allocation.allocation_amount}</td>
-              <td className="px-4">{allocation.target}</td>
-              <td className="px-4">{allocation.actual}</td>
-              <td className="px-4">{allocation.start_date}</td>
-              <td className="px-4">
-                <SecondaryButton className="border-0">...</SecondaryButton>
-              </td>
-            </tr>
-          );
-        }
-      )}
+                <div className="ml-2 font-bold">{allocation.business_unit.name}</div>
+              </div>
+            </td>
+            <td className="px-4">{allocation.allocated}</td>
+            <td className="px-4">{allocation.allocation_amount}</td>
+            <td className="px-4">{allocation.target}</td>
+            <td className="px-4">{allocation.actual}</td>
+            <td className="px-4">{allocation.start_date}</td>
+            <td className="px-4">
+              <SecondaryButton className="border-0">...</SecondaryButton>
+            </td>
+          </tr>
+        );
+      })}
     </>
   );
 }

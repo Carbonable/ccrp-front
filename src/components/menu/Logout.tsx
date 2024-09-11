@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { useUser } from "@clerk/nextjs";
-import { SignedIn, UserButton } from "@clerk/nextjs";
+import { useUser } from '@clerk/nextjs';
+import { SignedIn, UserButton } from '@clerk/nextjs';
 
 export default function Logout() {
   const { user } = useUser();
@@ -15,7 +15,7 @@ export default function Logout() {
       <SignedIn>
         <div className="flex items-center justify-start">
           <UserButton />
-          <div className="ml-2 text-ellipsis overflow-hidden">{userName}</div>
+          <div className="ml-2 overflow-hidden text-ellipsis">{userName}</div>
         </div>
       </SignedIn>
     </div>

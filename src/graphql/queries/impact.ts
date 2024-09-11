@@ -1,4 +1,4 @@
-import { gql } from "@apollo/client";
+import { gql } from '@apollo/client';
 
 export const GET_IMPACT_METRICS = gql`
   query GetImpactMetrics($view: VisualizationViewType!) {

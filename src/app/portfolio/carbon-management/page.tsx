@@ -1,6 +1,6 @@
-import Title from "@/components/common/Title";
-import ProjectFundingAllocation from "@/components/portfolio/project-allocation/ProjectFundingAllocation";
-import ProjectsMetrics from "@/components/portfolio/project-allocation/ProjectsMetrics";
+import Title from '@/components/common/Title';
+import ProjectFundingAllocation from '@/components/portfolio/project-allocation/ProjectFundingAllocation';
+import ProjectsMetrics from '@/components/portfolio/project-allocation/ProjectsMetrics';
 
 export default function CarbonManagementPage() {
   return (
@@ -14,5 +14,5 @@ export default function CarbonManagementPage() {
         <ProjectsMetrics />
       </div>
     </div>
-  )
+  );
 }

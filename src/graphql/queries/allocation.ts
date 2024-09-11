@@ -1,11 +1,14 @@
-import { gql } from "@apollo/client";
+import { gql } from '@apollo/client';
 
 export const GET_COMPANY_ALLOCATIONS = gql`
-query CompanyCarbonAssetAllocation($id: String!, $pagination: Pagination) {
+  query CompanyCarbonAssetAllocation($id: String!, $pagination: Pagination) {
     companyCarbonAssetAllocation(id: $id, pagination: $pagination) {
-      data{
+      data {
         project_name
-        business_units {id name}
+        business_units {
+          id
+          name
+        }
         type
         total_potential
         ex_post_to_date
@@ -27,10 +30,13 @@ query CompanyCarbonAssetAllocation($id: String!, $pagination: Pagination) {
 `;
 
 export const GET_PROJECT_ALLOCATIONS = gql`
-query ProjectCarbonAssetAllocation($id: String!, $pagination: Pagination) {
+  query ProjectCarbonAssetAllocation($id: String!, $pagination: Pagination) {
     projectCarbonAssetAllocation(id: $id, pagination: $pagination) {
       data {
-        business_unit {id name}
+        business_unit {
+          id
+          name
+        }
         allocated
         allocation_amount
         target
@@ -47,10 +53,13 @@ query ProjectCarbonAssetAllocation($id: String!, $pagination: Pagination) {
 `;
 
 export const GET_BU_ALLOCATIONS = gql`
-query BusinessUnitCarbonAssetAllocation($id: String!, $pagination: Pagination) {
+  query BusinessUnitCarbonAssetAllocation($id: String!, $pagination: Pagination) {
     businessUnitCarbonAssetAllocation(id: $id, pagination: $pagination) {
-      data{
-        project {id name}
+      data {
+        project {
+          id
+          name
+        }
         total_cu
         allocated
         generated
@@ -67,12 +76,12 @@ query BusinessUnitCarbonAssetAllocation($id: String!, $pagination: Pagination) {
 `;
 
 export const CREATE_ALLOCATION = gql`
-	mutation addAllocations($request: [AddAllocationRequestItem]!) {
-		addAllocations(request: $request) {
-			allocationIds 
-			errors
-		}
-	}
+  mutation addAllocations($request: [AddAllocationRequestItem]!) {
+    addAllocations(request: $request) {
+      allocationIds
+      errors
+    }
+  }
 `;
 
 export const AVAILABLE_ALLOCATION = gql`

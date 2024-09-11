@@ -1,13 +1,13 @@
-"use client";
+'use client';
 
-import { AnnualData, PageInfo } from "@/graphql/__generated__/graphql";
-import { ErrorReloadTable, NoDataTable } from "../../common/ErrorReload";
-import Title from "../Title";
-import PaginationComponent from "../Pagination";
-import TableLoading from "@/components/table/TableLoading";
-import { RESULT_PER_PAGE } from "@/utils/constant";
-import { useEffect, useState } from "react";
-import { roundIfFloat } from "@/utils/numbers";
+import { AnnualData, PageInfo } from '@/graphql/__generated__/graphql';
+import { ErrorReloadTable, NoDataTable } from '../../common/ErrorReload';
+import Title from '../Title';
+import PaginationComponent from '../Pagination';
+import TableLoading from '@/components/table/TableLoading';
+import { RESULT_PER_PAGE } from '@/utils/constant';
+import { useEffect, useState } from 'react';
+import { roundIfFloat } from '@/utils/numbers';
 
 export default function ProjectDecarbonationTableComponent({
   loading,
@@ -48,13 +48,11 @@ export default function ProjectDecarbonationTableComponent({
   return (
     <div className="mt-12 w-full">
       <Title title="Stock - Annual" />
-      <div className="mt-4 w-full font-inter text-sm overflow-x-auto border border-neutral-600">
-        <table className="table-auto text-left min-w-full">
-          <thead className="bg-neutral-500 text-neutral-100 whitespace-nowrap h-10">
+      <div className="font-inter mt-4 w-full overflow-x-auto border border-neutral-600 text-sm">
+        <table className="min-w-full table-auto text-left">
+          <thead className="h-10 whitespace-nowrap bg-neutral-500 text-neutral-100">
             <tr>
-              <th className="px-4 sticky left-0 z-10 bg-neutral-500">
-                Time Period
-              </th>
+              <th className="sticky left-0 z-10 bg-neutral-500 px-4">Time Period</th>
               <th className="px-4">Emission (t)</th>
               <th className="px-4">Ex-Post Issued (t)</th>
               <th className="px-4">Ex-Post Purchased (t)</th>
@@ -70,16 +68,9 @@ export default function ProjectDecarbonationTableComponent({
             </tr>
           </thead>
           <tbody>
-            {loading && (
-              <TableLoading
-                resultsPerPage={RESULT_PER_PAGE}
-                numberOfColumns={11}
-              />
-            )}
+            {loading && <TableLoading resultsPerPage={RESULT_PER_PAGE} numberOfColumns={11} />}
             {error && <ErrorReloadTable refetchData={refetchData} />}
-            {!loading && !error && (
-              <ProjectedDecarbonationLoaded annual={annual} />
-            )}
+            {!loading && !error && <ProjectedDecarbonationLoaded annual={annual} />}
           </tbody>
         </table>
       </div>
@@ -125,15 +116,13 @@ function ProjectedDecarbonationLoaded({ annual }: { annual: AnnualData[] }) {
         return (
           <tr
             key={`projection_${idx}`}
-            className={`border-b border-neutral-600 bg-neutral-800 h-12 last:border-b-0 hover:brightness-110 ${
+            className={`h-12 border-b border-neutral-600 bg-neutral-800 last:border-b-0 hover:brightness-110 ${
               parseInt(time_period) < new Date().getFullYear()
-                ? "text-neutral-50"
-                : "text-neutral-200"
+                ? 'text-neutral-50'
+                : 'text-neutral-200'
             }`}
           >
-            <td className="px-4 sticky left-0 z-10 bg-neutral-800">
-              {time_period}
-            </td>
+            <td className="sticky left-0 z-10 bg-neutral-800 px-4">{time_period}</td>
             <td className="px-4">{roundIfFloat(emissions)}</td>
             <td className="px-4">{roundIfFloat(ex_post_issued)}</td>
             <td className="px-4">{roundIfFloat(ex_post_purchased)}</td>

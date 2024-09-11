@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import { BusinessUnit } from "@/graphql/__generated__/graphql";
-import { BUSINESS_UNITS_DETAILS } from "@/graphql/queries/business-units";
-import { useQuery } from "@apollo/client";
-import BUAllocationButton from "../../allocation/BUAllocationModal";
+import { BusinessUnit } from '@/graphql/__generated__/graphql';
+import { BUSINESS_UNITS_DETAILS } from '@/graphql/queries/business-units';
+import { useQuery } from '@apollo/client';
+import BUAllocationButton from '../../allocation/BUAllocationModal';
 
 export default function BusinessUnitInfo({ id }: { id: string }) {
   const { loading, error, data } = useQuery(BUSINESS_UNITS_DETAILS, {
@@ -17,7 +17,7 @@ export default function BusinessUnitInfo({ id }: { id: string }) {
   if (loading) {
     return (
       <>
-        <div className="flex justify-between items-center mt-12 px-4">
+        <div className="mt-12 flex items-center justify-between px-4">
           <div className="text-xl uppercase">Loading...</div>
         </div>
       </>
@@ -29,7 +29,7 @@ export default function BusinessUnitInfo({ id }: { id: string }) {
 
     return (
       <>
-        <div className="flex justify-between items-center mt-12 px-4">
+        <div className="mt-12 flex items-center justify-between px-4">
           <div className="text-xl uppercase">Error: {error.message}</div>
         </div>
       </>
@@ -37,12 +37,10 @@ export default function BusinessUnitInfo({ id }: { id: string }) {
   }
 
   return (
-    <div className="flex justify-between items-start">
+    <div className="flex items-start justify-between">
       <div>
         <div className="text-xl uppercase">{businessUnit.name}</div>
-        <div className="text-neutral-200 font-light">
-          {businessUnit.description}
-        </div>
+        <div className="font-light text-neutral-200">{businessUnit.description}</div>
       </div>
       <div className="text-right">
         <BUAllocationButton businessUnitId={id} />

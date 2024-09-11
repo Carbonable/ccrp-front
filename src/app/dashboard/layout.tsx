@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import DashboardNavigationTabs from "@/components/dashboard/Navigation";
+import DashboardNavigationTabs from '@/components/dashboard/Navigation';
 
 export default function Layout({
   children,
