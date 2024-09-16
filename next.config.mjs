@@ -2,7 +2,7 @@
 const nextConfig = {};
 const requiredEnvVars = [
   "API_URL",
-  "DMRV_API_URL",
+  "DMRV_API",
   "NEXT_PUBLIC_GRAPHQL_API_URL",
   "NEXT_PUBLIC_MAPBOX_KEY",
   "NEXT_PUBLIC_SANITY_API_VERSION",
@@ -10,6 +10,7 @@ const requiredEnvVars = [
   "NEXT_PUBLIC_SANITY_PROJECT_ID",
   "NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY",
   "CLERK_SECRET_KEY",
+  "NEXT_PUBLIC_ENABLED_MENU_ITEMS",
 ];
 
 requiredEnvVars.forEach((envVar) => {
