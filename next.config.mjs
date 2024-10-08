@@ -12,4 +12,12 @@ const requiredEnvVars = [
   'CLERK_SECRET_KEY',
 ];
 
+requiredEnvVars.forEach((envVar) => {
+  if (!process.env[envVar]) {
+    throw new Error(
+      `Environment variable ${envVar} is missing! Please set it before starting the application.`,
+    );
+  }
+});
+
 export default nextConfig;

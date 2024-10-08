@@ -39,9 +39,9 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 ## Deployment
 
 On fly.io, the app is deployed using the following command:
-
+Create a .env.deploy file in the root directory of the project with the target environment variables. Then run the following command:
 ```bash
-flyctl deploy
+. deploy.sh -c path/to/your/custom-config.toml
 ```
 
 On AWS, the app is deployed using the following command:
