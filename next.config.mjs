@@ -10,6 +10,7 @@ const requiredEnvVars = [
   'NEXT_PUBLIC_SANITY_PROJECT_ID',
   'NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY',
   'CLERK_SECRET_KEY',
+
 ];
 
 requiredEnvVars.forEach((envVar) => {
