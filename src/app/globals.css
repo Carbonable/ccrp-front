@@ -4,15 +4,15 @@
 
 @layer components {
   .input-common {
-    @apply w-full px-3 py-2 bg-opacityLight-5 text-neutral-100 border border-opacityLight-10 rounded-lg outline-none focus:border-opacityLight-30 focus:bg-opacityLight-10;
+    @apply w-full rounded-lg border border-opacityLight-10 bg-opacityLight-5 px-3 py-2 text-neutral-100 outline-none focus:border-opacityLight-30 focus:bg-opacityLight-10;
   }
 
   .primary-button {
-    @apply px-4 py-2 bg-greenish-600 text-white rounded-lg uppercase hover:bg-greenish-500;
+    @apply rounded-lg bg-greenish-600 px-4 py-2 uppercase text-white hover:bg-greenish-500;
   }
 
   .loading-button {
-    @apply cursor-wait bg-greenish-700 hover:bg-greenish-700 text-neutral-300;
+    @apply cursor-wait bg-greenish-700 text-neutral-300 hover:bg-greenish-700;
   }
 }
 
@@ -29,7 +29,6 @@
     --background-end-rgb: 0, 0, 0;
   }
 }
-
 
 @layer utilities {
   .text-balance {

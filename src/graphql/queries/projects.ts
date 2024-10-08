@@ -1,19 +1,19 @@
-import { gql } from "@apollo/client";
+import { gql } from '@apollo/client';
 
 export const GET_PROJECTS = gql`
-query Projects {
+  query Projects {
     projects {
-        id
-        name
-        slug
-        metadata
+      id
+      name
+      slug
+      metadata
     }
   }
 `;
 
 export const GET_PROJECT_WITHOUT_VINTAGES = gql`
-query ProjectBy($field: String!, $value: String!) {
-  projectBy(field: $field, value: $value) {
+  query ProjectBy($field: String!, $value: String!) {
+    projectBy(field: $field, value: $value) {
       id
       name
       description

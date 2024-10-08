@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Tabs, Tab } from "@nextui-org/react";
+import { Tabs, Tab } from '@nextui-org/react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 
@@ -11,27 +11,43 @@ const ProjectNavigationTabs = ({ slug }: { slug: string }) => {
 
   return (
     <Tabs
-      disabledKeys={isTrackingActivated ===  'false' ? [`/projects/${slug}/tracking`] : []}
+      disabledKeys={isTrackingActivated === 'false' ? [`/projects/${slug}/tracking`] : []}
       selectedKey={pathname}
-      classNames={{ 
-          tabList: 'bg-opacityLight-5 text-neutral-100',
+      classNames={{
+        tabList: 'bg-opacityLight-5 text-neutral-100',
       }}
     >
-      <Tab 
+      <Tab
         key={`/projects/${slug}`}
-        title={<Link href={`/projects/${slug}`} prefetch>Overview</Link>}
-      />
-      <Tab 
-        key={`/projects/${slug}/carbon-management`} 
-        title={<Link href={`/projects/${slug}/carbon-management`} prefetch>Carbon Management</Link>}
+        title={
+          <Link href={`/projects/${slug}`} prefetch>
+            Overview
+          </Link>
+        }
       />
       <Tab
-        key={`/projects/${slug}/tracking`} 
-        title={<Link href={`/projects/${slug}/tracking`} prefetch>Tracking</Link>}
+        key={`/projects/${slug}/carbon-management`}
+        title={
+          <Link href={`/projects/${slug}/carbon-management`} prefetch>
+            Carbon Management
+          </Link>
+        }
       />
-      <Tab 
-        key={`/projects/${slug}/impact`} 
-        title={<Link href={`/projects/${slug}/impact`} prefetch>Impact</Link>}
+      <Tab
+        key={`/projects/${slug}/tracking`}
+        title={
+          <Link href={`/projects/${slug}/tracking`} prefetch>
+            Tracking
+          </Link>
+        }
+      />
+      <Tab
+        key={`/projects/${slug}/impact`}
+        title={
+          <Link href={`/projects/${slug}/impact`} prefetch>
+            Impact
+          </Link>
+        }
       />
     </Tabs>
   );

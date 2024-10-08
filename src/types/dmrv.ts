@@ -1,24 +1,24 @@
 export interface Dmrv {
-    area: number;
-    bounds: number[];
-    coordinates: Coordinates[];
-    indicators: string[];
-    name: string;
-    ndvis: Ndvi[];
-    rgbs: Rgb[];
+  area: number;
+  bounds: number[];
+  coordinates: Coordinates[];
+  indicators: string[];
+  name: string;
+  ndvis: Ndvi[];
+  rgbs: Rgb[];
 }
 
 export interface Coordinates {
-    coordinates: number[];
+  coordinates: number[];
 }
 
 export interface Ndvi {
-    date: string;
-    image: string;
-    value: number;
+  date: string;
+  image: string;
+  value: number;
 }
 
 export interface Rgb {
-    date: string;
-    url: string;
+  date: string;
+  url: string;
 }

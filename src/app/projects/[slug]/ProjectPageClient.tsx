@@ -1,18 +1,12 @@
-"use client";
-import { useEffect, useState } from "react";
-import ImageGallery from "@/components/project/overview/ImagesGallery";
-import SectionWrapper from "@/components/project/overview/SectionWrapper";
-import Title from "@/components/common/Title";
-import { SanityContent } from "@/utils/sanity/types";
+'use client';
+import { useEffect, useState } from 'react';
+import ImageGallery from '@/components/project/overview/ImagesGallery';
+import SectionWrapper from '@/components/project/overview/SectionWrapper';
+import Title from '@/components/common/Title';
+import { SanityContent } from '@/utils/sanity/types';
 
-export default function ProjectPageClient({
-  content,
-}: {
-  content: SanityContent;
-}) {
-  const [clientContent, setClientContent] = useState<SanityContent | null>(
-    null
-  );
+export default function ProjectPageClient({ content }: { content: SanityContent }) {
+  const [clientContent, setClientContent] = useState<SanityContent | null>(null);
 
   useEffect(() => {
     // Hydration-safe dynamic content can be set here

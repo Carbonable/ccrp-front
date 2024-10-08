@@ -4,17 +4,21 @@ export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
-export type MakeEmpty<T extends { [key: string]: unknown }, K extends keyof T> = { [_ in K]?: never };
-export type Incremental<T> = T | { [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never };
+export type MakeEmpty<T extends { [key: string]: unknown }, K extends keyof T> = {
+  [_ in K]?: never;
+};
+export type Incremental<T> =
+  | T
+  | { [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
-  ID: { input: string; output: string; }
-  String: { input: string; output: string; }
-  Boolean: { input: boolean; output: boolean; }
-  Int: { input: number; output: number; }
-  Float: { input: number; output: number; }
+  ID: { input: string; output: string };
+  String: { input: string; output: string };
+  Boolean: { input: boolean; output: boolean };
+  Int: { input: number; output: number };
+  Float: { input: number; output: number };
   /** The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf). */
-  JSON: { input: any; output: any; }
+  JSON: { input: any; output: any };
 };
 
 export type AddAllocationRequestItem = {
@@ -115,7 +119,7 @@ export type CarbonCredit = {
 
 export enum CarbonCreditOrigin {
   DirectPurchase = 'DIRECT_PURCHASE',
-  ForwardFinance = 'FORWARD_FINANCE'
+  ForwardFinance = 'FORWARD_FINANCE',
 }
 
 export enum CarbonCreditType {
@@ -124,7 +128,7 @@ export enum CarbonCreditType {
   Dac = 'DAC',
   Reforestation = 'REFORESTATION',
   Restoration = 'RESTORATION',
-  SolarPanel = 'SOLAR_PANEL'
+  SolarPanel = 'SOLAR_PANEL',
 }
 
 export type Certifier = {
@@ -296,21 +300,17 @@ export type Mutation = {
   createForecastedTargets?: Maybe<DomainResponse>;
 };
 
-
 export type MutationAddAllocationsArgs = {
   request: Array<InputMaybe<AddAllocationRequestItem>>;
 };
-
 
 export type MutationCreateBusinessUnitArgs = {
   request: CreateBusinessUnitRequest;
 };
 
-
 export type MutationCreateForecastedEmissionsArgs = {
   request: CreateForecastedEmissionsRequest;
 };
-
 
 export type MutationCreateForecastedTargetsArgs = {
   request: CreateForecastedTargetsRequest;
@@ -330,7 +330,7 @@ export type NetZeroPlanning = {
 
 export enum OffsetType {
   ExAnte = 'EX_ANTE',
-  ExPost = 'EX_POST'
+  ExPost = 'EX_POST',
 }
 
 export type PageInfo = {
@@ -429,7 +429,7 @@ export type ProjectMetrics = {
 
 export enum ProjectType {
   Arr = 'ARR',
-  ReddPlus = 'REDD_PLUS'
+  ReddPlus = 'REDD_PLUS',
 }
 
 export type ProjectTypeRepartition = {
@@ -461,7 +461,7 @@ export type ProjectedDecarbonationGraph = {
 export enum ProjectedDecarbonationViewType {
   InvestmentType = 'INVESTMENT_TYPE',
   OffsetType = 'OFFSET_TYPE',
-  ProjectType = 'PROJECT_TYPE'
+  ProjectType = 'PROJECT_TYPE',
 }
 
 export type ProjectedDecarbonationWithPagination = {
@@ -501,102 +501,84 @@ export type Query = {
   projects?: Maybe<Array<Maybe<Project>>>;
 };
 
-
 export type QueryAnnualArgs = {
   pagination?: InputMaybe<Pagination>;
   view: VisualizationViewType;
 };
-
 
 export type QueryAvailableToAllocateArgs = {
   business_unit_id: Scalars['String']['input'];
   project_id: Scalars['String']['input'];
 };
 
-
 export type QueryBusinessUnitCarbonAssetAllocationArgs = {
   id: Scalars['String']['input'];
   pagination?: InputMaybe<Pagination>;
 };
 
-
 export type QueryBusinessUnitDetailsArgs = {
   id: Scalars['String']['input'];
 };
-
 
 export type QueryBusinessUnitsByArgs = {
   field: Scalars['String']['input'];
   value: Scalars['String']['input'];
 };
 
-
 export type QueryCertifierByArgs = {
   field: Scalars['String']['input'];
   value: Scalars['String']['input'];
 };
-
 
 export type QueryCompanyCarbonAssetAllocationArgs = {
   id: Scalars['String']['input'];
   pagination?: InputMaybe<Pagination>;
 };
 
-
 export type QueryCountryByArgs = {
   field: Scalars['String']['input'];
   value: Scalars['String']['input'];
 };
-
 
 export type QueryCumulativeArgs = {
   pagination?: InputMaybe<Pagination>;
   view: VisualizationViewType;
 };
 
-
 export type QueryFinancialAnalysisArgs = {
   pagination?: InputMaybe<Pagination>;
   view: VisualizationViewType;
 };
 
-
 export type QueryGetGlobalDataArgs = {
   view?: InputMaybe<VisualizationViewType>;
 };
-
 
 export type QueryGetImpactMetricsArgs = {
   view?: InputMaybe<VisualizationViewType>;
 };
 
-
 export type QueryGetProjectFundingAllocationArgs = {
   view?: InputMaybe<VisualizationViewType>;
 };
 
-
 export type QueryGetProjectMetricsArgs = {
   view?: InputMaybe<VisualizationViewType>;
 };
-
 
 export type QueryGetStockArgs = {
   pagination?: InputMaybe<Pagination>;
   view?: InputMaybe<VisualizationViewType>;
 };
 
-
 export type QueryNetZeroPlanningArgs = {
   view?: InputMaybe<VisualizationViewType>;
 };
-
 
 export type QueryProjectByArgs = {
   field: Scalars['String']['input'];
   value: Scalars['String']['input'];
 };
-
 
 export type QueryProjectCarbonAssetAllocationArgs = {
   id: Scalars['String']['input'];

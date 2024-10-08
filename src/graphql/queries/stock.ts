@@ -1,16 +1,16 @@
-import { gql } from "@apollo/client";
+import { gql } from '@apollo/client';
 
 export const GET_STOCKS = gql`
-query GetStock($view: VisualizationViewType!, $pagination: Pagination) {
+  query GetStock($view: VisualizationViewType!, $pagination: Pagination) {
     getStock(view: $view, pagination: $pagination) {
       data {
         project {
-            id
-            name
-            metadata {
-                key
-                value
-            }
+          id
+          name
+          metadata {
+            key
+            value
+          }
         }
         vintage
         quantity
