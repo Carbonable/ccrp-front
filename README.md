@@ -1,18 +1,23 @@
 ## Description
+
 This is the front end of the CCRP for corporate website. It is built with Next.js and Tailwind CSS.
 
 ## Installation
+
 ```bash
 pnpm install
 ```
 
 ## Usage
+
 ```bash
 pnpm dev
 ```
 
 ## Environment Variables
+
 Create a `.env.local` file in the root directory of the project. Add the following environment variables:
+
 ```bash
 API_URL="http://backend.example.dev"
 DMRV_API="https://dmrv.example.dev"
@@ -32,15 +37,23 @@ NEXT_PUBLIC_ENABLED_MENU_ITEMS="Dashboard,Portfolio,Calculator,Impact,Baseline"
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
 ## Deployment
+
 On fly.io, the app is deployed using the following command:
+
 ```bash
 flyctl deploy
 ```
+
 On AWS, the app is deployed using the following command:
+
 ```bash
 
-``` 
-## License
-[APACHE 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 ```
 
+## License
+
+[APACHE 2.0](https://www.apache.org/licenses/LICENSE-2.0)
+
+```
+
+```

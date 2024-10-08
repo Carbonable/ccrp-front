@@ -1,6 +1,5 @@
 export default function CalculatorPage() {
-  const iframeUrl = 'https://prod-carbonable-calculator.fly.dev/calculator';
-
+  const iframeUrl = 'https://kalculator.fly.dev';
 
   return (
     <div>
