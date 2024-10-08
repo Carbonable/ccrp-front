@@ -1,0 +1,33 @@
+# fly.toml app configuration file generated for debug-ccrp-front on 2024-10-08T16:17:32+02:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = 'ccrp-front'
+primary_region = 'cdg'
+
+[build]
+  [build.args]
+    NEXT_PUBLIC_GRAPHQL_API_URL = ""
+    NEXT_PUBLIC_MAPBOX_KEY = ""
+    NEXT_PUBLIC_TRACKING_ACTIVATED = ""
+    NEXT_PUBLIC_SANITY_API_VERSION = ""
+    NEXT_PUBLIC_SANITY_DATASET = ""
+    NEXT_PUBLIC_SANITY_PROJECT_ID = ""
+    NEXT_PUBLIC_CLERK_SIGN_IN_URL = ""
+    NEXT_PUBLIC_CLERK_SIGN_UP_URL = ""
+    NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY = ""
+    NEXT_PUBLIC_ENABLED_MENU_ITEMS = ""
+
+[http_service]
+  internal_port = 3000
+  force_https = true
+  auto_stop_machines = 'stop'
+  auto_start_machines = true
+  min_machines_running = 0
+  processes = ['app']
+
+[[vm]]
+  memory = '1gb'
+  cpu_kind = 'shared'
+  cpus = 1

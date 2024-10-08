@@ -131,7 +131,7 @@ export default function ProjectDecarbonationComponent({
                 // @ts-ignore
                 <Cell
                   key={`cell-${index}`}
-                  radius={entry.ex_ante_count === 0 ? [10, 10, 0, 0] : undefined}
+                  radius={entry.ex_ante_count === 0 ? 10 : undefined}
                 />
               );
             })}

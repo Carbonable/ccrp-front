@@ -1,7 +1,7 @@
 'use client';
 
 import { getDmrvData } from '@/actions/dmrv/dmrv';
-import { Coordinates, Dmrv, Ndvi, Rgb } from '@/types/dmrv';
+import { Coordinates, Dmrv, Ndvi, Rgb, TrackingIndicator } from '@/types/dmrv';
 import { useEffect, useRef, useState } from 'react';
 import mapboxgl from 'mapbox-gl';
 import Title from '@/components/common/Title';
@@ -16,11 +16,6 @@ import MapSelect from '@/components/tracking/MapSelect';
 import TrackingSlider from '@/components/tracking/TrackingSlider';
 import TrackingModal from '@/components/tracking/TrackingModal';
 import moment from 'moment';
-
-export enum TrackingIndicator {
-  NDVI = 'ndvi',
-  RGB = 'rgb',
-}
 
 export default function TrackingPage({ params }: Readonly<{ params: { slug: string } }>) {
   mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_KEY || '';

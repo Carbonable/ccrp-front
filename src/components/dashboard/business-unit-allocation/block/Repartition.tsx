@@ -1,4 +1,5 @@
-import type { Allocation, BusinessUnit } from '~/graphql/__generated__/graphql';
+import { Allocation, BusinessUnit } from "@/graphql/__generated__/graphql";
+
 
 export default function Repartition({ block }: { block: BusinessUnit }) {
   if (!block.allocations || block.allocations.length === 0) {

@@ -1,5 +1,5 @@
 'use client';
-import { MenuLink } from '@/types/link';
+import { MenuLink } from '@/types/Link';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';

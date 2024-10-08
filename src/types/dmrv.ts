@@ -22,3 +22,8 @@ export interface Rgb {
   date: string;
   url: string;
 }
+
+export enum TrackingIndicator {
+  NDVI = 'ndvi',
+  RGB = 'rgb',
+}

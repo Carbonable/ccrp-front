@@ -26,6 +26,10 @@ export default function ProjectDecarbonationTableCumulative() {
     },
   });
 
+  console.log('data', data);
+  console.log('loading', loading);
+  console.log('error', error);
+
   const refetchData = () => {
     refetch({
       view: {

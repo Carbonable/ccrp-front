@@ -126,7 +126,7 @@ function TableLoaded({ financialAnalysis }: { financialAnalysis: FinancialAnalys
         return (
           <tr
             key={`projection_${idx}`}
-            className={`h-12 border-b border-neutral-600 bg-neutral-800 last:border-b-0 hover:brightness-110 ${parseInt(year) < new Date().getFullYear() ? 'text-neutral-50' : 'text-neutral-200'}`}
+            className={`h-12 border-b border-neutral-600 bg-neutral-800 last:border-b-0 hover:brightness-110 ${year < new Date().getFullYear() ? 'text-neutral-50' : 'text-neutral-200'}`}
           >
             <td className="sticky left-0 z-10 bg-neutral-800 px-4">{year}</td>
             <td className="px-4">{avg_purchased_price}</td>
