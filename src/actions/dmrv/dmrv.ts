@@ -10,7 +10,7 @@ export async function getDmrvData(slug: string) {
   const response = await fetch(`${DMRV_API}/${slug}`, {
     method: 'GET',
     headers: { 'Content-Type': 'application/json' },
-  })
+  });
 
   if (!response.ok) {
     return null;

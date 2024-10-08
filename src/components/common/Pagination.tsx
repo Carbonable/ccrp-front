@@ -1,4 +1,4 @@
-import { Pagination } from "@nextui-org/react";
+import { Pagination } from '@nextui-org/react';
 
 interface PaginationComponentProps {
   initialPage: number;
@@ -6,7 +6,11 @@ interface PaginationComponentProps {
   handlePageClick: (page: number) => void;
 }
 
-export default function PaginationComponent({ initialPage, totalPages, handlePageClick }: PaginationComponentProps) {
+export default function PaginationComponent({
+  initialPage,
+  totalPages,
+  handlePageClick,
+}: PaginationComponentProps) {
   return (
     <Pagination
       isCompact
@@ -15,10 +19,10 @@ export default function PaginationComponent({ initialPage, totalPages, handlePag
       total={totalPages}
       onChange={handlePageClick}
       classNames={{
-          wrapper: "bg-opacityLight-5 border border-neutral-600",
-          item: "text-neutral-100 hover:!bg-neutral-600",
-          cursor: "rounded-lg",
+        wrapper: 'bg-opacityLight-5 border border-neutral-600',
+        item: 'text-neutral-100 hover:!bg-neutral-600',
+        cursor: 'rounded-lg',
       }}
     />
-  )
+  );
 }

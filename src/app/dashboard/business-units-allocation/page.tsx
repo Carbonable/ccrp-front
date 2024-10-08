@@ -1,6 +1,5 @@
-import Banner from "@/components/dashboard/business-unit-allocation/Banner";
-import DecarbonizationMap from "@/components/dashboard/business-unit-allocation/DecarbonizationMap";
-
+import Banner from '@/components/dashboard/business-unit-allocation/Banner';
+import DecarbonizationMap from '@/components/dashboard/business-unit-allocation/DecarbonizationMap';
 
 export default function BusinessUnitsAllocationPage() {
   return (
@@ -12,5 +11,5 @@ export default function BusinessUnitsAllocationPage() {
         <DecarbonizationMap />
       </div>
     </div>
-  )
+  );
 }

@@ -1,24 +1,25 @@
-export default function Title({ title, isBeta }: { title: string, isBeta?: boolean }) {
-    return (
-        <div className="text-neutral-100 text-xl font-bold pb-2 border-b border-neutral-500 mt-12 mb-8 flex items-center">
-            {title}
-            {isBeta && <span className="px-3 py-1 ml-3 bg-beta-button text-xs rounded-md font-light">Beta version</span>}
-        </div>
-    )
+export default function Title({ title, isBeta }: { title: string; isBeta?: boolean }) {
+  return (
+    <div className="mb-8 mt-12 flex items-center border-b border-neutral-500 pb-2 text-xl font-bold text-neutral-100">
+      {title}
+      {isBeta && (
+        <span className="ml-3 rounded-md bg-beta-button px-3 py-1 text-xs font-light">
+          Beta version
+        </span>
+      )}
+    </div>
+  );
 }
 
-export function SmallTitle({ title }: { title: string }) {   
-    return (
-        <div className="text-neutral-300 text-sm text-center w-full">{title}</div>
-    )
+export function SmallTitle({ title }: { title: string }) {
+  return <div className="w-full text-center text-sm text-neutral-300">{title}</div>;
 }
 
-export function ImpactTitle({title, value}: {title: string, value: string}) {
-    return (
-        <>
-            <div className="text-neutral-300 text-sm">{title}</div>
-            <div className="text-neutral-50 text-xl font-bold mt-3">{value}</div>
-        </>
-    )
+export function ImpactTitle({ title, value }: { title: string; value: string }) {
+  return (
+    <>
+      <div className="text-sm text-neutral-300">{title}</div>
+      <div className="mt-3 text-xl font-bold text-neutral-50">{value}</div>
+    </>
+  );
 }
-    

@@ -1,14 +1,13 @@
 'use client';
-import { ErrorReloadTable, NoDataTable } from "@/components/common/ErrorReload";
-import PaginationComponent from "@/components/common/Pagination";
-import Title from "@/components/common/Title";
-import TableLoading from "@/components/table/TableLoading";
-import { FinancialAnalysisData, PageInfo } from "@/graphql/__generated__/graphql";
-import { FINANCIAL_ANALYSIS } from "@/graphql/queries/net-zero";
-import { RESULT_PER_PAGE } from "@/utils/constant";
-import { useQuery } from "@apollo/client";
-import { useEffect, useState } from "react";
-
+import { ErrorReloadTable, NoDataTable } from '@/components/common/ErrorReload';
+import PaginationComponent from '@/components/common/Pagination';
+import Title from '@/components/common/Title';
+import TableLoading from '@/components/table/TableLoading';
+import { FinancialAnalysisData, PageInfo } from '@/graphql/__generated__/graphql';
+import { FINANCIAL_ANALYSIS } from '@/graphql/queries/net-zero';
+import { RESULT_PER_PAGE } from '@/utils/constant';
+import { useQuery } from '@apollo/client';
+import { useEffect, useState } from 'react';
 
 export default function FinancialAnalysisTable({ businessUnitId }: { businessUnitId: string }) {
   const [currentPage, setCurrentPage] = useState(1);
@@ -16,33 +15,33 @@ export default function FinancialAnalysisTable({ businessUnitId }: { businessUni
   const { loading, error, data, refetch } = useQuery(FINANCIAL_ANALYSIS, {
     variables: {
       view: {
-        business_unit_id: businessUnitId
+        business_unit_id: businessUnitId,
       },
       pagination: {
         page: currentPage,
-        count: RESULT_PER_PAGE
-      }
-    }
+        count: RESULT_PER_PAGE,
+      },
+    },
   });
 
   const refetchData = () => {
     refetch({
       view: {
-        business_unit_id: businessUnitId
+        business_unit_id: businessUnitId,
       },
       pagination: {
         page: currentPage,
-        count: RESULT_PER_PAGE
-      }
+        count: RESULT_PER_PAGE,
+      },
     });
-  }
+  };
 
   const financialAnalysis: FinancialAnalysisData[] = data?.financialAnalysis.data;
   const pagination: PageInfo = data?.financialAnalysis.page_info;
 
   useEffect(() => {
     if (!pagination || pagination.total_page === 0) {
-        return;
+      return;
     }
 
     setTotalPages(pagination.total_page);
@@ -50,8 +49,8 @@ export default function FinancialAnalysisTable({ businessUnitId }: { businessUni
 
   const handlePageClick = (data: number) => {
     setCurrentPage(data);
-  }
-  
+  };
+
   useEffect(() => {
     refetchData();
   }, [currentPage]);
@@ -59,11 +58,11 @@ export default function FinancialAnalysisTable({ businessUnitId }: { businessUni
   return (
     <div className="mt-12 w-full">
       <Title title="Financial analysis" />
-      <div className="mt-4 w-full font-inter text-sm overflow-x-auto border border-neutral-600">
-        <table className="table-auto text-left min-w-full">
-          <thead className="bg-neutral-500 text-neutral-100 whitespace-nowrap h-10">
+      <div className="font-inter mt-4 w-full overflow-x-auto border border-neutral-600 text-sm">
+        <table className="min-w-full table-auto text-left">
+          <thead className="h-10 whitespace-nowrap bg-neutral-500 text-neutral-100">
             <tr>
-              <th className="px-4 sticky left-0 z-10 bg-neutral-500">Time Period</th>
+              <th className="sticky left-0 z-10 bg-neutral-500 px-4">Time Period</th>
               <th className="px-4">Average Purchased price ($/t)</th>
               <th className="px-4">Average Issued price ($/t)</th>
               <th className="px-4">Average price ($/t)</th>
@@ -81,7 +80,7 @@ export default function FinancialAnalysisTable({ businessUnitId }: { businessUni
           <tbody>
             {loading && <TableLoading resultsPerPage={RESULT_PER_PAGE} numberOfColumns={11} />}
             {!loading && !error && <TableLoaded financialAnalysis={financialAnalysis} />}
-            {error && <ErrorReloadTable refetchData={refetchData} /> }
+            {error && <ErrorReloadTable refetchData={refetchData} />}
           </tbody>
         </table>
       </div>
@@ -96,15 +95,15 @@ export default function FinancialAnalysisTable({ businessUnitId }: { businessUni
   );
 }
 
-function TableLoaded({financialAnalysis}: {financialAnalysis: FinancialAnalysisData[]}) {
+function TableLoaded({ financialAnalysis }: { financialAnalysis: FinancialAnalysisData[] }) {
   if (financialAnalysis.length === 0) {
-    return <NoDataTable />
+    return <NoDataTable />;
   }
 
   return (
     <>
       {financialAnalysis.map((data: FinancialAnalysisData, idx: number) => {
-        const { 
+        const {
           year,
           all_time_avg_issued_price,
           all_time_avg_purchased_price,
@@ -117,7 +116,7 @@ function TableLoaded({financialAnalysis}: {financialAnalysis: FinancialAnalysisD
           emission_debt,
           total_amount,
           total_issued_amount,
-          total_purchased_amount
+          total_purchased_amount,
         } = data;
 
         if (!year) {
@@ -125,8 +124,11 @@ function TableLoaded({financialAnalysis}: {financialAnalysis: FinancialAnalysisD
         }
 
         return (
-          <tr key={`projection_${idx}`} className={`border-b border-neutral-600 bg-neutral-800 h-12 last:border-b-0 hover:brightness-110 ${parseInt(year) < new Date().getFullYear() ? "text-neutral-50" : "text-neutral-200"}`}>
-            <td className="px-4 sticky left-0 z-10 bg-neutral-800">{year}</td>
+          <tr
+            key={`projection_${idx}`}
+            className={`h-12 border-b border-neutral-600 bg-neutral-800 last:border-b-0 hover:brightness-110 ${parseInt(year) < new Date().getFullYear() ? 'text-neutral-50' : 'text-neutral-200'}`}
+          >
+            <td className="sticky left-0 z-10 bg-neutral-800 px-4">{year}</td>
             <td className="px-4">{avg_purchased_price}</td>
             <td className="px-4">{avg_issued_price}</td>
             <td className="px-4">{avg_price}</td>
@@ -140,8 +142,8 @@ function TableLoaded({financialAnalysis}: {financialAnalysis: FinancialAnalysisD
             <td className="px-4">{emission_debt}</td>
             <td className="px-4">{cumulative_emission_debt}</td>
           </tr>
-        )
+        );
       })}
     </>
-  )
+  );
 }

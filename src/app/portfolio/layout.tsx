@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import PortfolioNavigationTabs from "@/components/portfolio/Navigation";
+import PortfolioNavigationTabs from '@/components/portfolio/Navigation';
 
 export default function Layout({
   children,

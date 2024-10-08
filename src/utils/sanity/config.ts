@@ -5,8 +5,8 @@ export const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID!;
 export const apiVersion = process.env.NEXT_PUBLIC_SANITY_API_VERSION || '2024-07-11';
 
 export const config = {
-	apiVersion: apiVersion,
-	dataset: dataset,
-	projectId: projectId,
-	useCdn: true,
+  apiVersion: apiVersion,
+  dataset: dataset,
+  projectId: projectId,
+  useCdn: true,
 };

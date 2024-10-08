@@ -1,4 +1,4 @@
-import { gql } from "@apollo/client";
+import { gql } from '@apollo/client';
 
 export const BUSINESS_UNITS = gql`
   query BusinessUnits {

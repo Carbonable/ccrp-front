@@ -1,8 +1,8 @@
-"use client";
-import { CREATE_ALLOCATION } from "@/graphql/queries/allocation";
-import { useMutation } from "@apollo/client";
-import { useEffect } from "react";
-import { GreenButton } from "../common/Button";
+'use client';
+import { CREATE_ALLOCATION } from '@/graphql/queries/allocation';
+import { useMutation } from '@apollo/client';
+import { useEffect } from 'react';
+import { GreenButton } from '../common/Button';
 
 interface AllocateButtonProps {
   businessUnitId: string | undefined | any;
@@ -32,14 +32,14 @@ export default function AllocateButton({
             percentage: parseInt(amount.toString()),
           },
         },
-        refetchQueries: "active",
+        refetchQueries: 'active',
       });
 
       // Handle the result as needed
-      console.log("Mutation result:", result);
+      console.log('Mutation result:', result);
     } catch (error) {
       // Handle any errors
-      console.error("Mutation error:", error);
+      console.error('Mutation error:', error);
     }
   };
 
@@ -73,11 +73,7 @@ export default function AllocateButton({
 
   return (
     <GreenButton
-      className={`w-fit ${
-        hasError || !businessUnitId || !projectId
-          ? "cursor-not-allowed bg-greenish-500/50 text-neutral-300 hover:bg-greenish-500/50"
-          : ""
-      }`}
+      className={`w-fit ${hasError || !businessUnitId || !projectId ? 'cursor-not-allowed bg-greenish-500/50 text-neutral-300 hover:bg-greenish-500/50' : ''}`}
       onClick={handleAction}
     >
       Allocate

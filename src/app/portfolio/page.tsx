@@ -1,5 +1,5 @@
-import Banner from "@/components/portfolio/overview/Banner";
-import ProjectsList from "@/components/portfolio/overview/ProjectsList";
+import Banner from '@/components/portfolio/overview/Banner';
+import ProjectsList from '@/components/portfolio/overview/ProjectsList';
 
 export default function Portfolio() {
   return (
@@ -11,5 +11,5 @@ export default function Portfolio() {
         <ProjectsList />
       </div>
     </>
-  )
+  );
 }

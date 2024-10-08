@@ -1,7 +1,7 @@
-import FinancialAnalysisTable from "./decarbonation/FinancialAnalysisTable";
-import ProjectDecarbonation from "./decarbonation/ProjectDecarbonation";
-import ProjectDecarbonationTable from "./decarbonation/ProjectDecarbonationTable";
-import ProjectDecarbonationTableCumulative from "./decarbonation/ProjectDecarbonationTableCumulative";
+import FinancialAnalysisTable from './decarbonation/FinancialAnalysisTable';
+import ProjectDecarbonation from './decarbonation/ProjectDecarbonation';
+import ProjectDecarbonationTable from './decarbonation/ProjectDecarbonationTable';
+import ProjectDecarbonationTableCumulative from './decarbonation/ProjectDecarbonationTableCumulative';
 
 export default function DecarbonationOverview({ businessUnitId }: { businessUnitId: string }) {
   return (
@@ -11,5 +11,5 @@ export default function DecarbonationOverview({ businessUnitId }: { businessUnit
       <ProjectDecarbonationTableCumulative businessUnitId={businessUnitId} />
       <FinancialAnalysisTable businessUnitId={businessUnitId} />
     </>
-  )
+  );
 }

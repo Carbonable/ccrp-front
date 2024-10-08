@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import type { ReactNode } from 'react';
 
 interface BannerKPIProps {
   title: string;
@@ -7,25 +7,19 @@ interface BannerKPIProps {
   error?: any;
 }
 
-export default function BannerKPI({title, value, loading, error}: BannerKPIProps) {
-  if (loading) return (
-    <BannerKPIWrapper title={title}></BannerKPIWrapper>
-  )
+export default function BannerKPI({ title, value, loading, error }: BannerKPIProps) {
+  if (loading) return <BannerKPIWrapper title={title}></BannerKPIWrapper>;
 
-  if (error) return (
-    <BannerKPIWrapper title={title}>n/a</BannerKPIWrapper>
-  )
+  if (error) return <BannerKPIWrapper title={title}>n/a</BannerKPIWrapper>;
 
-  return (
-    <BannerKPIWrapper title={title}>{value}</BannerKPIWrapper>
-  )
+  return <BannerKPIWrapper title={title}>{value}</BannerKPIWrapper>;
 }
 
-function BannerKPIWrapper({title, children}: {title: string, children?: ReactNode}) {
+function BannerKPIWrapper({ title, children }: { title: string; children?: ReactNode }) {
   return (
-    <div className="flex flex-col items-start justify-start text-neutral-100 font-trash">
-      <h1 className="font-bold uppercase text-xs md:text-sm lg:text-lg">{title}</h1>
-      <div className="text-2xl mt-3 lg:text-4xl">{children}</div>
+    <div className="font-trash flex flex-col items-start justify-start text-neutral-100">
+      <h1 className="text-xs font-bold uppercase md:text-sm lg:text-lg">{title}</h1>
+      <div className="mt-3 text-2xl lg:text-4xl">{children}</div>
     </div>
-  )
+  );
 }

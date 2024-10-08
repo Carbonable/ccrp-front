@@ -1,5 +1,5 @@
-import { ProjectGlobalData } from "@/graphql/__generated__/graphql";
-import { KPI } from "../KPI";
+import { ProjectGlobalData } from '@/graphql/__generated__/graphql';
+import { KPI } from '../KPI';
 
 export default function ProjectInfo({
   name,
@@ -8,13 +8,12 @@ export default function ProjectInfo({
   name: string | any;
   data: ProjectGlobalData | any;
 }) {
-  console.log(`Data: ${JSON.stringify(data)}`);
   if (data === undefined) {
     return (
-      <div className="relative rounded-lg w-full bg-project-header-border p-[1px]">
-        <div className="relative rounded-lg bg-project-header p-6 w-full overflow-hidden">
-          <div className="text-xl uppercase font-bold">{name}</div>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-x-2 gap-y-6 mt-8">
+      <div className="relative w-full rounded-lg bg-project-header-border p-[1px]">
+        <div className="relative w-full overflow-hidden rounded-lg bg-project-header p-6">
+          <div className="text-xl font-bold uppercase">{name}</div>
+          <div className="mt-8 grid grid-cols-2 gap-x-2 gap-y-6 md:grid-cols-3">
             <KPI title="$ Amount" kpi={`TBD`} />
             <KPI title="Source" kpi={`TBD`} />
             <KPI title="Rating" kpi={`TBD`} />
@@ -28,10 +27,10 @@ export default function ProjectInfo({
   }
 
   return (
-    <div className="relative rounded-lg w-full bg-project-header-border p-[1px]">
-      <div className="relative rounded-lg bg-project-header p-6 w-full overflow-hidden">
-        <div className="text-xl uppercase font-bold">{name}</div>
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-x-2 gap-y-6 mt-8">
+    <div className="relative w-full rounded-lg bg-project-header-border p-[1px]">
+      <div className="relative w-full overflow-hidden rounded-lg bg-project-header p-6">
+        <div className="text-xl font-bold uppercase">{name}</div>
+        <div className="mt-8 grid grid-cols-2 gap-x-2 gap-y-6 md:grid-cols-3">
           <KPI title="$ Amount" kpi={data.amount} />
           <KPI title="Source" kpi={data.source} />
           <KPI title="Rating" kpi={data.rating} />
