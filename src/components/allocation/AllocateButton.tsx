@@ -7,7 +7,7 @@ import { GreenButton } from '../common/Button';
 interface AllocateButtonProps {
   businessUnitId: string | undefined | any;
   projectId: string | undefined;
-  amount: number;
+  amount: number | undefined;
   onClose: (b: boolean) => void;
   hasError: boolean;
 }
@@ -23,6 +23,9 @@ export default function AllocateButton({
 
   const handleAction = async () => {
     try {
+      if (amount === undefined || amount <= 0 || !businessUnitId || !projectId) {
+        return;
+      }
       // Execute the mutation function with the input variable
       const result = await createAllocation({
         variables: {
@@ -60,7 +63,7 @@ export default function AllocateButton({
     );
   }
 
-  if (hasError || amount <= 0 || !businessUnitId || !projectId) {
+  if (hasError || amount === undefined || amount <= 0 || !businessUnitId || !projectId) {
     return (
       <GreenButton
         className="w-fit cursor-not-allowed bg-greenish-500/50 text-neutral-300 hover:bg-greenish-500/50"

@@ -28,7 +28,7 @@ export default function BUAllocationButton({ businessUnitId }: { businessUnitId:
     available_units: number;
   }>();
 
-  const [amountPerc, setAmountPerc] = useState(0);
+  const [amountPerc, setAmountPerc] = useState<string>('');
   const [hasError, setHasError] = useState(false);
 
   const { loading, error, data } = useQuery(BUSINESS_UNITS_DETAILS, {
@@ -44,22 +44,23 @@ export default function BUAllocationButton({ businessUnitId }: { businessUnitId:
 
     const isValidInteger = /^[0-9]*$/.test(value);
 
-    if (!isValidInteger) {
+    if (!isValidInteger || value === '') {
       setHasError(true);
+      setAmountPerc('');
       return;
     }
 
     const parsedValue = parseInt(value, 10);
 
     if (parsedValue > 100) {
-      setAmountPerc(100);
+      setAmountPerc('100');
       return;
     } else if (parsedValue < 0) {
-      setAmountPerc(0);
+      setAmountPerc('0');
       return;
     }
 
-    setAmountPerc(parsedValue);
+    setAmountPerc(parsedValue.toString());
     setHasError(false);
   };
   if (loading) {
@@ -173,7 +174,7 @@ export default function BUAllocationButton({ businessUnitId }: { businessUnitId:
                         <div className="ml-4">
                           To allocate
                           <span className="ml-1 font-bold text-neutral-50">
-                            {(amountPerc * availableObject?.available_units!) / 100} Units
+                            {(amountPerc !== '' ? parseInt(amountPerc) * availableObject?.available_units! : 0) / 100} Units
                           </span>
                         </div>
                       </div>
@@ -188,7 +189,7 @@ export default function BUAllocationButton({ businessUnitId }: { businessUnitId:
               <ModalFooter>
                 <div className="my-8 w-full text-right">
                   <AllocateButton
-                    amount={amountPerc}
+                    amount={parseInt(amountPerc)}
                     businessUnitId={businessUnitId}
                     projectId={selectedProject?.id}
                     hasError={hasError}
