@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import ProjectAllocationTable from '@/components/project/carbon-management/ProjectAllocationTable';
 import ProjectDecarbonation from '@/components/project/carbon-management/ProjectDecarbonation';

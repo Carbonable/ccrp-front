@@ -1,6 +1,5 @@
 export default function CalculatorPage() {
-  const iframeUrl = "https://kalculator.fly.dev";
-
+  const iframeUrl = 'https://kalculator.fly.dev';
 
   return (
     <div>

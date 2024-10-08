@@ -7,18 +7,22 @@ export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
-export type MakeEmpty<T extends { [key: string]: unknown }, K extends keyof T> = { [_ in K]?: never };
-export type Incremental<T> = T | { [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never };
+export type MakeEmpty<T extends { [key: string]: unknown }, K extends keyof T> = {
+  [_ in K]?: never;
+};
+export type Incremental<T> =
+  | T
+  | { [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never };
 const defaultOptions = {} as const;
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
-  ID: { input: string; output: string; }
-  String: { input: string; output: string; }
-  Boolean: { input: boolean; output: boolean; }
-  Int: { input: number; output: number; }
-  Float: { input: number; output: number; }
+  ID: { input: string; output: string };
+  String: { input: string; output: string };
+  Boolean: { input: boolean; output: boolean };
+  Int: { input: number; output: number };
+  Float: { input: number; output: number };
   /** The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf). */
-  JSON: { input: any; output: any; }
+  JSON: { input: any; output: any };
 };
 
 export type AddAllocationRequestItem = {
@@ -119,7 +123,7 @@ export type CarbonCredit = {
 
 export enum CarbonCreditOrigin {
   DirectPurchase = 'DIRECT_PURCHASE',
-  ForwardFinance = 'FORWARD_FINANCE'
+  ForwardFinance = 'FORWARD_FINANCE',
 }
 
 export enum CarbonCreditType {
@@ -128,7 +132,7 @@ export enum CarbonCreditType {
   Dac = 'DAC',
   Reforestation = 'REFORESTATION',
   Restoration = 'RESTORATION',
-  SolarPanel = 'SOLAR_PANEL'
+  SolarPanel = 'SOLAR_PANEL',
 }
 
 export type Certifier = {
@@ -300,21 +304,17 @@ export type Mutation = {
   createForecastedTargets?: Maybe<DomainResponse>;
 };
 
-
 export type MutationAddAllocationsArgs = {
   request: Array<InputMaybe<AddAllocationRequestItem>>;
 };
-
 
 export type MutationCreateBusinessUnitArgs = {
   request: CreateBusinessUnitRequest;
 };
 
-
 export type MutationCreateForecastedEmissionsArgs = {
   request: CreateForecastedEmissionsRequest;
 };
-
 
 export type MutationCreateForecastedTargetsArgs = {
   request: CreateForecastedTargetsRequest;
@@ -334,7 +334,7 @@ export type NetZeroPlanning = {
 
 export enum OffsetType {
   ExAnte = 'EX_ANTE',
-  ExPost = 'EX_POST'
+  ExPost = 'EX_POST',
 }
 
 export type PageInfo = {
@@ -433,7 +433,7 @@ export type ProjectMetrics = {
 
 export enum ProjectType {
   Arr = 'ARR',
-  ReddPlus = 'REDD_PLUS'
+  ReddPlus = 'REDD_PLUS',
 }
 
 export type ProjectTypeRepartition = {
@@ -465,7 +465,7 @@ export type ProjectedDecarbonationGraph = {
 export enum ProjectedDecarbonationViewType {
   InvestmentType = 'INVESTMENT_TYPE',
   OffsetType = 'OFFSET_TYPE',
-  ProjectType = 'PROJECT_TYPE'
+  ProjectType = 'PROJECT_TYPE',
 }
 
 export type ProjectedDecarbonationWithPagination = {
@@ -505,102 +505,84 @@ export type Query = {
   projects?: Maybe<Array<Maybe<Project>>>;
 };
 
-
 export type QueryAnnualArgs = {
   pagination?: InputMaybe<Pagination>;
   view: VisualizationViewType;
 };
-
 
 export type QueryAvailableToAllocateArgs = {
   business_unit_id: Scalars['String']['input'];
   project_id: Scalars['String']['input'];
 };
 
-
 export type QueryBusinessUnitCarbonAssetAllocationArgs = {
   id: Scalars['String']['input'];
   pagination?: InputMaybe<Pagination>;
 };
 
-
 export type QueryBusinessUnitDetailsArgs = {
   id: Scalars['String']['input'];
 };
-
 
 export type QueryBusinessUnitsByArgs = {
   field: Scalars['String']['input'];
   value: Scalars['String']['input'];
 };
 
-
 export type QueryCertifierByArgs = {
   field: Scalars['String']['input'];
   value: Scalars['String']['input'];
 };
-
 
 export type QueryCompanyCarbonAssetAllocationArgs = {
   id: Scalars['String']['input'];
   pagination?: InputMaybe<Pagination>;
 };
 
-
 export type QueryCountryByArgs = {
   field: Scalars['String']['input'];
   value: Scalars['String']['input'];
 };
-
 
 export type QueryCumulativeArgs = {
   pagination?: InputMaybe<Pagination>;
   view: VisualizationViewType;
 };
 
-
 export type QueryFinancialAnalysisArgs = {
   pagination?: InputMaybe<Pagination>;
   view: VisualizationViewType;
 };
 
-
 export type QueryGetGlobalDataArgs = {
   view?: InputMaybe<VisualizationViewType>;
 };
-
 
 export type QueryGetImpactMetricsArgs = {
   view?: InputMaybe<VisualizationViewType>;
 };
 
-
 export type QueryGetProjectFundingAllocationArgs = {
   view?: InputMaybe<VisualizationViewType>;
 };
 
-
 export type QueryGetProjectMetricsArgs = {
   view?: InputMaybe<VisualizationViewType>;
 };
-
 
 export type QueryGetStockArgs = {
   pagination?: InputMaybe<Pagination>;
   view?: InputMaybe<VisualizationViewType>;
 };
 
-
 export type QueryNetZeroPlanningArgs = {
   view?: InputMaybe<VisualizationViewType>;
 };
-
 
 export type QueryProjectByArgs = {
   field: Scalars['String']['input'];
   value: Scalars['String']['input'];
 };
-
 
 export type QueryProjectCarbonAssetAllocationArgs = {
   id: Scalars['String']['input'];
@@ -663,160 +645,1759 @@ export type CompanyCarbonAssetAllocationQueryVariables = Exact<{
   pagination?: InputMaybe<Pagination>;
 }>;
 
-
-export type CompanyCarbonAssetAllocationQuery = { __typename?: 'Query', companyCarbonAssetAllocation?: { __typename?: 'CompanyCarbonAssetAllocation', data: Array<{ __typename?: 'CompanyCarbonAssetAllocationData', project_name?: string | null, type?: string | null, total_potential?: number | null, ex_post_to_date?: number | null, ex_ante_to_date?: number | null, project_completion?: string | null, total_allocated_to_date?: number | null, total_available_to_date?: number | null, allocation_rate?: string | null, price?: number | null, total_amount?: number | null, business_units?: Array<{ __typename?: 'AssetAllocationItem', id: string, name: string } | null> | null } | null>, page_info?: { __typename?: 'PageInfo', has_next_page: boolean, has_previous_page: boolean, total_page: number } | null } | null };
+export type CompanyCarbonAssetAllocationQuery = {
+  __typename?: 'Query';
+  companyCarbonAssetAllocation?: {
+    __typename?: 'CompanyCarbonAssetAllocation';
+    data: Array<{
+      __typename?: 'CompanyCarbonAssetAllocationData';
+      project_name?: string | null;
+      type?: string | null;
+      total_potential?: number | null;
+      ex_post_to_date?: number | null;
+      ex_ante_to_date?: number | null;
+      project_completion?: string | null;
+      total_allocated_to_date?: number | null;
+      total_available_to_date?: number | null;
+      allocation_rate?: string | null;
+      price?: number | null;
+      total_amount?: number | null;
+      business_units?: Array<{
+        __typename?: 'AssetAllocationItem';
+        id: string;
+        name: string;
+      } | null> | null;
+    } | null>;
+    page_info?: {
+      __typename?: 'PageInfo';
+      has_next_page: boolean;
+      has_previous_page: boolean;
+      total_page: number;
+    } | null;
+  } | null;
+};
 
 export type ProjectCarbonAssetAllocationQueryVariables = Exact<{
   id: Scalars['String']['input'];
   pagination?: InputMaybe<Pagination>;
 }>;
 
-
-export type ProjectCarbonAssetAllocationQuery = { __typename?: 'Query', projectCarbonAssetAllocation?: { __typename?: 'ProjectCarbonAssetAllocation', data: Array<{ __typename?: 'ProjectCarbonAssetAllocationData', allocated?: number | null, allocation_amount?: number | null, target?: number | null, actual?: number | null, start_date?: string | null, business_unit: { __typename?: 'AssetAllocationItem', id: string, name: string } } | null>, page_info?: { __typename?: 'PageInfo', has_next_page: boolean, has_previous_page: boolean, total_page: number } | null } | null };
+export type ProjectCarbonAssetAllocationQuery = {
+  __typename?: 'Query';
+  projectCarbonAssetAllocation?: {
+    __typename?: 'ProjectCarbonAssetAllocation';
+    data: Array<{
+      __typename?: 'ProjectCarbonAssetAllocationData';
+      allocated?: number | null;
+      allocation_amount?: number | null;
+      target?: number | null;
+      actual?: number | null;
+      start_date?: string | null;
+      business_unit: { __typename?: 'AssetAllocationItem'; id: string; name: string };
+    } | null>;
+    page_info?: {
+      __typename?: 'PageInfo';
+      has_next_page: boolean;
+      has_previous_page: boolean;
+      total_page: number;
+    } | null;
+  } | null;
+};
 
 export type BusinessUnitCarbonAssetAllocationQueryVariables = Exact<{
   id: Scalars['String']['input'];
   pagination?: InputMaybe<Pagination>;
 }>;
 
-
-export type BusinessUnitCarbonAssetAllocationQuery = { __typename?: 'Query', businessUnitCarbonAssetAllocation?: { __typename?: 'BusinessUnitCarbonAssetAllocation', data: Array<{ __typename?: 'BusinessUnitCarbonAssetAllocationData', total_cu?: number | null, allocated?: number | null, generated?: number | null, forward?: number | null, retired?: number | null, project: { __typename?: 'AssetAllocationItem', id: string, name: string } } | null>, page_info?: { __typename?: 'PageInfo', has_next_page: boolean, has_previous_page: boolean, total_page: number } | null } | null };
+export type BusinessUnitCarbonAssetAllocationQuery = {
+  __typename?: 'Query';
+  businessUnitCarbonAssetAllocation?: {
+    __typename?: 'BusinessUnitCarbonAssetAllocation';
+    data: Array<{
+      __typename?: 'BusinessUnitCarbonAssetAllocationData';
+      total_cu?: number | null;
+      allocated?: number | null;
+      generated?: number | null;
+      forward?: number | null;
+      retired?: number | null;
+      project: { __typename?: 'AssetAllocationItem'; id: string; name: string };
+    } | null>;
+    page_info?: {
+      __typename?: 'PageInfo';
+      has_next_page: boolean;
+      has_previous_page: boolean;
+      total_page: number;
+    } | null;
+  } | null;
+};
 
 export type AddAllocationsMutationVariables = Exact<{
   request: Array<InputMaybe<AddAllocationRequestItem>> | InputMaybe<AddAllocationRequestItem>;
 }>;
 
-
-export type AddAllocationsMutation = { __typename?: 'Mutation', addAllocations?: { __typename?: 'AddAllocationResponse', allocationIds: Array<string | null>, errors: Array<string | null> } | null };
+export type AddAllocationsMutation = {
+  __typename?: 'Mutation';
+  addAllocations?: {
+    __typename?: 'AddAllocationResponse';
+    allocationIds: Array<string | null>;
+    errors: Array<string | null>;
+  } | null;
+};
 
 export type AvailableToAllocateQueryVariables = Exact<{
   project_id: Scalars['String']['input'];
   business_unit_id: Scalars['String']['input'];
 }>;
 
+export type AvailableToAllocateQuery = {
+  __typename?: 'Query';
+  availableToAllocate?: {
+    __typename?: 'AllocationAvailability';
+    available_percent?: number | null;
+    available_units?: number | null;
+  } | null;
+};
 
-export type AvailableToAllocateQuery = { __typename?: 'Query', availableToAllocate?: { __typename?: 'AllocationAvailability', available_percent?: number | null, available_units?: number | null } | null };
+export type BusinessUnitsQueryVariables = Exact<{ [key: string]: never }>;
 
-export type BusinessUnitsQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type BusinessUnitsQuery = { __typename?: 'Query', businessUnits?: Array<{ __typename?: 'BusinessUnit', id?: string | null, name?: string | null, description?: string | null, default_emission?: string | null, default_target?: number | null, actual_rate?: string | null, yearly_emissions?: string | null, yearly_contributions?: string | null, metadata?: Array<{ __typename?: 'Metadata', key?: string | null, value?: string | null } | null> | null, allocations?: Array<{ __typename?: 'Allocation', project?: string | null, amount?: number | null } | null> | null } | null> | null };
+export type BusinessUnitsQuery = {
+  __typename?: 'Query';
+  businessUnits?: Array<{
+    __typename?: 'BusinessUnit';
+    id?: string | null;
+    name?: string | null;
+    description?: string | null;
+    default_emission?: string | null;
+    default_target?: number | null;
+    actual_rate?: string | null;
+    yearly_emissions?: string | null;
+    yearly_contributions?: string | null;
+    metadata?: Array<{
+      __typename?: 'Metadata';
+      key?: string | null;
+      value?: string | null;
+    } | null> | null;
+    allocations?: Array<{
+      __typename?: 'Allocation';
+      project?: string | null;
+      amount?: number | null;
+    } | null> | null;
+  } | null> | null;
+};
 
 export type BusinessUnitDetailsQueryVariables = Exact<{
   id: Scalars['String']['input'];
 }>;
 
-
-export type BusinessUnitDetailsQuery = { __typename?: 'Query', businessUnitDetails?: { __typename?: 'BusinessUnit', id?: string | null, name?: string | null, description?: string | null, default_emission?: string | null, default_target?: number | null, yearly_emissions?: string | null, yearly_contributions?: string | null, metadata?: Array<{ __typename?: 'Metadata', key?: string | null, value?: string | null } | null> | null, allocations?: Array<{ __typename?: 'Allocation', project?: string | null, amount?: number | null } | null> | null } | null };
+export type BusinessUnitDetailsQuery = {
+  __typename?: 'Query';
+  businessUnitDetails?: {
+    __typename?: 'BusinessUnit';
+    id?: string | null;
+    name?: string | null;
+    description?: string | null;
+    default_emission?: string | null;
+    default_target?: number | null;
+    yearly_emissions?: string | null;
+    yearly_contributions?: string | null;
+    metadata?: Array<{
+      __typename?: 'Metadata';
+      key?: string | null;
+      value?: string | null;
+    } | null> | null;
+    allocations?: Array<{
+      __typename?: 'Allocation';
+      project?: string | null;
+      amount?: number | null;
+    } | null> | null;
+  } | null;
+};
 
 export type CreateBusinessUnitMutationVariables = Exact<{
   request: CreateBusinessUnitRequest;
 }>;
 
-
-export type CreateBusinessUnitMutation = { __typename?: 'Mutation', createBusinessUnit?: { __typename?: 'DomainResponse', id: string, errors?: Array<string | null> | null } | null };
+export type CreateBusinessUnitMutation = {
+  __typename?: 'Mutation';
+  createBusinessUnit?: {
+    __typename?: 'DomainResponse';
+    id: string;
+    errors?: Array<string | null> | null;
+  } | null;
+};
 
 export type GetImpactMetricsQueryVariables = Exact<{
   view: VisualizationViewType;
 }>;
 
-
-export type GetImpactMetricsQuery = { __typename?: 'Query', getImpactMetrics: { __typename?: 'ImpactMetrics', protected_forest: string, protected_species: string, removed_tons: string, sdgs: Array<{ __typename?: 'Sdg', name: string, number: number }> } };
+export type GetImpactMetricsQuery = {
+  __typename?: 'Query';
+  getImpactMetrics: {
+    __typename?: 'ImpactMetrics';
+    protected_forest: string;
+    protected_species: string;
+    removed_tons: string;
+    sdgs: Array<{ __typename?: 'Sdg'; name: string; number: number }>;
+  };
+};
 
 export type GetGlobalDataQueryVariables = Exact<{
   view?: InputMaybe<VisualizationViewType>;
 }>;
 
-
-export type GetGlobalDataQuery = { __typename?: 'Query', getGlobalData?: { __typename?: 'GlobalData', target: string, actual: string, debt: string, number_of_projects: string, invested_amount: string } | null };
+export type GetGlobalDataQuery = {
+  __typename?: 'Query';
+  getGlobalData?: {
+    __typename?: 'GlobalData';
+    target: string;
+    actual: string;
+    debt: string;
+    number_of_projects: string;
+    invested_amount: string;
+  } | null;
+};
 
 export type NetZeroPlanningQueryVariables = Exact<{
   view?: InputMaybe<VisualizationViewType>;
 }>;
 
-
-export type NetZeroPlanningQuery = { __typename?: 'Query', netZeroPlanning: Array<{ __typename?: 'NetZeroPlanning', vintage?: number | null, ex_ante_count?: number | null, ex_post_count?: number | null, emission?: number | null, target?: number | null, actual?: number | null, retired?: number | null } | null> };
+export type NetZeroPlanningQuery = {
+  __typename?: 'Query';
+  netZeroPlanning: Array<{
+    __typename?: 'NetZeroPlanning';
+    vintage?: number | null;
+    ex_ante_count?: number | null;
+    ex_post_count?: number | null;
+    emission?: number | null;
+    target?: number | null;
+    actual?: number | null;
+    retired?: number | null;
+  } | null>;
+};
 
 export type AnnualQueryVariables = Exact<{
   view: VisualizationViewType;
   pagination?: InputMaybe<Pagination>;
 }>;
 
-
-export type AnnualQuery = { __typename?: 'Query', annual: { __typename?: 'Annual', data?: Array<{ __typename?: 'AnnualData', time_period?: string | null, emissions?: number | null, ex_post_issued?: number | null, ex_post_purchased?: number | null, ex_post_retired?: number | null, target?: number | null, actual_rate?: number | null, delta?: number | null, debt?: number | null, ex_post_stock?: number | null, ex_ante_stock?: number | null, total_ex_post?: number | null, total_ex_ante?: number | null } | null> | null, page_info?: { __typename?: 'PageInfo', has_next_page: boolean, has_previous_page: boolean, total_page: number } | null } };
+export type AnnualQuery = {
+  __typename?: 'Query';
+  annual: {
+    __typename?: 'Annual';
+    data?: Array<{
+      __typename?: 'AnnualData';
+      time_period?: string | null;
+      emissions?: number | null;
+      ex_post_issued?: number | null;
+      ex_post_purchased?: number | null;
+      ex_post_retired?: number | null;
+      target?: number | null;
+      actual_rate?: number | null;
+      delta?: number | null;
+      debt?: number | null;
+      ex_post_stock?: number | null;
+      ex_ante_stock?: number | null;
+      total_ex_post?: number | null;
+      total_ex_ante?: number | null;
+    } | null> | null;
+    page_info?: {
+      __typename?: 'PageInfo';
+      has_next_page: boolean;
+      has_previous_page: boolean;
+      total_page: number;
+    } | null;
+  };
+};
 
 export type CumulativeQueryVariables = Exact<{
   view: VisualizationViewType;
   pagination?: InputMaybe<Pagination>;
 }>;
 
-
-export type CumulativeQuery = { __typename?: 'Query', cumulative: { __typename?: 'Cumulative', data?: Array<{ __typename?: 'CumulativeData', time_period?: string | null, emissions?: number | null, ex_post_issued?: number | null, ex_post_purchased?: number | null, ex_post_retired?: number | null, target?: number | null, actual_rate?: number | null, delta?: number | null, debt?: number | null, ex_post_stock?: number | null, ex_ante_stock?: number | null } | null> | null, page_info?: { __typename?: 'PageInfo', has_next_page: boolean, has_previous_page: boolean, total_page: number } | null } };
+export type CumulativeQuery = {
+  __typename?: 'Query';
+  cumulative: {
+    __typename?: 'Cumulative';
+    data?: Array<{
+      __typename?: 'CumulativeData';
+      time_period?: string | null;
+      emissions?: number | null;
+      ex_post_issued?: number | null;
+      ex_post_purchased?: number | null;
+      ex_post_retired?: number | null;
+      target?: number | null;
+      actual_rate?: number | null;
+      delta?: number | null;
+      debt?: number | null;
+      ex_post_stock?: number | null;
+      ex_ante_stock?: number | null;
+    } | null> | null;
+    page_info?: {
+      __typename?: 'PageInfo';
+      has_next_page: boolean;
+      has_previous_page: boolean;
+      total_page: number;
+    } | null;
+  };
+};
 
 export type FinancialAnalysisQueryVariables = Exact<{
   view: VisualizationViewType;
   pagination?: InputMaybe<Pagination>;
 }>;
 
+export type FinancialAnalysisQuery = {
+  __typename?: 'Query';
+  financialAnalysis: {
+    __typename?: 'FinancialAnalysis';
+    data?: Array<{
+      __typename?: 'FinancialAnalysisData';
+      year?: number | null;
+      all_time_avg_issued_price?: number | null;
+      all_time_avg_purchased_price?: number | null;
+      all_time_avg_price?: number | null;
+      avg_issued_price?: number | null;
+      avg_purchased_price?: number | null;
+      avg_price?: number | null;
+      cumulative_emission_debt?: number | null;
+      cumulative_total_amount?: number | null;
+      emission_debt?: number | null;
+      total_amount?: number | null;
+      total_issued_amount?: number | null;
+      total_purchased_amount?: number | null;
+    } | null> | null;
+    page_info?: {
+      __typename?: 'PageInfo';
+      has_next_page: boolean;
+      has_previous_page: boolean;
+      total_page: number;
+    } | null;
+  };
+};
 
-export type FinancialAnalysisQuery = { __typename?: 'Query', financialAnalysis: { __typename?: 'FinancialAnalysis', data?: Array<{ __typename?: 'FinancialAnalysisData', year?: number | null, all_time_avg_issued_price?: number | null, all_time_avg_purchased_price?: number | null, all_time_avg_price?: number | null, avg_issued_price?: number | null, avg_purchased_price?: number | null, avg_price?: number | null, cumulative_emission_debt?: number | null, cumulative_total_amount?: number | null, emission_debt?: number | null, total_amount?: number | null, total_issued_amount?: number | null, total_purchased_amount?: number | null } | null> | null, page_info?: { __typename?: 'PageInfo', has_next_page: boolean, has_previous_page: boolean, total_page: number } | null } };
+export type ProjectsQueryVariables = Exact<{ [key: string]: never }>;
 
-export type ProjectsQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type ProjectsQuery = { __typename?: 'Query', projects?: Array<{ __typename?: 'Project', id: string, name?: string | null, slug?: string | null, metadata?: any | null } | null> | null };
+export type ProjectsQuery = {
+  __typename?: 'Query';
+  projects?: Array<{
+    __typename?: 'Project';
+    id: string;
+    name?: string | null;
+    slug?: string | null;
+    metadata?: any | null;
+  } | null> | null;
+};
 
 export type ProjectByQueryVariables = Exact<{
   field: Scalars['String']['input'];
   value: Scalars['String']['input'];
 }>;
 
-
-export type ProjectByQuery = { __typename?: 'Query', projectBy?: { __typename?: 'Project', id: string, name?: string | null, description?: string | null, localization?: string | null, startDate?: string | null, endDate?: string | null, area?: number | null, type?: CarbonCreditType | null, origin?: CarbonCreditOrigin | null, slug?: string | null, metadata?: any | null, certifier: { __typename?: 'Certifier', id: string, name: string }, developper?: { __typename?: 'Developper', id: string, name: string } | null, country?: { __typename?: 'Country', name: string, code: string } | null, global_data?: { __typename?: 'ProjectGlobalData', amount?: number | null, source?: string | null, rating?: string | null, allocated_units?: number | null, available_ex_post?: number | null, available_ex_ante?: number | null } | null } | null };
+export type ProjectByQuery = {
+  __typename?: 'Query';
+  projectBy?: {
+    __typename?: 'Project';
+    id: string;
+    name?: string | null;
+    description?: string | null;
+    localization?: string | null;
+    startDate?: string | null;
+    endDate?: string | null;
+    area?: number | null;
+    type?: CarbonCreditType | null;
+    origin?: CarbonCreditOrigin | null;
+    slug?: string | null;
+    metadata?: any | null;
+    certifier: { __typename?: 'Certifier'; id: string; name: string };
+    developper?: { __typename?: 'Developper'; id: string; name: string } | null;
+    country?: { __typename?: 'Country'; name: string; code: string } | null;
+    global_data?: {
+      __typename?: 'ProjectGlobalData';
+      amount?: number | null;
+      source?: string | null;
+      rating?: string | null;
+      allocated_units?: number | null;
+      available_ex_post?: number | null;
+      available_ex_ante?: number | null;
+    } | null;
+  } | null;
+};
 
 export type GetProjectsMetricsQueryVariables = Exact<{
   view?: InputMaybe<VisualizationViewType>;
 }>;
 
-
-export type GetProjectsMetricsQuery = { __typename?: 'Query', getProjectMetrics: { __typename?: 'ProjectMetrics', colors: { __typename?: 'ProjectColorRepartition', blue: { __typename?: 'Map', key: string, value: string }, green: { __typename?: 'Map', key: string, value: string }, orange: { __typename?: 'Map', key: string, value: string } }, localization: Array<{ __typename?: 'LocalizationRepartition', value: string, country: { __typename?: 'ShortCountry', flag: string, iso: string, name: string } }>, standards: Array<{ __typename?: 'Map', key: string, value: string }>, types: { __typename?: 'ProjectTypeRepartition', avoidance: string, removal: string } } };
+export type GetProjectsMetricsQuery = {
+  __typename?: 'Query';
+  getProjectMetrics: {
+    __typename?: 'ProjectMetrics';
+    colors: {
+      __typename?: 'ProjectColorRepartition';
+      blue: { __typename?: 'Map'; key: string; value: string };
+      green: { __typename?: 'Map'; key: string; value: string };
+      orange: { __typename?: 'Map'; key: string; value: string };
+    };
+    localization: Array<{
+      __typename?: 'LocalizationRepartition';
+      value: string;
+      country: { __typename?: 'ShortCountry'; flag: string; iso: string; name: string };
+    }>;
+    standards: Array<{ __typename?: 'Map'; key: string; value: string }>;
+    types: { __typename?: 'ProjectTypeRepartition'; avoidance: string; removal: string };
+  };
+};
 
 export type GetStockQueryVariables = Exact<{
   view: VisualizationViewType;
   pagination?: InputMaybe<Pagination>;
 }>;
 
+export type GetStockQuery = {
+  __typename?: 'Query';
+  getStock?: {
+    __typename?: 'Stock';
+    data: Array<{
+      __typename?: 'StockData';
+      vintage: number;
+      quantity: number;
+      available: number;
+      project: {
+        __typename?: 'AssetAllocationItem';
+        id: string;
+        name: string;
+        metadata: Array<{ __typename?: 'Map'; key: string; value: string } | null>;
+      };
+    } | null>;
+    page_info?: {
+      __typename?: 'PageInfo';
+      has_next_page: boolean;
+      has_previous_page: boolean;
+      total_page: number;
+    } | null;
+  } | null;
+};
 
-export type GetStockQuery = { __typename?: 'Query', getStock?: { __typename?: 'Stock', data: Array<{ __typename?: 'StockData', vintage: number, quantity: number, available: number, project: { __typename?: 'AssetAllocationItem', id: string, name: string, metadata: Array<{ __typename?: 'Map', key: string, value: string } | null> } } | null>, page_info?: { __typename?: 'PageInfo', has_next_page: boolean, has_previous_page: boolean, total_page: number } | null } | null };
-
-
-export const CompanyCarbonAssetAllocationDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"CompanyCarbonAssetAllocation"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"pagination"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"Pagination"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"companyCarbonAssetAllocation"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}},{"kind":"Argument","name":{"kind":"Name","value":"pagination"},"value":{"kind":"Variable","name":{"kind":"Name","value":"pagination"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"data"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"project_name"}},{"kind":"Field","name":{"kind":"Name","value":"business_units"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"total_potential"}},{"kind":"Field","name":{"kind":"Name","value":"ex_post_to_date"}},{"kind":"Field","name":{"kind":"Name","value":"ex_ante_to_date"}},{"kind":"Field","name":{"kind":"Name","value":"project_completion"}},{"kind":"Field","name":{"kind":"Name","value":"total_allocated_to_date"}},{"kind":"Field","name":{"kind":"Name","value":"total_available_to_date"}},{"kind":"Field","name":{"kind":"Name","value":"allocation_rate"}},{"kind":"Field","name":{"kind":"Name","value":"price"}},{"kind":"Field","name":{"kind":"Name","value":"total_amount"}}]}},{"kind":"Field","name":{"kind":"Name","value":"page_info"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"has_next_page"}},{"kind":"Field","name":{"kind":"Name","value":"has_previous_page"}},{"kind":"Field","name":{"kind":"Name","value":"total_page"}}]}}]}}]}}]} as unknown as DocumentNode<CompanyCarbonAssetAllocationQuery, CompanyCarbonAssetAllocationQueryVariables>;
-export const ProjectCarbonAssetAllocationDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"ProjectCarbonAssetAllocation"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"pagination"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"Pagination"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"projectCarbonAssetAllocation"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}},{"kind":"Argument","name":{"kind":"Name","value":"pagination"},"value":{"kind":"Variable","name":{"kind":"Name","value":"pagination"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"data"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"business_unit"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"allocated"}},{"kind":"Field","name":{"kind":"Name","value":"allocation_amount"}},{"kind":"Field","name":{"kind":"Name","value":"target"}},{"kind":"Field","name":{"kind":"Name","value":"actual"}},{"kind":"Field","name":{"kind":"Name","value":"start_date"}}]}},{"kind":"Field","name":{"kind":"Name","value":"page_info"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"has_next_page"}},{"kind":"Field","name":{"kind":"Name","value":"has_previous_page"}},{"kind":"Field","name":{"kind":"Name","value":"total_page"}}]}}]}}]}}]} as unknown as DocumentNode<ProjectCarbonAssetAllocationQuery, ProjectCarbonAssetAllocationQueryVariables>;
-export const BusinessUnitCarbonAssetAllocationDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"BusinessUnitCarbonAssetAllocation"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"pagination"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"Pagination"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"businessUnitCarbonAssetAllocation"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}},{"kind":"Argument","name":{"kind":"Name","value":"pagination"},"value":{"kind":"Variable","name":{"kind":"Name","value":"pagination"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"data"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"project"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"total_cu"}},{"kind":"Field","name":{"kind":"Name","value":"allocated"}},{"kind":"Field","name":{"kind":"Name","value":"generated"}},{"kind":"Field","name":{"kind":"Name","value":"forward"}},{"kind":"Field","name":{"kind":"Name","value":"retired"}}]}},{"kind":"Field","name":{"kind":"Name","value":"page_info"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"has_next_page"}},{"kind":"Field","name":{"kind":"Name","value":"has_previous_page"}},{"kind":"Field","name":{"kind":"Name","value":"total_page"}}]}}]}}]}}]} as unknown as DocumentNode<BusinessUnitCarbonAssetAllocationQuery, BusinessUnitCarbonAssetAllocationQueryVariables>;
-export const AddAllocationsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"addAllocations"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"request"}},"type":{"kind":"NonNullType","type":{"kind":"ListType","type":{"kind":"NamedType","name":{"kind":"Name","value":"AddAllocationRequestItem"}}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"addAllocations"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"request"},"value":{"kind":"Variable","name":{"kind":"Name","value":"request"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"allocationIds"}},{"kind":"Field","name":{"kind":"Name","value":"errors"}}]}}]}}]} as unknown as DocumentNode<AddAllocationsMutation, AddAllocationsMutationVariables>;
-export const AvailableToAllocateDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"AvailableToAllocate"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"project_id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"business_unit_id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"availableToAllocate"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"project_id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"project_id"}}},{"kind":"Argument","name":{"kind":"Name","value":"business_unit_id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"business_unit_id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"available_percent"}},{"kind":"Field","name":{"kind":"Name","value":"available_units"}}]}}]}}]} as unknown as DocumentNode<AvailableToAllocateQuery, AvailableToAllocateQueryVariables>;
-export const BusinessUnitsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"BusinessUnits"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"businessUnits"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"default_emission"}},{"kind":"Field","name":{"kind":"Name","value":"default_target"}},{"kind":"Field","name":{"kind":"Name","value":"actual_rate"}},{"kind":"Field","name":{"kind":"Name","value":"metadata"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"key"}},{"kind":"Field","name":{"kind":"Name","value":"value"}}]}},{"kind":"Field","name":{"kind":"Name","value":"yearly_emissions"}},{"kind":"Field","name":{"kind":"Name","value":"yearly_contributions"}},{"kind":"Field","name":{"kind":"Name","value":"allocations"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"project"}},{"kind":"Field","name":{"kind":"Name","value":"amount"}}]}}]}}]}}]} as unknown as DocumentNode<BusinessUnitsQuery, BusinessUnitsQueryVariables>;
-export const BusinessUnitDetailsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"BusinessUnitDetails"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"businessUnitDetails"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"default_emission"}},{"kind":"Field","name":{"kind":"Name","value":"default_target"}},{"kind":"Field","name":{"kind":"Name","value":"metadata"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"key"}},{"kind":"Field","name":{"kind":"Name","value":"value"}}]}},{"kind":"Field","name":{"kind":"Name","value":"allocations"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"project"}},{"kind":"Field","name":{"kind":"Name","value":"amount"}}]}},{"kind":"Field","name":{"kind":"Name","value":"yearly_emissions"}},{"kind":"Field","name":{"kind":"Name","value":"yearly_contributions"}}]}}]}}]} as unknown as DocumentNode<BusinessUnitDetailsQuery, BusinessUnitDetailsQueryVariables>;
-export const CreateBusinessUnitDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"createBusinessUnit"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"request"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"CreateBusinessUnitRequest"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createBusinessUnit"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"request"},"value":{"kind":"Variable","name":{"kind":"Name","value":"request"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"errors"}}]}}]}}]} as unknown as DocumentNode<CreateBusinessUnitMutation, CreateBusinessUnitMutationVariables>;
-export const GetImpactMetricsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetImpactMetrics"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"view"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"VisualizationViewType"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getImpactMetrics"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"view"},"value":{"kind":"Variable","name":{"kind":"Name","value":"view"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"protected_forest"}},{"kind":"Field","name":{"kind":"Name","value":"protected_species"}},{"kind":"Field","name":{"kind":"Name","value":"removed_tons"}},{"kind":"Field","name":{"kind":"Name","value":"sdgs"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"number"}}]}}]}}]}}]} as unknown as DocumentNode<GetImpactMetricsQuery, GetImpactMetricsQueryVariables>;
-export const GetGlobalDataDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetGlobalData"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"view"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"VisualizationViewType"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getGlobalData"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"view"},"value":{"kind":"Variable","name":{"kind":"Name","value":"view"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"target"}},{"kind":"Field","name":{"kind":"Name","value":"actual"}},{"kind":"Field","name":{"kind":"Name","value":"debt"}},{"kind":"Field","name":{"kind":"Name","value":"number_of_projects"}},{"kind":"Field","name":{"kind":"Name","value":"invested_amount"}}]}}]}}]} as unknown as DocumentNode<GetGlobalDataQuery, GetGlobalDataQueryVariables>;
-export const NetZeroPlanningDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"NetZeroPlanning"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"view"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"VisualizationViewType"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"netZeroPlanning"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"view"},"value":{"kind":"Variable","name":{"kind":"Name","value":"view"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"vintage"}},{"kind":"Field","name":{"kind":"Name","value":"ex_ante_count"}},{"kind":"Field","name":{"kind":"Name","value":"ex_post_count"}},{"kind":"Field","name":{"kind":"Name","value":"emission"}},{"kind":"Field","name":{"kind":"Name","value":"target"}},{"kind":"Field","name":{"kind":"Name","value":"actual"}},{"kind":"Field","name":{"kind":"Name","value":"retired"}}]}}]}}]} as unknown as DocumentNode<NetZeroPlanningQuery, NetZeroPlanningQueryVariables>;
-export const AnnualDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"Annual"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"view"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"VisualizationViewType"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"pagination"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"Pagination"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"annual"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"view"},"value":{"kind":"Variable","name":{"kind":"Name","value":"view"}}},{"kind":"Argument","name":{"kind":"Name","value":"pagination"},"value":{"kind":"Variable","name":{"kind":"Name","value":"pagination"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"data"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"time_period"}},{"kind":"Field","name":{"kind":"Name","value":"emissions"}},{"kind":"Field","name":{"kind":"Name","value":"ex_post_issued"}},{"kind":"Field","name":{"kind":"Name","value":"ex_post_purchased"}},{"kind":"Field","name":{"kind":"Name","value":"ex_post_retired"}},{"kind":"Field","name":{"kind":"Name","value":"target"}},{"kind":"Field","name":{"kind":"Name","value":"actual_rate"}},{"kind":"Field","name":{"kind":"Name","value":"delta"}},{"kind":"Field","name":{"kind":"Name","value":"debt"}},{"kind":"Field","name":{"kind":"Name","value":"ex_post_stock"}},{"kind":"Field","name":{"kind":"Name","value":"ex_ante_stock"}},{"kind":"Field","name":{"kind":"Name","value":"total_ex_post"}},{"kind":"Field","name":{"kind":"Name","value":"total_ex_ante"}}]}},{"kind":"Field","name":{"kind":"Name","value":"page_info"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"has_next_page"}},{"kind":"Field","name":{"kind":"Name","value":"has_previous_page"}},{"kind":"Field","name":{"kind":"Name","value":"total_page"}}]}}]}}]}}]} as unknown as DocumentNode<AnnualQuery, AnnualQueryVariables>;
-export const CumulativeDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"Cumulative"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"view"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"VisualizationViewType"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"pagination"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"Pagination"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"cumulative"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"view"},"value":{"kind":"Variable","name":{"kind":"Name","value":"view"}}},{"kind":"Argument","name":{"kind":"Name","value":"pagination"},"value":{"kind":"Variable","name":{"kind":"Name","value":"pagination"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"data"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"time_period"}},{"kind":"Field","name":{"kind":"Name","value":"emissions"}},{"kind":"Field","name":{"kind":"Name","value":"ex_post_issued"}},{"kind":"Field","name":{"kind":"Name","value":"ex_post_purchased"}},{"kind":"Field","name":{"kind":"Name","value":"ex_post_retired"}},{"kind":"Field","name":{"kind":"Name","value":"target"}},{"kind":"Field","name":{"kind":"Name","value":"actual_rate"}},{"kind":"Field","name":{"kind":"Name","value":"delta"}},{"kind":"Field","name":{"kind":"Name","value":"debt"}},{"kind":"Field","name":{"kind":"Name","value":"ex_post_stock"}},{"kind":"Field","name":{"kind":"Name","value":"ex_ante_stock"}}]}},{"kind":"Field","name":{"kind":"Name","value":"page_info"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"has_next_page"}},{"kind":"Field","name":{"kind":"Name","value":"has_previous_page"}},{"kind":"Field","name":{"kind":"Name","value":"total_page"}}]}}]}}]}}]} as unknown as DocumentNode<CumulativeQuery, CumulativeQueryVariables>;
-export const FinancialAnalysisDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"FinancialAnalysis"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"view"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"VisualizationViewType"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"pagination"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"Pagination"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"financialAnalysis"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"view"},"value":{"kind":"Variable","name":{"kind":"Name","value":"view"}}},{"kind":"Argument","name":{"kind":"Name","value":"pagination"},"value":{"kind":"Variable","name":{"kind":"Name","value":"pagination"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"data"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"year"}},{"kind":"Field","name":{"kind":"Name","value":"all_time_avg_issued_price"}},{"kind":"Field","name":{"kind":"Name","value":"all_time_avg_purchased_price"}},{"kind":"Field","name":{"kind":"Name","value":"all_time_avg_price"}},{"kind":"Field","name":{"kind":"Name","value":"avg_issued_price"}},{"kind":"Field","name":{"kind":"Name","value":"avg_purchased_price"}},{"kind":"Field","name":{"kind":"Name","value":"avg_price"}},{"kind":"Field","name":{"kind":"Name","value":"cumulative_emission_debt"}},{"kind":"Field","name":{"kind":"Name","value":"cumulative_total_amount"}},{"kind":"Field","name":{"kind":"Name","value":"emission_debt"}},{"kind":"Field","name":{"kind":"Name","value":"total_amount"}},{"kind":"Field","name":{"kind":"Name","value":"total_issued_amount"}},{"kind":"Field","name":{"kind":"Name","value":"total_purchased_amount"}}]}},{"kind":"Field","name":{"kind":"Name","value":"page_info"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"has_next_page"}},{"kind":"Field","name":{"kind":"Name","value":"has_previous_page"}},{"kind":"Field","name":{"kind":"Name","value":"total_page"}}]}}]}}]}}]} as unknown as DocumentNode<FinancialAnalysisQuery, FinancialAnalysisQueryVariables>;
-export const ProjectsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"Projects"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"projects"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"slug"}},{"kind":"Field","name":{"kind":"Name","value":"metadata"}}]}}]}}]} as unknown as DocumentNode<ProjectsQuery, ProjectsQueryVariables>;
-export const ProjectByDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"ProjectBy"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"field"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"value"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"projectBy"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"field"},"value":{"kind":"Variable","name":{"kind":"Name","value":"field"}}},{"kind":"Argument","name":{"kind":"Name","value":"value"},"value":{"kind":"Variable","name":{"kind":"Name","value":"value"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"localization"}},{"kind":"Field","name":{"kind":"Name","value":"startDate"}},{"kind":"Field","name":{"kind":"Name","value":"endDate"}},{"kind":"Field","name":{"kind":"Name","value":"area"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"origin"}},{"kind":"Field","name":{"kind":"Name","value":"slug"}},{"kind":"Field","name":{"kind":"Name","value":"certifier"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"developper"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"country"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"code"}}]}},{"kind":"Field","name":{"kind":"Name","value":"metadata"}},{"kind":"Field","name":{"kind":"Name","value":"global_data"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"amount"}},{"kind":"Field","name":{"kind":"Name","value":"source"}},{"kind":"Field","name":{"kind":"Name","value":"rating"}},{"kind":"Field","name":{"kind":"Name","value":"allocated_units"}},{"kind":"Field","name":{"kind":"Name","value":"available_ex_post"}},{"kind":"Field","name":{"kind":"Name","value":"available_ex_ante"}}]}}]}}]}}]} as unknown as DocumentNode<ProjectByQuery, ProjectByQueryVariables>;
-export const GetProjectsMetricsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetProjectsMetrics"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"view"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"VisualizationViewType"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getProjectMetrics"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"view"},"value":{"kind":"Variable","name":{"kind":"Name","value":"view"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"colors"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"blue"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"key"}},{"kind":"Field","name":{"kind":"Name","value":"value"}}]}},{"kind":"Field","name":{"kind":"Name","value":"green"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"key"}},{"kind":"Field","name":{"kind":"Name","value":"value"}}]}},{"kind":"Field","name":{"kind":"Name","value":"orange"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"key"}},{"kind":"Field","name":{"kind":"Name","value":"value"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"localization"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"value"}},{"kind":"Field","name":{"kind":"Name","value":"country"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"flag"}},{"kind":"Field","name":{"kind":"Name","value":"iso"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"standards"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"key"}},{"kind":"Field","name":{"kind":"Name","value":"value"}}]}},{"kind":"Field","name":{"kind":"Name","value":"types"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"avoidance"}},{"kind":"Field","name":{"kind":"Name","value":"removal"}}]}}]}}]}}]} as unknown as DocumentNode<GetProjectsMetricsQuery, GetProjectsMetricsQueryVariables>;
-export const GetStockDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetStock"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"view"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"VisualizationViewType"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"pagination"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"Pagination"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getStock"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"view"},"value":{"kind":"Variable","name":{"kind":"Name","value":"view"}}},{"kind":"Argument","name":{"kind":"Name","value":"pagination"},"value":{"kind":"Variable","name":{"kind":"Name","value":"pagination"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"data"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"project"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"metadata"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"key"}},{"kind":"Field","name":{"kind":"Name","value":"value"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"vintage"}},{"kind":"Field","name":{"kind":"Name","value":"quantity"}},{"kind":"Field","name":{"kind":"Name","value":"available"}}]}},{"kind":"Field","name":{"kind":"Name","value":"page_info"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"has_next_page"}},{"kind":"Field","name":{"kind":"Name","value":"has_previous_page"}},{"kind":"Field","name":{"kind":"Name","value":"total_page"}}]}}]}}]}}]} as unknown as DocumentNode<GetStockQuery, GetStockQueryVariables>;
+export const CompanyCarbonAssetAllocationDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'CompanyCarbonAssetAllocation' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'id' } },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'pagination' } },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'Pagination' } },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'companyCarbonAssetAllocation' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'id' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'id' } },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'pagination' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'pagination' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'data' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'project_name' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'business_units' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                          ],
+                        },
+                      },
+                      { kind: 'Field', name: { kind: 'Name', value: 'type' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'total_potential' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'ex_post_to_date' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'ex_ante_to_date' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'project_completion' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'total_allocated_to_date' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'total_available_to_date' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'allocation_rate' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'price' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'total_amount' } },
+                    ],
+                  },
+                },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'page_info' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'has_next_page' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'has_previous_page' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'total_page' } },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  CompanyCarbonAssetAllocationQuery,
+  CompanyCarbonAssetAllocationQueryVariables
+>;
+export const ProjectCarbonAssetAllocationDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'ProjectCarbonAssetAllocation' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'id' } },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'pagination' } },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'Pagination' } },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'projectCarbonAssetAllocation' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'id' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'id' } },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'pagination' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'pagination' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'data' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'business_unit' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                          ],
+                        },
+                      },
+                      { kind: 'Field', name: { kind: 'Name', value: 'allocated' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'allocation_amount' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'target' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'actual' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'start_date' } },
+                    ],
+                  },
+                },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'page_info' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'has_next_page' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'has_previous_page' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'total_page' } },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  ProjectCarbonAssetAllocationQuery,
+  ProjectCarbonAssetAllocationQueryVariables
+>;
+export const BusinessUnitCarbonAssetAllocationDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'BusinessUnitCarbonAssetAllocation' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'id' } },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'pagination' } },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'Pagination' } },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'businessUnitCarbonAssetAllocation' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'id' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'id' } },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'pagination' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'pagination' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'data' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'project' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                          ],
+                        },
+                      },
+                      { kind: 'Field', name: { kind: 'Name', value: 'total_cu' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'allocated' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'generated' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'forward' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'retired' } },
+                    ],
+                  },
+                },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'page_info' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'has_next_page' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'has_previous_page' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'total_page' } },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  BusinessUnitCarbonAssetAllocationQuery,
+  BusinessUnitCarbonAssetAllocationQueryVariables
+>;
+export const AddAllocationsDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'addAllocations' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'request' } },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'ListType',
+              type: {
+                kind: 'NamedType',
+                name: { kind: 'Name', value: 'AddAllocationRequestItem' },
+              },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'addAllocations' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'request' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'request' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'allocationIds' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'errors' } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<AddAllocationsMutation, AddAllocationsMutationVariables>;
+export const AvailableToAllocateDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'AvailableToAllocate' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'project_id' } },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'business_unit_id' } },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'availableToAllocate' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'project_id' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'project_id' } },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'business_unit_id' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'business_unit_id' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'available_percent' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'available_units' } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<AvailableToAllocateQuery, AvailableToAllocateQueryVariables>;
+export const BusinessUnitsDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'BusinessUnits' },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'businessUnits' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'description' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'default_emission' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'default_target' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'actual_rate' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'metadata' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'key' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'value' } },
+                    ],
+                  },
+                },
+                { kind: 'Field', name: { kind: 'Name', value: 'yearly_emissions' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'yearly_contributions' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'allocations' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'project' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'amount' } },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<BusinessUnitsQuery, BusinessUnitsQueryVariables>;
+export const BusinessUnitDetailsDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'BusinessUnitDetails' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'id' } },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'businessUnitDetails' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'id' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'id' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'description' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'default_emission' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'default_target' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'metadata' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'key' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'value' } },
+                    ],
+                  },
+                },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'allocations' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'project' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'amount' } },
+                    ],
+                  },
+                },
+                { kind: 'Field', name: { kind: 'Name', value: 'yearly_emissions' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'yearly_contributions' } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<BusinessUnitDetailsQuery, BusinessUnitDetailsQueryVariables>;
+export const CreateBusinessUnitDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'createBusinessUnit' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'request' } },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'CreateBusinessUnitRequest' } },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'createBusinessUnit' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'request' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'request' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'errors' } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<CreateBusinessUnitMutation, CreateBusinessUnitMutationVariables>;
+export const GetImpactMetricsDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'GetImpactMetrics' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'view' } },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'VisualizationViewType' } },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'getImpactMetrics' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'view' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'view' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'protected_forest' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'protected_species' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'removed_tons' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'sdgs' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'number' } },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<GetImpactMetricsQuery, GetImpactMetricsQueryVariables>;
+export const GetGlobalDataDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'GetGlobalData' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'view' } },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'VisualizationViewType' } },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'getGlobalData' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'view' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'view' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'target' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'actual' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'debt' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'number_of_projects' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'invested_amount' } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<GetGlobalDataQuery, GetGlobalDataQueryVariables>;
+export const NetZeroPlanningDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'NetZeroPlanning' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'view' } },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'VisualizationViewType' } },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'netZeroPlanning' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'view' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'view' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'vintage' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'ex_ante_count' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'ex_post_count' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'emission' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'target' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'actual' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'retired' } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<NetZeroPlanningQuery, NetZeroPlanningQueryVariables>;
+export const AnnualDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'Annual' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'view' } },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'VisualizationViewType' } },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'pagination' } },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'Pagination' } },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'annual' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'view' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'view' } },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'pagination' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'pagination' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'data' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'time_period' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'emissions' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'ex_post_issued' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'ex_post_purchased' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'ex_post_retired' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'target' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'actual_rate' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'delta' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'debt' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'ex_post_stock' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'ex_ante_stock' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'total_ex_post' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'total_ex_ante' } },
+                    ],
+                  },
+                },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'page_info' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'has_next_page' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'has_previous_page' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'total_page' } },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<AnnualQuery, AnnualQueryVariables>;
+export const CumulativeDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'Cumulative' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'view' } },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'VisualizationViewType' } },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'pagination' } },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'Pagination' } },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'cumulative' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'view' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'view' } },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'pagination' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'pagination' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'data' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'time_period' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'emissions' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'ex_post_issued' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'ex_post_purchased' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'ex_post_retired' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'target' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'actual_rate' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'delta' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'debt' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'ex_post_stock' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'ex_ante_stock' } },
+                    ],
+                  },
+                },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'page_info' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'has_next_page' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'has_previous_page' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'total_page' } },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<CumulativeQuery, CumulativeQueryVariables>;
+export const FinancialAnalysisDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'FinancialAnalysis' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'view' } },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'VisualizationViewType' } },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'pagination' } },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'Pagination' } },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'financialAnalysis' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'view' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'view' } },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'pagination' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'pagination' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'data' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'year' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'all_time_avg_issued_price' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'all_time_avg_purchased_price' },
+                      },
+                      { kind: 'Field', name: { kind: 'Name', value: 'all_time_avg_price' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'avg_issued_price' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'avg_purchased_price' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'avg_price' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'cumulative_emission_debt' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'cumulative_total_amount' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'emission_debt' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'total_amount' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'total_issued_amount' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'total_purchased_amount' } },
+                    ],
+                  },
+                },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'page_info' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'has_next_page' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'has_previous_page' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'total_page' } },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<FinancialAnalysisQuery, FinancialAnalysisQueryVariables>;
+export const ProjectsDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'Projects' },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'projects' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'slug' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'metadata' } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<ProjectsQuery, ProjectsQueryVariables>;
+export const ProjectByDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'ProjectBy' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'field' } },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'value' } },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'projectBy' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'field' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'field' } },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'value' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'value' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'description' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'localization' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'startDate' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'endDate' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'area' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'type' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'origin' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'slug' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'certifier' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                    ],
+                  },
+                },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'developper' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                    ],
+                  },
+                },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'country' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'code' } },
+                    ],
+                  },
+                },
+                { kind: 'Field', name: { kind: 'Name', value: 'metadata' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'global_data' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'amount' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'source' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'rating' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'allocated_units' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'available_ex_post' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'available_ex_ante' } },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<ProjectByQuery, ProjectByQueryVariables>;
+export const GetProjectsMetricsDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'GetProjectsMetrics' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'view' } },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'VisualizationViewType' } },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'getProjectMetrics' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'view' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'view' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'colors' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'blue' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            { kind: 'Field', name: { kind: 'Name', value: 'key' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'value' } },
+                          ],
+                        },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'green' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            { kind: 'Field', name: { kind: 'Name', value: 'key' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'value' } },
+                          ],
+                        },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'orange' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            { kind: 'Field', name: { kind: 'Name', value: 'key' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'value' } },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'localization' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'value' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'country' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            { kind: 'Field', name: { kind: 'Name', value: 'flag' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'iso' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'standards' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'key' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'value' } },
+                    ],
+                  },
+                },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'types' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'avoidance' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'removal' } },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<GetProjectsMetricsQuery, GetProjectsMetricsQueryVariables>;
+export const GetStockDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'GetStock' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'view' } },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'VisualizationViewType' } },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'pagination' } },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'Pagination' } },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'getStock' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'view' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'view' } },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'pagination' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'pagination' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'data' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'project' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'metadata' },
+                              selectionSet: {
+                                kind: 'SelectionSet',
+                                selections: [
+                                  { kind: 'Field', name: { kind: 'Name', value: 'key' } },
+                                  { kind: 'Field', name: { kind: 'Name', value: 'value' } },
+                                ],
+                              },
+                            },
+                          ],
+                        },
+                      },
+                      { kind: 'Field', name: { kind: 'Name', value: 'vintage' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'quantity' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'available' } },
+                    ],
+                  },
+                },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'page_info' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'has_next_page' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'has_previous_page' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'total_page' } },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<GetStockQuery, GetStockQueryVariables>;
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
-  ID: { input: string; output: string; }
-  String: { input: string; output: string; }
-  Boolean: { input: boolean; output: boolean; }
-  Int: { input: number; output: number; }
-  Float: { input: number; output: number; }
+  ID: { input: string; output: string };
+  String: { input: string; output: string };
+  Boolean: { input: boolean; output: boolean };
+  Int: { input: number; output: number };
+  Float: { input: number; output: number };
   /** The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf). */
-  JSON: { input: any; output: any; }
+  JSON: { input: any; output: any };
 };
 
 export type AddAllocationRequestItem = {
@@ -917,7 +2498,7 @@ export type CarbonCredit = {
 
 export enum CarbonCreditOrigin {
   DirectPurchase = 'DIRECT_PURCHASE',
-  ForwardFinance = 'FORWARD_FINANCE'
+  ForwardFinance = 'FORWARD_FINANCE',
 }
 
 export enum CarbonCreditType {
@@ -926,7 +2507,7 @@ export enum CarbonCreditType {
   Dac = 'DAC',
   Reforestation = 'REFORESTATION',
   Restoration = 'RESTORATION',
-  SolarPanel = 'SOLAR_PANEL'
+  SolarPanel = 'SOLAR_PANEL',
 }
 
 export type Certifier = {
@@ -1098,21 +2679,17 @@ export type Mutation = {
   createForecastedTargets?: Maybe<DomainResponse>;
 };
 
-
 export type MutationAddAllocationsArgs = {
   request: Array<InputMaybe<AddAllocationRequestItem>>;
 };
-
 
 export type MutationCreateBusinessUnitArgs = {
   request: CreateBusinessUnitRequest;
 };
 
-
 export type MutationCreateForecastedEmissionsArgs = {
   request: CreateForecastedEmissionsRequest;
 };
-
 
 export type MutationCreateForecastedTargetsArgs = {
   request: CreateForecastedTargetsRequest;
@@ -1132,7 +2709,7 @@ export type NetZeroPlanning = {
 
 export enum OffsetType {
   ExAnte = 'EX_ANTE',
-  ExPost = 'EX_POST'
+  ExPost = 'EX_POST',
 }
 
 export type PageInfo = {
@@ -1231,7 +2808,7 @@ export type ProjectMetrics = {
 
 export enum ProjectType {
   Arr = 'ARR',
-  ReddPlus = 'REDD_PLUS'
+  ReddPlus = 'REDD_PLUS',
 }
 
 export type ProjectTypeRepartition = {
@@ -1263,7 +2840,7 @@ export type ProjectedDecarbonationGraph = {
 export enum ProjectedDecarbonationViewType {
   InvestmentType = 'INVESTMENT_TYPE',
   OffsetType = 'OFFSET_TYPE',
-  ProjectType = 'PROJECT_TYPE'
+  ProjectType = 'PROJECT_TYPE',
 }
 
 export type ProjectedDecarbonationWithPagination = {
@@ -1303,102 +2880,84 @@ export type Query = {
   projects?: Maybe<Array<Maybe<Project>>>;
 };
 
-
 export type QueryAnnualArgs = {
   pagination?: InputMaybe<Pagination>;
   view: VisualizationViewType;
 };
-
 
 export type QueryAvailableToAllocateArgs = {
   business_unit_id: Scalars['String']['input'];
   project_id: Scalars['String']['input'];
 };
 
-
 export type QueryBusinessUnitCarbonAssetAllocationArgs = {
   id: Scalars['String']['input'];
   pagination?: InputMaybe<Pagination>;
 };
 
-
 export type QueryBusinessUnitDetailsArgs = {
   id: Scalars['String']['input'];
 };
-
 
 export type QueryBusinessUnitsByArgs = {
   field: Scalars['String']['input'];
   value: Scalars['String']['input'];
 };
 
-
 export type QueryCertifierByArgs = {
   field: Scalars['String']['input'];
   value: Scalars['String']['input'];
 };
-
 
 export type QueryCompanyCarbonAssetAllocationArgs = {
   id: Scalars['String']['input'];
   pagination?: InputMaybe<Pagination>;
 };
 
-
 export type QueryCountryByArgs = {
   field: Scalars['String']['input'];
   value: Scalars['String']['input'];
 };
-
 
 export type QueryCumulativeArgs = {
   pagination?: InputMaybe<Pagination>;
   view: VisualizationViewType;
 };
 
-
 export type QueryFinancialAnalysisArgs = {
   pagination?: InputMaybe<Pagination>;
   view: VisualizationViewType;
 };
 
-
 export type QueryGetGlobalDataArgs = {
   view?: InputMaybe<VisualizationViewType>;
 };
-
 
 export type QueryGetImpactMetricsArgs = {
   view?: InputMaybe<VisualizationViewType>;
 };
 
-
 export type QueryGetProjectFundingAllocationArgs = {
   view?: InputMaybe<VisualizationViewType>;
 };
 
-
 export type QueryGetProjectMetricsArgs = {
   view?: InputMaybe<VisualizationViewType>;
 };
-
 
 export type QueryGetStockArgs = {
   pagination?: InputMaybe<Pagination>;
   view?: InputMaybe<VisualizationViewType>;
 };
 
-
 export type QueryNetZeroPlanningArgs = {
   view?: InputMaybe<VisualizationViewType>;
 };
-
 
 export type QueryProjectByArgs = {
   field: Scalars['String']['input'];
   value: Scalars['String']['input'];
 };
-
 
 export type QueryProjectCarbonAssetAllocationArgs = {
   id: Scalars['String']['input'];
@@ -1461,161 +3020,466 @@ export type CompanyCarbonAssetAllocationQueryVariables = Exact<{
   pagination?: InputMaybe<Pagination>;
 }>;
 
-
-export type CompanyCarbonAssetAllocationQuery = { __typename?: 'Query', companyCarbonAssetAllocation?: { __typename?: 'CompanyCarbonAssetAllocation', data: Array<{ __typename?: 'CompanyCarbonAssetAllocationData', project_name?: string | null, type?: string | null, total_potential?: number | null, ex_post_to_date?: number | null, ex_ante_to_date?: number | null, project_completion?: string | null, total_allocated_to_date?: number | null, total_available_to_date?: number | null, allocation_rate?: string | null, price?: number | null, total_amount?: number | null, business_units?: Array<{ __typename?: 'AssetAllocationItem', id: string, name: string } | null> | null } | null>, page_info?: { __typename?: 'PageInfo', has_next_page: boolean, has_previous_page: boolean, total_page: number } | null } | null };
+export type CompanyCarbonAssetAllocationQuery = {
+  __typename?: 'Query';
+  companyCarbonAssetAllocation?: {
+    __typename?: 'CompanyCarbonAssetAllocation';
+    data: Array<{
+      __typename?: 'CompanyCarbonAssetAllocationData';
+      project_name?: string | null;
+      type?: string | null;
+      total_potential?: number | null;
+      ex_post_to_date?: number | null;
+      ex_ante_to_date?: number | null;
+      project_completion?: string | null;
+      total_allocated_to_date?: number | null;
+      total_available_to_date?: number | null;
+      allocation_rate?: string | null;
+      price?: number | null;
+      total_amount?: number | null;
+      business_units?: Array<{
+        __typename?: 'AssetAllocationItem';
+        id: string;
+        name: string;
+      } | null> | null;
+    } | null>;
+    page_info?: {
+      __typename?: 'PageInfo';
+      has_next_page: boolean;
+      has_previous_page: boolean;
+      total_page: number;
+    } | null;
+  } | null;
+};
 
 export type ProjectCarbonAssetAllocationQueryVariables = Exact<{
   id: Scalars['String']['input'];
   pagination?: InputMaybe<Pagination>;
 }>;
 
-
-export type ProjectCarbonAssetAllocationQuery = { __typename?: 'Query', projectCarbonAssetAllocation?: { __typename?: 'ProjectCarbonAssetAllocation', data: Array<{ __typename?: 'ProjectCarbonAssetAllocationData', allocated?: number | null, allocation_amount?: number | null, target?: number | null, actual?: number | null, start_date?: string | null, business_unit: { __typename?: 'AssetAllocationItem', id: string, name: string } } | null>, page_info?: { __typename?: 'PageInfo', has_next_page: boolean, has_previous_page: boolean, total_page: number } | null } | null };
+export type ProjectCarbonAssetAllocationQuery = {
+  __typename?: 'Query';
+  projectCarbonAssetAllocation?: {
+    __typename?: 'ProjectCarbonAssetAllocation';
+    data: Array<{
+      __typename?: 'ProjectCarbonAssetAllocationData';
+      allocated?: number | null;
+      allocation_amount?: number | null;
+      target?: number | null;
+      actual?: number | null;
+      start_date?: string | null;
+      business_unit: { __typename?: 'AssetAllocationItem'; id: string; name: string };
+    } | null>;
+    page_info?: {
+      __typename?: 'PageInfo';
+      has_next_page: boolean;
+      has_previous_page: boolean;
+      total_page: number;
+    } | null;
+  } | null;
+};
 
 export type BusinessUnitCarbonAssetAllocationQueryVariables = Exact<{
   id: Scalars['String']['input'];
   pagination?: InputMaybe<Pagination>;
 }>;
 
-
-export type BusinessUnitCarbonAssetAllocationQuery = { __typename?: 'Query', businessUnitCarbonAssetAllocation?: { __typename?: 'BusinessUnitCarbonAssetAllocation', data: Array<{ __typename?: 'BusinessUnitCarbonAssetAllocationData', total_cu?: number | null, allocated?: number | null, generated?: number | null, forward?: number | null, retired?: number | null, project: { __typename?: 'AssetAllocationItem', id: string, name: string } } | null>, page_info?: { __typename?: 'PageInfo', has_next_page: boolean, has_previous_page: boolean, total_page: number } | null } | null };
+export type BusinessUnitCarbonAssetAllocationQuery = {
+  __typename?: 'Query';
+  businessUnitCarbonAssetAllocation?: {
+    __typename?: 'BusinessUnitCarbonAssetAllocation';
+    data: Array<{
+      __typename?: 'BusinessUnitCarbonAssetAllocationData';
+      total_cu?: number | null;
+      allocated?: number | null;
+      generated?: number | null;
+      forward?: number | null;
+      retired?: number | null;
+      project: { __typename?: 'AssetAllocationItem'; id: string; name: string };
+    } | null>;
+    page_info?: {
+      __typename?: 'PageInfo';
+      has_next_page: boolean;
+      has_previous_page: boolean;
+      total_page: number;
+    } | null;
+  } | null;
+};
 
 export type AddAllocationsMutationVariables = Exact<{
   request: Array<InputMaybe<AddAllocationRequestItem>> | InputMaybe<AddAllocationRequestItem>;
 }>;
 
-
-export type AddAllocationsMutation = { __typename?: 'Mutation', addAllocations?: { __typename?: 'AddAllocationResponse', allocationIds: Array<string | null>, errors: Array<string | null> } | null };
+export type AddAllocationsMutation = {
+  __typename?: 'Mutation';
+  addAllocations?: {
+    __typename?: 'AddAllocationResponse';
+    allocationIds: Array<string | null>;
+    errors: Array<string | null>;
+  } | null;
+};
 
 export type AvailableToAllocateQueryVariables = Exact<{
   project_id: Scalars['String']['input'];
   business_unit_id: Scalars['String']['input'];
 }>;
 
+export type AvailableToAllocateQuery = {
+  __typename?: 'Query';
+  availableToAllocate?: {
+    __typename?: 'AllocationAvailability';
+    available_percent?: number | null;
+    available_units?: number | null;
+  } | null;
+};
 
-export type AvailableToAllocateQuery = { __typename?: 'Query', availableToAllocate?: { __typename?: 'AllocationAvailability', available_percent?: number | null, available_units?: number | null } | null };
+export type BusinessUnitsQueryVariables = Exact<{ [key: string]: never }>;
 
-export type BusinessUnitsQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type BusinessUnitsQuery = { __typename?: 'Query', businessUnits?: Array<{ __typename?: 'BusinessUnit', id?: string | null, name?: string | null, description?: string | null, default_emission?: string | null, default_target?: number | null, actual_rate?: string | null, yearly_emissions?: string | null, yearly_contributions?: string | null, metadata?: Array<{ __typename?: 'Metadata', key?: string | null, value?: string | null } | null> | null, allocations?: Array<{ __typename?: 'Allocation', project?: string | null, amount?: number | null } | null> | null } | null> | null };
+export type BusinessUnitsQuery = {
+  __typename?: 'Query';
+  businessUnits?: Array<{
+    __typename?: 'BusinessUnit';
+    id?: string | null;
+    name?: string | null;
+    description?: string | null;
+    default_emission?: string | null;
+    default_target?: number | null;
+    actual_rate?: string | null;
+    yearly_emissions?: string | null;
+    yearly_contributions?: string | null;
+    metadata?: Array<{
+      __typename?: 'Metadata';
+      key?: string | null;
+      value?: string | null;
+    } | null> | null;
+    allocations?: Array<{
+      __typename?: 'Allocation';
+      project?: string | null;
+      amount?: number | null;
+    } | null> | null;
+  } | null> | null;
+};
 
 export type BusinessUnitDetailsQueryVariables = Exact<{
   id: Scalars['String']['input'];
 }>;
 
-
-export type BusinessUnitDetailsQuery = { __typename?: 'Query', businessUnitDetails?: { __typename?: 'BusinessUnit', id?: string | null, name?: string | null, description?: string | null, default_emission?: string | null, default_target?: number | null, yearly_emissions?: string | null, yearly_contributions?: string | null, metadata?: Array<{ __typename?: 'Metadata', key?: string | null, value?: string | null } | null> | null, allocations?: Array<{ __typename?: 'Allocation', project?: string | null, amount?: number | null } | null> | null } | null };
+export type BusinessUnitDetailsQuery = {
+  __typename?: 'Query';
+  businessUnitDetails?: {
+    __typename?: 'BusinessUnit';
+    id?: string | null;
+    name?: string | null;
+    description?: string | null;
+    default_emission?: string | null;
+    default_target?: number | null;
+    yearly_emissions?: string | null;
+    yearly_contributions?: string | null;
+    metadata?: Array<{
+      __typename?: 'Metadata';
+      key?: string | null;
+      value?: string | null;
+    } | null> | null;
+    allocations?: Array<{
+      __typename?: 'Allocation';
+      project?: string | null;
+      amount?: number | null;
+    } | null> | null;
+  } | null;
+};
 
 export type CreateBusinessUnitMutationVariables = Exact<{
   request: CreateBusinessUnitRequest;
 }>;
 
-
-export type CreateBusinessUnitMutation = { __typename?: 'Mutation', createBusinessUnit?: { __typename?: 'DomainResponse', id: string, errors?: Array<string | null> | null } | null };
+export type CreateBusinessUnitMutation = {
+  __typename?: 'Mutation';
+  createBusinessUnit?: {
+    __typename?: 'DomainResponse';
+    id: string;
+    errors?: Array<string | null> | null;
+  } | null;
+};
 
 export type GetImpactMetricsQueryVariables = Exact<{
   view: VisualizationViewType;
 }>;
 
-
-export type GetImpactMetricsQuery = { __typename?: 'Query', getImpactMetrics: { __typename?: 'ImpactMetrics', protected_forest: string, protected_species: string, removed_tons: string, sdgs: Array<{ __typename?: 'Sdg', name: string, number: number }> } };
+export type GetImpactMetricsQuery = {
+  __typename?: 'Query';
+  getImpactMetrics: {
+    __typename?: 'ImpactMetrics';
+    protected_forest: string;
+    protected_species: string;
+    removed_tons: string;
+    sdgs: Array<{ __typename?: 'Sdg'; name: string; number: number }>;
+  };
+};
 
 export type GetGlobalDataQueryVariables = Exact<{
   view?: InputMaybe<VisualizationViewType>;
 }>;
 
-
-export type GetGlobalDataQuery = { __typename?: 'Query', getGlobalData?: { __typename?: 'GlobalData', target: string, actual: string, debt: string, number_of_projects: string, invested_amount: string } | null };
+export type GetGlobalDataQuery = {
+  __typename?: 'Query';
+  getGlobalData?: {
+    __typename?: 'GlobalData';
+    target: string;
+    actual: string;
+    debt: string;
+    number_of_projects: string;
+    invested_amount: string;
+  } | null;
+};
 
 export type NetZeroPlanningQueryVariables = Exact<{
   view?: InputMaybe<VisualizationViewType>;
 }>;
 
-
-export type NetZeroPlanningQuery = { __typename?: 'Query', netZeroPlanning: Array<{ __typename?: 'NetZeroPlanning', vintage?: number | null, ex_ante_count?: number | null, ex_post_count?: number | null, emission?: number | null, target?: number | null, actual?: number | null, retired?: number | null } | null> };
+export type NetZeroPlanningQuery = {
+  __typename?: 'Query';
+  netZeroPlanning: Array<{
+    __typename?: 'NetZeroPlanning';
+    vintage?: number | null;
+    ex_ante_count?: number | null;
+    ex_post_count?: number | null;
+    emission?: number | null;
+    target?: number | null;
+    actual?: number | null;
+    retired?: number | null;
+  } | null>;
+};
 
 export type AnnualQueryVariables = Exact<{
   view: VisualizationViewType;
   pagination?: InputMaybe<Pagination>;
 }>;
 
-
-export type AnnualQuery = { __typename?: 'Query', annual: { __typename?: 'Annual', data?: Array<{ __typename?: 'AnnualData', time_period?: string | null, emissions?: number | null, ex_post_issued?: number | null, ex_post_purchased?: number | null, ex_post_retired?: number | null, target?: number | null, actual_rate?: number | null, delta?: number | null, debt?: number | null, ex_post_stock?: number | null, ex_ante_stock?: number | null, total_ex_post?: number | null, total_ex_ante?: number | null } | null> | null, page_info?: { __typename?: 'PageInfo', has_next_page: boolean, has_previous_page: boolean, total_page: number } | null } };
+export type AnnualQuery = {
+  __typename?: 'Query';
+  annual: {
+    __typename?: 'Annual';
+    data?: Array<{
+      __typename?: 'AnnualData';
+      time_period?: string | null;
+      emissions?: number | null;
+      ex_post_issued?: number | null;
+      ex_post_purchased?: number | null;
+      ex_post_retired?: number | null;
+      target?: number | null;
+      actual_rate?: number | null;
+      delta?: number | null;
+      debt?: number | null;
+      ex_post_stock?: number | null;
+      ex_ante_stock?: number | null;
+      total_ex_post?: number | null;
+      total_ex_ante?: number | null;
+    } | null> | null;
+    page_info?: {
+      __typename?: 'PageInfo';
+      has_next_page: boolean;
+      has_previous_page: boolean;
+      total_page: number;
+    } | null;
+  };
+};
 
 export type CumulativeQueryVariables = Exact<{
   view: VisualizationViewType;
   pagination?: InputMaybe<Pagination>;
 }>;
 
-
-export type CumulativeQuery = { __typename?: 'Query', cumulative: { __typename?: 'Cumulative', data?: Array<{ __typename?: 'CumulativeData', time_period?: string | null, emissions?: number | null, ex_post_issued?: number | null, ex_post_purchased?: number | null, ex_post_retired?: number | null, target?: number | null, actual_rate?: number | null, delta?: number | null, debt?: number | null, ex_post_stock?: number | null, ex_ante_stock?: number | null } | null> | null, page_info?: { __typename?: 'PageInfo', has_next_page: boolean, has_previous_page: boolean, total_page: number } | null } };
+export type CumulativeQuery = {
+  __typename?: 'Query';
+  cumulative: {
+    __typename?: 'Cumulative';
+    data?: Array<{
+      __typename?: 'CumulativeData';
+      time_period?: string | null;
+      emissions?: number | null;
+      ex_post_issued?: number | null;
+      ex_post_purchased?: number | null;
+      ex_post_retired?: number | null;
+      target?: number | null;
+      actual_rate?: number | null;
+      delta?: number | null;
+      debt?: number | null;
+      ex_post_stock?: number | null;
+      ex_ante_stock?: number | null;
+    } | null> | null;
+    page_info?: {
+      __typename?: 'PageInfo';
+      has_next_page: boolean;
+      has_previous_page: boolean;
+      total_page: number;
+    } | null;
+  };
+};
 
 export type FinancialAnalysisQueryVariables = Exact<{
   view: VisualizationViewType;
   pagination?: InputMaybe<Pagination>;
 }>;
 
+export type FinancialAnalysisQuery = {
+  __typename?: 'Query';
+  financialAnalysis: {
+    __typename?: 'FinancialAnalysis';
+    data?: Array<{
+      __typename?: 'FinancialAnalysisData';
+      year?: number | null;
+      all_time_avg_issued_price?: number | null;
+      all_time_avg_purchased_price?: number | null;
+      all_time_avg_price?: number | null;
+      avg_issued_price?: number | null;
+      avg_purchased_price?: number | null;
+      avg_price?: number | null;
+      cumulative_emission_debt?: number | null;
+      cumulative_total_amount?: number | null;
+      emission_debt?: number | null;
+      total_amount?: number | null;
+      total_issued_amount?: number | null;
+      total_purchased_amount?: number | null;
+    } | null> | null;
+    page_info?: {
+      __typename?: 'PageInfo';
+      has_next_page: boolean;
+      has_previous_page: boolean;
+      total_page: number;
+    } | null;
+  };
+};
 
-export type FinancialAnalysisQuery = { __typename?: 'Query', financialAnalysis: { __typename?: 'FinancialAnalysis', data?: Array<{ __typename?: 'FinancialAnalysisData', year?: number | null, all_time_avg_issued_price?: number | null, all_time_avg_purchased_price?: number | null, all_time_avg_price?: number | null, avg_issued_price?: number | null, avg_purchased_price?: number | null, avg_price?: number | null, cumulative_emission_debt?: number | null, cumulative_total_amount?: number | null, emission_debt?: number | null, total_amount?: number | null, total_issued_amount?: number | null, total_purchased_amount?: number | null } | null> | null, page_info?: { __typename?: 'PageInfo', has_next_page: boolean, has_previous_page: boolean, total_page: number } | null } };
+export type ProjectsQueryVariables = Exact<{ [key: string]: never }>;
 
-export type ProjectsQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type ProjectsQuery = { __typename?: 'Query', projects?: Array<{ __typename?: 'Project', id: string, name?: string | null, slug?: string | null, metadata?: any | null } | null> | null };
+export type ProjectsQuery = {
+  __typename?: 'Query';
+  projects?: Array<{
+    __typename?: 'Project';
+    id: string;
+    name?: string | null;
+    slug?: string | null;
+    metadata?: any | null;
+  } | null> | null;
+};
 
 export type ProjectByQueryVariables = Exact<{
   field: Scalars['String']['input'];
   value: Scalars['String']['input'];
 }>;
 
-
-export type ProjectByQuery = { __typename?: 'Query', projectBy?: { __typename?: 'Project', id: string, name?: string | null, description?: string | null, localization?: string | null, startDate?: string | null, endDate?: string | null, area?: number | null, type?: CarbonCreditType | null, origin?: CarbonCreditOrigin | null, slug?: string | null, metadata?: any | null, certifier: { __typename?: 'Certifier', id: string, name: string }, developper?: { __typename?: 'Developper', id: string, name: string } | null, country?: { __typename?: 'Country', name: string, code: string } | null, global_data?: { __typename?: 'ProjectGlobalData', amount?: number | null, source?: string | null, rating?: string | null, allocated_units?: number | null, available_ex_post?: number | null, available_ex_ante?: number | null } | null } | null };
+export type ProjectByQuery = {
+  __typename?: 'Query';
+  projectBy?: {
+    __typename?: 'Project';
+    id: string;
+    name?: string | null;
+    description?: string | null;
+    localization?: string | null;
+    startDate?: string | null;
+    endDate?: string | null;
+    area?: number | null;
+    type?: CarbonCreditType | null;
+    origin?: CarbonCreditOrigin | null;
+    slug?: string | null;
+    metadata?: any | null;
+    certifier: { __typename?: 'Certifier'; id: string; name: string };
+    developper?: { __typename?: 'Developper'; id: string; name: string } | null;
+    country?: { __typename?: 'Country'; name: string; code: string } | null;
+    global_data?: {
+      __typename?: 'ProjectGlobalData';
+      amount?: number | null;
+      source?: string | null;
+      rating?: string | null;
+      allocated_units?: number | null;
+      available_ex_post?: number | null;
+      available_ex_ante?: number | null;
+    } | null;
+  } | null;
+};
 
 export type GetProjectsMetricsQueryVariables = Exact<{
   view?: InputMaybe<VisualizationViewType>;
 }>;
 
-
-export type GetProjectsMetricsQuery = { __typename?: 'Query', getProjectMetrics: { __typename?: 'ProjectMetrics', colors: { __typename?: 'ProjectColorRepartition', blue: { __typename?: 'Map', key: string, value: string }, green: { __typename?: 'Map', key: string, value: string }, orange: { __typename?: 'Map', key: string, value: string } }, localization: Array<{ __typename?: 'LocalizationRepartition', value: string, country: { __typename?: 'ShortCountry', flag: string, iso: string, name: string } }>, standards: Array<{ __typename?: 'Map', key: string, value: string }>, types: { __typename?: 'ProjectTypeRepartition', avoidance: string, removal: string } } };
+export type GetProjectsMetricsQuery = {
+  __typename?: 'Query';
+  getProjectMetrics: {
+    __typename?: 'ProjectMetrics';
+    colors: {
+      __typename?: 'ProjectColorRepartition';
+      blue: { __typename?: 'Map'; key: string; value: string };
+      green: { __typename?: 'Map'; key: string; value: string };
+      orange: { __typename?: 'Map'; key: string; value: string };
+    };
+    localization: Array<{
+      __typename?: 'LocalizationRepartition';
+      value: string;
+      country: { __typename?: 'ShortCountry'; flag: string; iso: string; name: string };
+    }>;
+    standards: Array<{ __typename?: 'Map'; key: string; value: string }>;
+    types: { __typename?: 'ProjectTypeRepartition'; avoidance: string; removal: string };
+  };
+};
 
 export type GetStockQueryVariables = Exact<{
   view: VisualizationViewType;
   pagination?: InputMaybe<Pagination>;
 }>;
 
-
-export type GetStockQuery = { __typename?: 'Query', getStock?: { __typename?: 'Stock', data: Array<{ __typename?: 'StockData', vintage: number, quantity: number, available: number, project: { __typename?: 'AssetAllocationItem', id: string, name: string, metadata: Array<{ __typename?: 'Map', key: string, value: string } | null> } } | null>, page_info?: { __typename?: 'PageInfo', has_next_page: boolean, has_previous_page: boolean, total_page: number } | null } | null };
-
+export type GetStockQuery = {
+  __typename?: 'Query';
+  getStock?: {
+    __typename?: 'Stock';
+    data: Array<{
+      __typename?: 'StockData';
+      vintage: number;
+      quantity: number;
+      available: number;
+      project: {
+        __typename?: 'AssetAllocationItem';
+        id: string;
+        name: string;
+        metadata: Array<{ __typename?: 'Map'; key: string; value: string } | null>;
+      };
+    } | null>;
+    page_info?: {
+      __typename?: 'PageInfo';
+      has_next_page: boolean;
+      has_previous_page: boolean;
+      total_page: number;
+    } | null;
+  } | null;
+};
 
 export const CompanyCarbonAssetAllocationDocument = gql`
-    query CompanyCarbonAssetAllocation($id: String!, $pagination: Pagination) {
-  companyCarbonAssetAllocation(id: $id, pagination: $pagination) {
-    data {
-      project_name
-      business_units {
-        id
-        name
+  query CompanyCarbonAssetAllocation($id: String!, $pagination: Pagination) {
+    companyCarbonAssetAllocation(id: $id, pagination: $pagination) {
+      data {
+        project_name
+        business_units {
+          id
+          name
+        }
+        type
+        total_potential
+        ex_post_to_date
+        ex_ante_to_date
+        project_completion
+        total_allocated_to_date
+        total_available_to_date
+        allocation_rate
+        price
+        total_amount
       }
-      type
-      total_potential
-      ex_post_to_date
-      ex_ante_to_date
-      project_completion
-      total_allocated_to_date
-      total_available_to_date
-      allocation_rate
-      price
-      total_amount
-    }
-    page_info {
-      has_next_page
-      has_previous_page
-      total_page
+      page_info {
+        has_next_page
+        has_previous_page
+        total_page
+      }
     }
   }
-}
-    `;
+`;
 
 /**
  * __useCompanyCarbonAssetAllocationQuery__
@@ -1634,44 +3498,81 @@ export const CompanyCarbonAssetAllocationDocument = gql`
  *   },
  * });
  */
-export function useCompanyCarbonAssetAllocationQuery(baseOptions: Apollo.QueryHookOptions<CompanyCarbonAssetAllocationQuery, CompanyCarbonAssetAllocationQueryVariables> & ({ variables: CompanyCarbonAssetAllocationQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<CompanyCarbonAssetAllocationQuery, CompanyCarbonAssetAllocationQueryVariables>(CompanyCarbonAssetAllocationDocument, options);
-      }
-export function useCompanyCarbonAssetAllocationLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<CompanyCarbonAssetAllocationQuery, CompanyCarbonAssetAllocationQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<CompanyCarbonAssetAllocationQuery, CompanyCarbonAssetAllocationQueryVariables>(CompanyCarbonAssetAllocationDocument, options);
-        }
-export function useCompanyCarbonAssetAllocationSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<CompanyCarbonAssetAllocationQuery, CompanyCarbonAssetAllocationQueryVariables>) {
-          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
-          return Apollo.useSuspenseQuery<CompanyCarbonAssetAllocationQuery, CompanyCarbonAssetAllocationQueryVariables>(CompanyCarbonAssetAllocationDocument, options);
-        }
-export type CompanyCarbonAssetAllocationQueryHookResult = ReturnType<typeof useCompanyCarbonAssetAllocationQuery>;
-export type CompanyCarbonAssetAllocationLazyQueryHookResult = ReturnType<typeof useCompanyCarbonAssetAllocationLazyQuery>;
-export type CompanyCarbonAssetAllocationSuspenseQueryHookResult = ReturnType<typeof useCompanyCarbonAssetAllocationSuspenseQuery>;
-export type CompanyCarbonAssetAllocationQueryResult = Apollo.QueryResult<CompanyCarbonAssetAllocationQuery, CompanyCarbonAssetAllocationQueryVariables>;
+export function useCompanyCarbonAssetAllocationQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    CompanyCarbonAssetAllocationQuery,
+    CompanyCarbonAssetAllocationQueryVariables
+  > &
+    ({ variables: CompanyCarbonAssetAllocationQueryVariables; skip?: boolean } | { skip: boolean }),
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    CompanyCarbonAssetAllocationQuery,
+    CompanyCarbonAssetAllocationQueryVariables
+  >(CompanyCarbonAssetAllocationDocument, options);
+}
+export function useCompanyCarbonAssetAllocationLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    CompanyCarbonAssetAllocationQuery,
+    CompanyCarbonAssetAllocationQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    CompanyCarbonAssetAllocationQuery,
+    CompanyCarbonAssetAllocationQueryVariables
+  >(CompanyCarbonAssetAllocationDocument, options);
+}
+export function useCompanyCarbonAssetAllocationSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        CompanyCarbonAssetAllocationQuery,
+        CompanyCarbonAssetAllocationQueryVariables
+      >,
+) {
+  const options =
+    baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<
+    CompanyCarbonAssetAllocationQuery,
+    CompanyCarbonAssetAllocationQueryVariables
+  >(CompanyCarbonAssetAllocationDocument, options);
+}
+export type CompanyCarbonAssetAllocationQueryHookResult = ReturnType<
+  typeof useCompanyCarbonAssetAllocationQuery
+>;
+export type CompanyCarbonAssetAllocationLazyQueryHookResult = ReturnType<
+  typeof useCompanyCarbonAssetAllocationLazyQuery
+>;
+export type CompanyCarbonAssetAllocationSuspenseQueryHookResult = ReturnType<
+  typeof useCompanyCarbonAssetAllocationSuspenseQuery
+>;
+export type CompanyCarbonAssetAllocationQueryResult = Apollo.QueryResult<
+  CompanyCarbonAssetAllocationQuery,
+  CompanyCarbonAssetAllocationQueryVariables
+>;
 export const ProjectCarbonAssetAllocationDocument = gql`
-    query ProjectCarbonAssetAllocation($id: String!, $pagination: Pagination) {
-  projectCarbonAssetAllocation(id: $id, pagination: $pagination) {
-    data {
-      business_unit {
-        id
-        name
+  query ProjectCarbonAssetAllocation($id: String!, $pagination: Pagination) {
+    projectCarbonAssetAllocation(id: $id, pagination: $pagination) {
+      data {
+        business_unit {
+          id
+          name
+        }
+        allocated
+        allocation_amount
+        target
+        actual
+        start_date
       }
-      allocated
-      allocation_amount
-      target
-      actual
-      start_date
-    }
-    page_info {
-      has_next_page
-      has_previous_page
-      total_page
+      page_info {
+        has_next_page
+        has_previous_page
+        total_page
+      }
     }
   }
-}
-    `;
+`;
 
 /**
  * __useProjectCarbonAssetAllocationQuery__
@@ -1690,44 +3591,81 @@ export const ProjectCarbonAssetAllocationDocument = gql`
  *   },
  * });
  */
-export function useProjectCarbonAssetAllocationQuery(baseOptions: Apollo.QueryHookOptions<ProjectCarbonAssetAllocationQuery, ProjectCarbonAssetAllocationQueryVariables> & ({ variables: ProjectCarbonAssetAllocationQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<ProjectCarbonAssetAllocationQuery, ProjectCarbonAssetAllocationQueryVariables>(ProjectCarbonAssetAllocationDocument, options);
-      }
-export function useProjectCarbonAssetAllocationLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ProjectCarbonAssetAllocationQuery, ProjectCarbonAssetAllocationQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<ProjectCarbonAssetAllocationQuery, ProjectCarbonAssetAllocationQueryVariables>(ProjectCarbonAssetAllocationDocument, options);
-        }
-export function useProjectCarbonAssetAllocationSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<ProjectCarbonAssetAllocationQuery, ProjectCarbonAssetAllocationQueryVariables>) {
-          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
-          return Apollo.useSuspenseQuery<ProjectCarbonAssetAllocationQuery, ProjectCarbonAssetAllocationQueryVariables>(ProjectCarbonAssetAllocationDocument, options);
-        }
-export type ProjectCarbonAssetAllocationQueryHookResult = ReturnType<typeof useProjectCarbonAssetAllocationQuery>;
-export type ProjectCarbonAssetAllocationLazyQueryHookResult = ReturnType<typeof useProjectCarbonAssetAllocationLazyQuery>;
-export type ProjectCarbonAssetAllocationSuspenseQueryHookResult = ReturnType<typeof useProjectCarbonAssetAllocationSuspenseQuery>;
-export type ProjectCarbonAssetAllocationQueryResult = Apollo.QueryResult<ProjectCarbonAssetAllocationQuery, ProjectCarbonAssetAllocationQueryVariables>;
+export function useProjectCarbonAssetAllocationQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    ProjectCarbonAssetAllocationQuery,
+    ProjectCarbonAssetAllocationQueryVariables
+  > &
+    ({ variables: ProjectCarbonAssetAllocationQueryVariables; skip?: boolean } | { skip: boolean }),
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    ProjectCarbonAssetAllocationQuery,
+    ProjectCarbonAssetAllocationQueryVariables
+  >(ProjectCarbonAssetAllocationDocument, options);
+}
+export function useProjectCarbonAssetAllocationLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    ProjectCarbonAssetAllocationQuery,
+    ProjectCarbonAssetAllocationQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    ProjectCarbonAssetAllocationQuery,
+    ProjectCarbonAssetAllocationQueryVariables
+  >(ProjectCarbonAssetAllocationDocument, options);
+}
+export function useProjectCarbonAssetAllocationSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        ProjectCarbonAssetAllocationQuery,
+        ProjectCarbonAssetAllocationQueryVariables
+      >,
+) {
+  const options =
+    baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<
+    ProjectCarbonAssetAllocationQuery,
+    ProjectCarbonAssetAllocationQueryVariables
+  >(ProjectCarbonAssetAllocationDocument, options);
+}
+export type ProjectCarbonAssetAllocationQueryHookResult = ReturnType<
+  typeof useProjectCarbonAssetAllocationQuery
+>;
+export type ProjectCarbonAssetAllocationLazyQueryHookResult = ReturnType<
+  typeof useProjectCarbonAssetAllocationLazyQuery
+>;
+export type ProjectCarbonAssetAllocationSuspenseQueryHookResult = ReturnType<
+  typeof useProjectCarbonAssetAllocationSuspenseQuery
+>;
+export type ProjectCarbonAssetAllocationQueryResult = Apollo.QueryResult<
+  ProjectCarbonAssetAllocationQuery,
+  ProjectCarbonAssetAllocationQueryVariables
+>;
 export const BusinessUnitCarbonAssetAllocationDocument = gql`
-    query BusinessUnitCarbonAssetAllocation($id: String!, $pagination: Pagination) {
-  businessUnitCarbonAssetAllocation(id: $id, pagination: $pagination) {
-    data {
-      project {
-        id
-        name
+  query BusinessUnitCarbonAssetAllocation($id: String!, $pagination: Pagination) {
+    businessUnitCarbonAssetAllocation(id: $id, pagination: $pagination) {
+      data {
+        project {
+          id
+          name
+        }
+        total_cu
+        allocated
+        generated
+        forward
+        retired
       }
-      total_cu
-      allocated
-      generated
-      forward
-      retired
-    }
-    page_info {
-      has_next_page
-      has_previous_page
-      total_page
+      page_info {
+        has_next_page
+        has_previous_page
+        total_page
+      }
     }
   }
-}
-    `;
+`;
 
 /**
  * __useBusinessUnitCarbonAssetAllocationQuery__
@@ -1746,31 +3684,74 @@ export const BusinessUnitCarbonAssetAllocationDocument = gql`
  *   },
  * });
  */
-export function useBusinessUnitCarbonAssetAllocationQuery(baseOptions: Apollo.QueryHookOptions<BusinessUnitCarbonAssetAllocationQuery, BusinessUnitCarbonAssetAllocationQueryVariables> & ({ variables: BusinessUnitCarbonAssetAllocationQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<BusinessUnitCarbonAssetAllocationQuery, BusinessUnitCarbonAssetAllocationQueryVariables>(BusinessUnitCarbonAssetAllocationDocument, options);
-      }
-export function useBusinessUnitCarbonAssetAllocationLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<BusinessUnitCarbonAssetAllocationQuery, BusinessUnitCarbonAssetAllocationQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<BusinessUnitCarbonAssetAllocationQuery, BusinessUnitCarbonAssetAllocationQueryVariables>(BusinessUnitCarbonAssetAllocationDocument, options);
-        }
-export function useBusinessUnitCarbonAssetAllocationSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<BusinessUnitCarbonAssetAllocationQuery, BusinessUnitCarbonAssetAllocationQueryVariables>) {
-          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
-          return Apollo.useSuspenseQuery<BusinessUnitCarbonAssetAllocationQuery, BusinessUnitCarbonAssetAllocationQueryVariables>(BusinessUnitCarbonAssetAllocationDocument, options);
-        }
-export type BusinessUnitCarbonAssetAllocationQueryHookResult = ReturnType<typeof useBusinessUnitCarbonAssetAllocationQuery>;
-export type BusinessUnitCarbonAssetAllocationLazyQueryHookResult = ReturnType<typeof useBusinessUnitCarbonAssetAllocationLazyQuery>;
-export type BusinessUnitCarbonAssetAllocationSuspenseQueryHookResult = ReturnType<typeof useBusinessUnitCarbonAssetAllocationSuspenseQuery>;
-export type BusinessUnitCarbonAssetAllocationQueryResult = Apollo.QueryResult<BusinessUnitCarbonAssetAllocationQuery, BusinessUnitCarbonAssetAllocationQueryVariables>;
-export const AddAllocationsDocument = gql`
-    mutation addAllocations($request: [AddAllocationRequestItem]!) {
-  addAllocations(request: $request) {
-    allocationIds
-    errors
-  }
+export function useBusinessUnitCarbonAssetAllocationQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    BusinessUnitCarbonAssetAllocationQuery,
+    BusinessUnitCarbonAssetAllocationQueryVariables
+  > &
+    (
+      | { variables: BusinessUnitCarbonAssetAllocationQueryVariables; skip?: boolean }
+      | { skip: boolean }
+    ),
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    BusinessUnitCarbonAssetAllocationQuery,
+    BusinessUnitCarbonAssetAllocationQueryVariables
+  >(BusinessUnitCarbonAssetAllocationDocument, options);
 }
-    `;
-export type AddAllocationsMutationFn = Apollo.MutationFunction<AddAllocationsMutation, AddAllocationsMutationVariables>;
+export function useBusinessUnitCarbonAssetAllocationLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    BusinessUnitCarbonAssetAllocationQuery,
+    BusinessUnitCarbonAssetAllocationQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    BusinessUnitCarbonAssetAllocationQuery,
+    BusinessUnitCarbonAssetAllocationQueryVariables
+  >(BusinessUnitCarbonAssetAllocationDocument, options);
+}
+export function useBusinessUnitCarbonAssetAllocationSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        BusinessUnitCarbonAssetAllocationQuery,
+        BusinessUnitCarbonAssetAllocationQueryVariables
+      >,
+) {
+  const options =
+    baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<
+    BusinessUnitCarbonAssetAllocationQuery,
+    BusinessUnitCarbonAssetAllocationQueryVariables
+  >(BusinessUnitCarbonAssetAllocationDocument, options);
+}
+export type BusinessUnitCarbonAssetAllocationQueryHookResult = ReturnType<
+  typeof useBusinessUnitCarbonAssetAllocationQuery
+>;
+export type BusinessUnitCarbonAssetAllocationLazyQueryHookResult = ReturnType<
+  typeof useBusinessUnitCarbonAssetAllocationLazyQuery
+>;
+export type BusinessUnitCarbonAssetAllocationSuspenseQueryHookResult = ReturnType<
+  typeof useBusinessUnitCarbonAssetAllocationSuspenseQuery
+>;
+export type BusinessUnitCarbonAssetAllocationQueryResult = Apollo.QueryResult<
+  BusinessUnitCarbonAssetAllocationQuery,
+  BusinessUnitCarbonAssetAllocationQueryVariables
+>;
+export const AddAllocationsDocument = gql`
+  mutation addAllocations($request: [AddAllocationRequestItem]!) {
+    addAllocations(request: $request) {
+      allocationIds
+      errors
+    }
+  }
+`;
+export type AddAllocationsMutationFn = Apollo.MutationFunction<
+  AddAllocationsMutation,
+  AddAllocationsMutationVariables
+>;
 
 /**
  * __useAddAllocationsMutation__
@@ -1789,24 +3770,29 @@ export type AddAllocationsMutationFn = Apollo.MutationFunction<AddAllocationsMut
  *   },
  * });
  */
-export function useAddAllocationsMutation(baseOptions?: Apollo.MutationHookOptions<AddAllocationsMutation, AddAllocationsMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<AddAllocationsMutation, AddAllocationsMutationVariables>(AddAllocationsDocument, options);
-      }
+export function useAddAllocationsMutation(
+  baseOptions?: Apollo.MutationHookOptions<AddAllocationsMutation, AddAllocationsMutationVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<AddAllocationsMutation, AddAllocationsMutationVariables>(
+    AddAllocationsDocument,
+    options,
+  );
+}
 export type AddAllocationsMutationHookResult = ReturnType<typeof useAddAllocationsMutation>;
 export type AddAllocationsMutationResult = Apollo.MutationResult<AddAllocationsMutation>;
-export type AddAllocationsMutationOptions = Apollo.BaseMutationOptions<AddAllocationsMutation, AddAllocationsMutationVariables>;
+export type AddAllocationsMutationOptions = Apollo.BaseMutationOptions<
+  AddAllocationsMutation,
+  AddAllocationsMutationVariables
+>;
 export const AvailableToAllocateDocument = gql`
-    query AvailableToAllocate($project_id: String!, $business_unit_id: String!) {
-  availableToAllocate(
-    project_id: $project_id
-    business_unit_id: $business_unit_id
-  ) {
-    available_percent
-    available_units
+  query AvailableToAllocate($project_id: String!, $business_unit_id: String!) {
+    availableToAllocate(project_id: $project_id, business_unit_id: $business_unit_id) {
+      available_percent
+      available_units
+    }
   }
-}
-    `;
+`;
 
 /**
  * __useAvailableToAllocateQuery__
@@ -1825,44 +3811,76 @@ export const AvailableToAllocateDocument = gql`
  *   },
  * });
  */
-export function useAvailableToAllocateQuery(baseOptions: Apollo.QueryHookOptions<AvailableToAllocateQuery, AvailableToAllocateQueryVariables> & ({ variables: AvailableToAllocateQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<AvailableToAllocateQuery, AvailableToAllocateQueryVariables>(AvailableToAllocateDocument, options);
-      }
-export function useAvailableToAllocateLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<AvailableToAllocateQuery, AvailableToAllocateQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<AvailableToAllocateQuery, AvailableToAllocateQueryVariables>(AvailableToAllocateDocument, options);
-        }
-export function useAvailableToAllocateSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<AvailableToAllocateQuery, AvailableToAllocateQueryVariables>) {
-          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
-          return Apollo.useSuspenseQuery<AvailableToAllocateQuery, AvailableToAllocateQueryVariables>(AvailableToAllocateDocument, options);
-        }
+export function useAvailableToAllocateQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    AvailableToAllocateQuery,
+    AvailableToAllocateQueryVariables
+  > &
+    ({ variables: AvailableToAllocateQueryVariables; skip?: boolean } | { skip: boolean }),
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<AvailableToAllocateQuery, AvailableToAllocateQueryVariables>(
+    AvailableToAllocateDocument,
+    options,
+  );
+}
+export function useAvailableToAllocateLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    AvailableToAllocateQuery,
+    AvailableToAllocateQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<AvailableToAllocateQuery, AvailableToAllocateQueryVariables>(
+    AvailableToAllocateDocument,
+    options,
+  );
+}
+export function useAvailableToAllocateSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<AvailableToAllocateQuery, AvailableToAllocateQueryVariables>,
+) {
+  const options =
+    baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<AvailableToAllocateQuery, AvailableToAllocateQueryVariables>(
+    AvailableToAllocateDocument,
+    options,
+  );
+}
 export type AvailableToAllocateQueryHookResult = ReturnType<typeof useAvailableToAllocateQuery>;
-export type AvailableToAllocateLazyQueryHookResult = ReturnType<typeof useAvailableToAllocateLazyQuery>;
-export type AvailableToAllocateSuspenseQueryHookResult = ReturnType<typeof useAvailableToAllocateSuspenseQuery>;
-export type AvailableToAllocateQueryResult = Apollo.QueryResult<AvailableToAllocateQuery, AvailableToAllocateQueryVariables>;
+export type AvailableToAllocateLazyQueryHookResult = ReturnType<
+  typeof useAvailableToAllocateLazyQuery
+>;
+export type AvailableToAllocateSuspenseQueryHookResult = ReturnType<
+  typeof useAvailableToAllocateSuspenseQuery
+>;
+export type AvailableToAllocateQueryResult = Apollo.QueryResult<
+  AvailableToAllocateQuery,
+  AvailableToAllocateQueryVariables
+>;
 export const BusinessUnitsDocument = gql`
-    query BusinessUnits {
-  businessUnits {
-    id
-    name
-    description
-    default_emission
-    default_target
-    actual_rate
-    metadata {
-      key
-      value
-    }
-    yearly_emissions
-    yearly_contributions
-    allocations {
-      project
-      amount
+  query BusinessUnits {
+    businessUnits {
+      id
+      name
+      description
+      default_emission
+      default_target
+      actual_rate
+      metadata {
+        key
+        value
+      }
+      yearly_emissions
+      yearly_contributions
+      allocations {
+        project
+        amount
+      }
     }
   }
-}
-    `;
+`;
 
 /**
  * __useBusinessUnitsQuery__
@@ -1879,43 +3897,64 @@ export const BusinessUnitsDocument = gql`
  *   },
  * });
  */
-export function useBusinessUnitsQuery(baseOptions?: Apollo.QueryHookOptions<BusinessUnitsQuery, BusinessUnitsQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<BusinessUnitsQuery, BusinessUnitsQueryVariables>(BusinessUnitsDocument, options);
-      }
-export function useBusinessUnitsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<BusinessUnitsQuery, BusinessUnitsQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<BusinessUnitsQuery, BusinessUnitsQueryVariables>(BusinessUnitsDocument, options);
-        }
-export function useBusinessUnitsSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<BusinessUnitsQuery, BusinessUnitsQueryVariables>) {
-          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
-          return Apollo.useSuspenseQuery<BusinessUnitsQuery, BusinessUnitsQueryVariables>(BusinessUnitsDocument, options);
-        }
+export function useBusinessUnitsQuery(
+  baseOptions?: Apollo.QueryHookOptions<BusinessUnitsQuery, BusinessUnitsQueryVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<BusinessUnitsQuery, BusinessUnitsQueryVariables>(
+    BusinessUnitsDocument,
+    options,
+  );
+}
+export function useBusinessUnitsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<BusinessUnitsQuery, BusinessUnitsQueryVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<BusinessUnitsQuery, BusinessUnitsQueryVariables>(
+    BusinessUnitsDocument,
+    options,
+  );
+}
+export function useBusinessUnitsSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<BusinessUnitsQuery, BusinessUnitsQueryVariables>,
+) {
+  const options =
+    baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<BusinessUnitsQuery, BusinessUnitsQueryVariables>(
+    BusinessUnitsDocument,
+    options,
+  );
+}
 export type BusinessUnitsQueryHookResult = ReturnType<typeof useBusinessUnitsQuery>;
 export type BusinessUnitsLazyQueryHookResult = ReturnType<typeof useBusinessUnitsLazyQuery>;
 export type BusinessUnitsSuspenseQueryHookResult = ReturnType<typeof useBusinessUnitsSuspenseQuery>;
-export type BusinessUnitsQueryResult = Apollo.QueryResult<BusinessUnitsQuery, BusinessUnitsQueryVariables>;
+export type BusinessUnitsQueryResult = Apollo.QueryResult<
+  BusinessUnitsQuery,
+  BusinessUnitsQueryVariables
+>;
 export const BusinessUnitDetailsDocument = gql`
-    query BusinessUnitDetails($id: String!) {
-  businessUnitDetails(id: $id) {
-    id
-    name
-    description
-    default_emission
-    default_target
-    metadata {
-      key
-      value
+  query BusinessUnitDetails($id: String!) {
+    businessUnitDetails(id: $id) {
+      id
+      name
+      description
+      default_emission
+      default_target
+      metadata {
+        key
+        value
+      }
+      allocations {
+        project
+        amount
+      }
+      yearly_emissions
+      yearly_contributions
     }
-    allocations {
-      project
-      amount
-    }
-    yearly_emissions
-    yearly_contributions
   }
-}
-    `;
+`;
 
 /**
  * __useBusinessUnitDetailsQuery__
@@ -1933,31 +3972,66 @@ export const BusinessUnitDetailsDocument = gql`
  *   },
  * });
  */
-export function useBusinessUnitDetailsQuery(baseOptions: Apollo.QueryHookOptions<BusinessUnitDetailsQuery, BusinessUnitDetailsQueryVariables> & ({ variables: BusinessUnitDetailsQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<BusinessUnitDetailsQuery, BusinessUnitDetailsQueryVariables>(BusinessUnitDetailsDocument, options);
-      }
-export function useBusinessUnitDetailsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<BusinessUnitDetailsQuery, BusinessUnitDetailsQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<BusinessUnitDetailsQuery, BusinessUnitDetailsQueryVariables>(BusinessUnitDetailsDocument, options);
-        }
-export function useBusinessUnitDetailsSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<BusinessUnitDetailsQuery, BusinessUnitDetailsQueryVariables>) {
-          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
-          return Apollo.useSuspenseQuery<BusinessUnitDetailsQuery, BusinessUnitDetailsQueryVariables>(BusinessUnitDetailsDocument, options);
-        }
-export type BusinessUnitDetailsQueryHookResult = ReturnType<typeof useBusinessUnitDetailsQuery>;
-export type BusinessUnitDetailsLazyQueryHookResult = ReturnType<typeof useBusinessUnitDetailsLazyQuery>;
-export type BusinessUnitDetailsSuspenseQueryHookResult = ReturnType<typeof useBusinessUnitDetailsSuspenseQuery>;
-export type BusinessUnitDetailsQueryResult = Apollo.QueryResult<BusinessUnitDetailsQuery, BusinessUnitDetailsQueryVariables>;
-export const CreateBusinessUnitDocument = gql`
-    mutation createBusinessUnit($request: CreateBusinessUnitRequest!) {
-  createBusinessUnit(request: $request) {
-    id
-    errors
-  }
+export function useBusinessUnitDetailsQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    BusinessUnitDetailsQuery,
+    BusinessUnitDetailsQueryVariables
+  > &
+    ({ variables: BusinessUnitDetailsQueryVariables; skip?: boolean } | { skip: boolean }),
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<BusinessUnitDetailsQuery, BusinessUnitDetailsQueryVariables>(
+    BusinessUnitDetailsDocument,
+    options,
+  );
 }
-    `;
-export type CreateBusinessUnitMutationFn = Apollo.MutationFunction<CreateBusinessUnitMutation, CreateBusinessUnitMutationVariables>;
+export function useBusinessUnitDetailsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    BusinessUnitDetailsQuery,
+    BusinessUnitDetailsQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<BusinessUnitDetailsQuery, BusinessUnitDetailsQueryVariables>(
+    BusinessUnitDetailsDocument,
+    options,
+  );
+}
+export function useBusinessUnitDetailsSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<BusinessUnitDetailsQuery, BusinessUnitDetailsQueryVariables>,
+) {
+  const options =
+    baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<BusinessUnitDetailsQuery, BusinessUnitDetailsQueryVariables>(
+    BusinessUnitDetailsDocument,
+    options,
+  );
+}
+export type BusinessUnitDetailsQueryHookResult = ReturnType<typeof useBusinessUnitDetailsQuery>;
+export type BusinessUnitDetailsLazyQueryHookResult = ReturnType<
+  typeof useBusinessUnitDetailsLazyQuery
+>;
+export type BusinessUnitDetailsSuspenseQueryHookResult = ReturnType<
+  typeof useBusinessUnitDetailsSuspenseQuery
+>;
+export type BusinessUnitDetailsQueryResult = Apollo.QueryResult<
+  BusinessUnitDetailsQuery,
+  BusinessUnitDetailsQueryVariables
+>;
+export const CreateBusinessUnitDocument = gql`
+  mutation createBusinessUnit($request: CreateBusinessUnitRequest!) {
+    createBusinessUnit(request: $request) {
+      id
+      errors
+    }
+  }
+`;
+export type CreateBusinessUnitMutationFn = Apollo.MutationFunction<
+  CreateBusinessUnitMutation,
+  CreateBusinessUnitMutationVariables
+>;
 
 /**
  * __useCreateBusinessUnitMutation__
@@ -1976,26 +4050,37 @@ export type CreateBusinessUnitMutationFn = Apollo.MutationFunction<CreateBusines
  *   },
  * });
  */
-export function useCreateBusinessUnitMutation(baseOptions?: Apollo.MutationHookOptions<CreateBusinessUnitMutation, CreateBusinessUnitMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<CreateBusinessUnitMutation, CreateBusinessUnitMutationVariables>(CreateBusinessUnitDocument, options);
-      }
+export function useCreateBusinessUnitMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    CreateBusinessUnitMutation,
+    CreateBusinessUnitMutationVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<CreateBusinessUnitMutation, CreateBusinessUnitMutationVariables>(
+    CreateBusinessUnitDocument,
+    options,
+  );
+}
 export type CreateBusinessUnitMutationHookResult = ReturnType<typeof useCreateBusinessUnitMutation>;
 export type CreateBusinessUnitMutationResult = Apollo.MutationResult<CreateBusinessUnitMutation>;
-export type CreateBusinessUnitMutationOptions = Apollo.BaseMutationOptions<CreateBusinessUnitMutation, CreateBusinessUnitMutationVariables>;
+export type CreateBusinessUnitMutationOptions = Apollo.BaseMutationOptions<
+  CreateBusinessUnitMutation,
+  CreateBusinessUnitMutationVariables
+>;
 export const GetImpactMetricsDocument = gql`
-    query GetImpactMetrics($view: VisualizationViewType!) {
-  getImpactMetrics(view: $view) {
-    protected_forest
-    protected_species
-    removed_tons
-    sdgs {
-      name
-      number
+  query GetImpactMetrics($view: VisualizationViewType!) {
+    getImpactMetrics(view: $view) {
+      protected_forest
+      protected_species
+      removed_tons
+      sdgs {
+        name
+        number
+      }
     }
   }
-}
-    `;
+`;
 
 /**
  * __useGetImpactMetricsQuery__
@@ -2013,33 +4098,57 @@ export const GetImpactMetricsDocument = gql`
  *   },
  * });
  */
-export function useGetImpactMetricsQuery(baseOptions: Apollo.QueryHookOptions<GetImpactMetricsQuery, GetImpactMetricsQueryVariables> & ({ variables: GetImpactMetricsQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetImpactMetricsQuery, GetImpactMetricsQueryVariables>(GetImpactMetricsDocument, options);
-      }
-export function useGetImpactMetricsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetImpactMetricsQuery, GetImpactMetricsQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetImpactMetricsQuery, GetImpactMetricsQueryVariables>(GetImpactMetricsDocument, options);
-        }
-export function useGetImpactMetricsSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetImpactMetricsQuery, GetImpactMetricsQueryVariables>) {
-          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
-          return Apollo.useSuspenseQuery<GetImpactMetricsQuery, GetImpactMetricsQueryVariables>(GetImpactMetricsDocument, options);
-        }
+export function useGetImpactMetricsQuery(
+  baseOptions: Apollo.QueryHookOptions<GetImpactMetricsQuery, GetImpactMetricsQueryVariables> &
+    ({ variables: GetImpactMetricsQueryVariables; skip?: boolean } | { skip: boolean }),
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<GetImpactMetricsQuery, GetImpactMetricsQueryVariables>(
+    GetImpactMetricsDocument,
+    options,
+  );
+}
+export function useGetImpactMetricsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<GetImpactMetricsQuery, GetImpactMetricsQueryVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<GetImpactMetricsQuery, GetImpactMetricsQueryVariables>(
+    GetImpactMetricsDocument,
+    options,
+  );
+}
+export function useGetImpactMetricsSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<GetImpactMetricsQuery, GetImpactMetricsQueryVariables>,
+) {
+  const options =
+    baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<GetImpactMetricsQuery, GetImpactMetricsQueryVariables>(
+    GetImpactMetricsDocument,
+    options,
+  );
+}
 export type GetImpactMetricsQueryHookResult = ReturnType<typeof useGetImpactMetricsQuery>;
 export type GetImpactMetricsLazyQueryHookResult = ReturnType<typeof useGetImpactMetricsLazyQuery>;
-export type GetImpactMetricsSuspenseQueryHookResult = ReturnType<typeof useGetImpactMetricsSuspenseQuery>;
-export type GetImpactMetricsQueryResult = Apollo.QueryResult<GetImpactMetricsQuery, GetImpactMetricsQueryVariables>;
+export type GetImpactMetricsSuspenseQueryHookResult = ReturnType<
+  typeof useGetImpactMetricsSuspenseQuery
+>;
+export type GetImpactMetricsQueryResult = Apollo.QueryResult<
+  GetImpactMetricsQuery,
+  GetImpactMetricsQueryVariables
+>;
 export const GetGlobalDataDocument = gql`
-    query GetGlobalData($view: VisualizationViewType) {
-  getGlobalData(view: $view) {
-    target
-    actual
-    debt
-    number_of_projects
-    invested_amount
+  query GetGlobalData($view: VisualizationViewType) {
+    getGlobalData(view: $view) {
+      target
+      actual
+      debt
+      number_of_projects
+      invested_amount
+    }
   }
-}
-    `;
+`;
 
 /**
  * __useGetGlobalDataQuery__
@@ -2057,35 +4166,56 @@ export const GetGlobalDataDocument = gql`
  *   },
  * });
  */
-export function useGetGlobalDataQuery(baseOptions?: Apollo.QueryHookOptions<GetGlobalDataQuery, GetGlobalDataQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetGlobalDataQuery, GetGlobalDataQueryVariables>(GetGlobalDataDocument, options);
-      }
-export function useGetGlobalDataLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetGlobalDataQuery, GetGlobalDataQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetGlobalDataQuery, GetGlobalDataQueryVariables>(GetGlobalDataDocument, options);
-        }
-export function useGetGlobalDataSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetGlobalDataQuery, GetGlobalDataQueryVariables>) {
-          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
-          return Apollo.useSuspenseQuery<GetGlobalDataQuery, GetGlobalDataQueryVariables>(GetGlobalDataDocument, options);
-        }
+export function useGetGlobalDataQuery(
+  baseOptions?: Apollo.QueryHookOptions<GetGlobalDataQuery, GetGlobalDataQueryVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<GetGlobalDataQuery, GetGlobalDataQueryVariables>(
+    GetGlobalDataDocument,
+    options,
+  );
+}
+export function useGetGlobalDataLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<GetGlobalDataQuery, GetGlobalDataQueryVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<GetGlobalDataQuery, GetGlobalDataQueryVariables>(
+    GetGlobalDataDocument,
+    options,
+  );
+}
+export function useGetGlobalDataSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<GetGlobalDataQuery, GetGlobalDataQueryVariables>,
+) {
+  const options =
+    baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<GetGlobalDataQuery, GetGlobalDataQueryVariables>(
+    GetGlobalDataDocument,
+    options,
+  );
+}
 export type GetGlobalDataQueryHookResult = ReturnType<typeof useGetGlobalDataQuery>;
 export type GetGlobalDataLazyQueryHookResult = ReturnType<typeof useGetGlobalDataLazyQuery>;
 export type GetGlobalDataSuspenseQueryHookResult = ReturnType<typeof useGetGlobalDataSuspenseQuery>;
-export type GetGlobalDataQueryResult = Apollo.QueryResult<GetGlobalDataQuery, GetGlobalDataQueryVariables>;
+export type GetGlobalDataQueryResult = Apollo.QueryResult<
+  GetGlobalDataQuery,
+  GetGlobalDataQueryVariables
+>;
 export const NetZeroPlanningDocument = gql`
-    query NetZeroPlanning($view: VisualizationViewType) {
-  netZeroPlanning(view: $view) {
-    vintage
-    ex_ante_count
-    ex_post_count
-    emission
-    target
-    actual
-    retired
+  query NetZeroPlanning($view: VisualizationViewType) {
+    netZeroPlanning(view: $view) {
+      vintage
+      ex_ante_count
+      ex_post_count
+      emission
+      target
+      actual
+      retired
+    }
   }
-}
-    `;
+`;
 
 /**
  * __useNetZeroPlanningQuery__
@@ -2103,48 +4233,71 @@ export const NetZeroPlanningDocument = gql`
  *   },
  * });
  */
-export function useNetZeroPlanningQuery(baseOptions?: Apollo.QueryHookOptions<NetZeroPlanningQuery, NetZeroPlanningQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<NetZeroPlanningQuery, NetZeroPlanningQueryVariables>(NetZeroPlanningDocument, options);
-      }
-export function useNetZeroPlanningLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<NetZeroPlanningQuery, NetZeroPlanningQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<NetZeroPlanningQuery, NetZeroPlanningQueryVariables>(NetZeroPlanningDocument, options);
-        }
-export function useNetZeroPlanningSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<NetZeroPlanningQuery, NetZeroPlanningQueryVariables>) {
-          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
-          return Apollo.useSuspenseQuery<NetZeroPlanningQuery, NetZeroPlanningQueryVariables>(NetZeroPlanningDocument, options);
-        }
+export function useNetZeroPlanningQuery(
+  baseOptions?: Apollo.QueryHookOptions<NetZeroPlanningQuery, NetZeroPlanningQueryVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<NetZeroPlanningQuery, NetZeroPlanningQueryVariables>(
+    NetZeroPlanningDocument,
+    options,
+  );
+}
+export function useNetZeroPlanningLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<NetZeroPlanningQuery, NetZeroPlanningQueryVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<NetZeroPlanningQuery, NetZeroPlanningQueryVariables>(
+    NetZeroPlanningDocument,
+    options,
+  );
+}
+export function useNetZeroPlanningSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<NetZeroPlanningQuery, NetZeroPlanningQueryVariables>,
+) {
+  const options =
+    baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<NetZeroPlanningQuery, NetZeroPlanningQueryVariables>(
+    NetZeroPlanningDocument,
+    options,
+  );
+}
 export type NetZeroPlanningQueryHookResult = ReturnType<typeof useNetZeroPlanningQuery>;
 export type NetZeroPlanningLazyQueryHookResult = ReturnType<typeof useNetZeroPlanningLazyQuery>;
-export type NetZeroPlanningSuspenseQueryHookResult = ReturnType<typeof useNetZeroPlanningSuspenseQuery>;
-export type NetZeroPlanningQueryResult = Apollo.QueryResult<NetZeroPlanningQuery, NetZeroPlanningQueryVariables>;
+export type NetZeroPlanningSuspenseQueryHookResult = ReturnType<
+  typeof useNetZeroPlanningSuspenseQuery
+>;
+export type NetZeroPlanningQueryResult = Apollo.QueryResult<
+  NetZeroPlanningQuery,
+  NetZeroPlanningQueryVariables
+>;
 export const AnnualDocument = gql`
-    query Annual($view: VisualizationViewType!, $pagination: Pagination) {
-  annual(view: $view, pagination: $pagination) {
-    data {
-      time_period
-      emissions
-      ex_post_issued
-      ex_post_purchased
-      ex_post_retired
-      target
-      actual_rate
-      delta
-      debt
-      ex_post_stock
-      ex_ante_stock
-      total_ex_post
-      total_ex_ante
-    }
-    page_info {
-      has_next_page
-      has_previous_page
-      total_page
+  query Annual($view: VisualizationViewType!, $pagination: Pagination) {
+    annual(view: $view, pagination: $pagination) {
+      data {
+        time_period
+        emissions
+        ex_post_issued
+        ex_post_purchased
+        ex_post_retired
+        target
+        actual_rate
+        delta
+        debt
+        ex_post_stock
+        ex_ante_stock
+        total_ex_post
+        total_ex_ante
+      }
+      page_info {
+        has_next_page
+        has_previous_page
+        total_page
+      }
     }
   }
-}
-    `;
+`;
 
 /**
  * __useAnnualQuery__
@@ -2163,46 +4316,56 @@ export const AnnualDocument = gql`
  *   },
  * });
  */
-export function useAnnualQuery(baseOptions: Apollo.QueryHookOptions<AnnualQuery, AnnualQueryVariables> & ({ variables: AnnualQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<AnnualQuery, AnnualQueryVariables>(AnnualDocument, options);
-      }
-export function useAnnualLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<AnnualQuery, AnnualQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<AnnualQuery, AnnualQueryVariables>(AnnualDocument, options);
-        }
-export function useAnnualSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<AnnualQuery, AnnualQueryVariables>) {
-          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
-          return Apollo.useSuspenseQuery<AnnualQuery, AnnualQueryVariables>(AnnualDocument, options);
-        }
+export function useAnnualQuery(
+  baseOptions: Apollo.QueryHookOptions<AnnualQuery, AnnualQueryVariables> &
+    ({ variables: AnnualQueryVariables; skip?: boolean } | { skip: boolean }),
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<AnnualQuery, AnnualQueryVariables>(AnnualDocument, options);
+}
+export function useAnnualLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<AnnualQuery, AnnualQueryVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<AnnualQuery, AnnualQueryVariables>(AnnualDocument, options);
+}
+export function useAnnualSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<AnnualQuery, AnnualQueryVariables>,
+) {
+  const options =
+    baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<AnnualQuery, AnnualQueryVariables>(AnnualDocument, options);
+}
 export type AnnualQueryHookResult = ReturnType<typeof useAnnualQuery>;
 export type AnnualLazyQueryHookResult = ReturnType<typeof useAnnualLazyQuery>;
 export type AnnualSuspenseQueryHookResult = ReturnType<typeof useAnnualSuspenseQuery>;
 export type AnnualQueryResult = Apollo.QueryResult<AnnualQuery, AnnualQueryVariables>;
 export const CumulativeDocument = gql`
-    query Cumulative($view: VisualizationViewType!, $pagination: Pagination) {
-  cumulative(view: $view, pagination: $pagination) {
-    data {
-      time_period
-      emissions
-      ex_post_issued
-      ex_post_purchased
-      ex_post_retired
-      target
-      actual_rate
-      delta
-      debt
-      ex_post_stock
-      ex_ante_stock
-    }
-    page_info {
-      has_next_page
-      has_previous_page
-      total_page
+  query Cumulative($view: VisualizationViewType!, $pagination: Pagination) {
+    cumulative(view: $view, pagination: $pagination) {
+      data {
+        time_period
+        emissions
+        ex_post_issued
+        ex_post_purchased
+        ex_post_retired
+        target
+        actual_rate
+        delta
+        debt
+        ex_post_stock
+        ex_ante_stock
+      }
+      page_info {
+        has_next_page
+        has_previous_page
+        total_page
+      }
     }
   }
-}
-    `;
+`;
 
 /**
  * __useCumulativeQuery__
@@ -2221,48 +4384,64 @@ export const CumulativeDocument = gql`
  *   },
  * });
  */
-export function useCumulativeQuery(baseOptions: Apollo.QueryHookOptions<CumulativeQuery, CumulativeQueryVariables> & ({ variables: CumulativeQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<CumulativeQuery, CumulativeQueryVariables>(CumulativeDocument, options);
-      }
-export function useCumulativeLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<CumulativeQuery, CumulativeQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<CumulativeQuery, CumulativeQueryVariables>(CumulativeDocument, options);
-        }
-export function useCumulativeSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<CumulativeQuery, CumulativeQueryVariables>) {
-          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
-          return Apollo.useSuspenseQuery<CumulativeQuery, CumulativeQueryVariables>(CumulativeDocument, options);
-        }
+export function useCumulativeQuery(
+  baseOptions: Apollo.QueryHookOptions<CumulativeQuery, CumulativeQueryVariables> &
+    ({ variables: CumulativeQueryVariables; skip?: boolean } | { skip: boolean }),
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<CumulativeQuery, CumulativeQueryVariables>(CumulativeDocument, options);
+}
+export function useCumulativeLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<CumulativeQuery, CumulativeQueryVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<CumulativeQuery, CumulativeQueryVariables>(
+    CumulativeDocument,
+    options,
+  );
+}
+export function useCumulativeSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<CumulativeQuery, CumulativeQueryVariables>,
+) {
+  const options =
+    baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<CumulativeQuery, CumulativeQueryVariables>(
+    CumulativeDocument,
+    options,
+  );
+}
 export type CumulativeQueryHookResult = ReturnType<typeof useCumulativeQuery>;
 export type CumulativeLazyQueryHookResult = ReturnType<typeof useCumulativeLazyQuery>;
 export type CumulativeSuspenseQueryHookResult = ReturnType<typeof useCumulativeSuspenseQuery>;
 export type CumulativeQueryResult = Apollo.QueryResult<CumulativeQuery, CumulativeQueryVariables>;
 export const FinancialAnalysisDocument = gql`
-    query FinancialAnalysis($view: VisualizationViewType!, $pagination: Pagination) {
-  financialAnalysis(view: $view, pagination: $pagination) {
-    data {
-      year
-      all_time_avg_issued_price
-      all_time_avg_purchased_price
-      all_time_avg_price
-      avg_issued_price
-      avg_purchased_price
-      avg_price
-      cumulative_emission_debt
-      cumulative_total_amount
-      emission_debt
-      total_amount
-      total_issued_amount
-      total_purchased_amount
-    }
-    page_info {
-      has_next_page
-      has_previous_page
-      total_page
+  query FinancialAnalysis($view: VisualizationViewType!, $pagination: Pagination) {
+    financialAnalysis(view: $view, pagination: $pagination) {
+      data {
+        year
+        all_time_avg_issued_price
+        all_time_avg_purchased_price
+        all_time_avg_price
+        avg_issued_price
+        avg_purchased_price
+        avg_price
+        cumulative_emission_debt
+        cumulative_total_amount
+        emission_debt
+        total_amount
+        total_issued_amount
+        total_purchased_amount
+      }
+      page_info {
+        has_next_page
+        has_previous_page
+        total_page
+      }
     }
   }
-}
-    `;
+`;
 
 /**
  * __useFinancialAnalysisQuery__
@@ -2281,32 +4460,59 @@ export const FinancialAnalysisDocument = gql`
  *   },
  * });
  */
-export function useFinancialAnalysisQuery(baseOptions: Apollo.QueryHookOptions<FinancialAnalysisQuery, FinancialAnalysisQueryVariables> & ({ variables: FinancialAnalysisQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<FinancialAnalysisQuery, FinancialAnalysisQueryVariables>(FinancialAnalysisDocument, options);
-      }
-export function useFinancialAnalysisLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FinancialAnalysisQuery, FinancialAnalysisQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<FinancialAnalysisQuery, FinancialAnalysisQueryVariables>(FinancialAnalysisDocument, options);
-        }
-export function useFinancialAnalysisSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<FinancialAnalysisQuery, FinancialAnalysisQueryVariables>) {
-          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
-          return Apollo.useSuspenseQuery<FinancialAnalysisQuery, FinancialAnalysisQueryVariables>(FinancialAnalysisDocument, options);
-        }
+export function useFinancialAnalysisQuery(
+  baseOptions: Apollo.QueryHookOptions<FinancialAnalysisQuery, FinancialAnalysisQueryVariables> &
+    ({ variables: FinancialAnalysisQueryVariables; skip?: boolean } | { skip: boolean }),
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<FinancialAnalysisQuery, FinancialAnalysisQueryVariables>(
+    FinancialAnalysisDocument,
+    options,
+  );
+}
+export function useFinancialAnalysisLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    FinancialAnalysisQuery,
+    FinancialAnalysisQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<FinancialAnalysisQuery, FinancialAnalysisQueryVariables>(
+    FinancialAnalysisDocument,
+    options,
+  );
+}
+export function useFinancialAnalysisSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<FinancialAnalysisQuery, FinancialAnalysisQueryVariables>,
+) {
+  const options =
+    baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<FinancialAnalysisQuery, FinancialAnalysisQueryVariables>(
+    FinancialAnalysisDocument,
+    options,
+  );
+}
 export type FinancialAnalysisQueryHookResult = ReturnType<typeof useFinancialAnalysisQuery>;
 export type FinancialAnalysisLazyQueryHookResult = ReturnType<typeof useFinancialAnalysisLazyQuery>;
-export type FinancialAnalysisSuspenseQueryHookResult = ReturnType<typeof useFinancialAnalysisSuspenseQuery>;
-export type FinancialAnalysisQueryResult = Apollo.QueryResult<FinancialAnalysisQuery, FinancialAnalysisQueryVariables>;
+export type FinancialAnalysisSuspenseQueryHookResult = ReturnType<
+  typeof useFinancialAnalysisSuspenseQuery
+>;
+export type FinancialAnalysisQueryResult = Apollo.QueryResult<
+  FinancialAnalysisQuery,
+  FinancialAnalysisQueryVariables
+>;
 export const ProjectsDocument = gql`
-    query Projects {
-  projects {
-    id
-    name
-    slug
-    metadata
+  query Projects {
+    projects {
+      id
+      name
+      slug
+      metadata
+    }
   }
-}
-    `;
+`;
 
 /**
  * __useProjectsQuery__
@@ -2323,59 +4529,68 @@ export const ProjectsDocument = gql`
  *   },
  * });
  */
-export function useProjectsQuery(baseOptions?: Apollo.QueryHookOptions<ProjectsQuery, ProjectsQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<ProjectsQuery, ProjectsQueryVariables>(ProjectsDocument, options);
-      }
-export function useProjectsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ProjectsQuery, ProjectsQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<ProjectsQuery, ProjectsQueryVariables>(ProjectsDocument, options);
-        }
-export function useProjectsSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<ProjectsQuery, ProjectsQueryVariables>) {
-          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
-          return Apollo.useSuspenseQuery<ProjectsQuery, ProjectsQueryVariables>(ProjectsDocument, options);
-        }
+export function useProjectsQuery(
+  baseOptions?: Apollo.QueryHookOptions<ProjectsQuery, ProjectsQueryVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<ProjectsQuery, ProjectsQueryVariables>(ProjectsDocument, options);
+}
+export function useProjectsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<ProjectsQuery, ProjectsQueryVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<ProjectsQuery, ProjectsQueryVariables>(ProjectsDocument, options);
+}
+export function useProjectsSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<ProjectsQuery, ProjectsQueryVariables>,
+) {
+  const options =
+    baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<ProjectsQuery, ProjectsQueryVariables>(ProjectsDocument, options);
+}
 export type ProjectsQueryHookResult = ReturnType<typeof useProjectsQuery>;
 export type ProjectsLazyQueryHookResult = ReturnType<typeof useProjectsLazyQuery>;
 export type ProjectsSuspenseQueryHookResult = ReturnType<typeof useProjectsSuspenseQuery>;
 export type ProjectsQueryResult = Apollo.QueryResult<ProjectsQuery, ProjectsQueryVariables>;
 export const ProjectByDocument = gql`
-    query ProjectBy($field: String!, $value: String!) {
-  projectBy(field: $field, value: $value) {
-    id
-    name
-    description
-    localization
-    startDate
-    endDate
-    area
-    type
-    origin
-    slug
-    certifier {
+  query ProjectBy($field: String!, $value: String!) {
+    projectBy(field: $field, value: $value) {
       id
       name
-    }
-    developper {
-      id
-      name
-    }
-    country {
-      name
-      code
-    }
-    metadata
-    global_data {
-      amount
-      source
-      rating
-      allocated_units
-      available_ex_post
-      available_ex_ante
+      description
+      localization
+      startDate
+      endDate
+      area
+      type
+      origin
+      slug
+      certifier {
+        id
+        name
+      }
+      developper {
+        id
+        name
+      }
+      country {
+        name
+        code
+      }
+      metadata
+      global_data {
+        amount
+        source
+        rating
+        allocated_units
+        available_ex_post
+        available_ex_ante
+      }
     }
   }
-}
-    `;
+`;
 
 /**
  * __useProjectByQuery__
@@ -2394,58 +4609,71 @@ export const ProjectByDocument = gql`
  *   },
  * });
  */
-export function useProjectByQuery(baseOptions: Apollo.QueryHookOptions<ProjectByQuery, ProjectByQueryVariables> & ({ variables: ProjectByQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<ProjectByQuery, ProjectByQueryVariables>(ProjectByDocument, options);
-      }
-export function useProjectByLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ProjectByQuery, ProjectByQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<ProjectByQuery, ProjectByQueryVariables>(ProjectByDocument, options);
-        }
-export function useProjectBySuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<ProjectByQuery, ProjectByQueryVariables>) {
-          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
-          return Apollo.useSuspenseQuery<ProjectByQuery, ProjectByQueryVariables>(ProjectByDocument, options);
-        }
+export function useProjectByQuery(
+  baseOptions: Apollo.QueryHookOptions<ProjectByQuery, ProjectByQueryVariables> &
+    ({ variables: ProjectByQueryVariables; skip?: boolean } | { skip: boolean }),
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<ProjectByQuery, ProjectByQueryVariables>(ProjectByDocument, options);
+}
+export function useProjectByLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<ProjectByQuery, ProjectByQueryVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<ProjectByQuery, ProjectByQueryVariables>(ProjectByDocument, options);
+}
+export function useProjectBySuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<ProjectByQuery, ProjectByQueryVariables>,
+) {
+  const options =
+    baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<ProjectByQuery, ProjectByQueryVariables>(
+    ProjectByDocument,
+    options,
+  );
+}
 export type ProjectByQueryHookResult = ReturnType<typeof useProjectByQuery>;
 export type ProjectByLazyQueryHookResult = ReturnType<typeof useProjectByLazyQuery>;
 export type ProjectBySuspenseQueryHookResult = ReturnType<typeof useProjectBySuspenseQuery>;
 export type ProjectByQueryResult = Apollo.QueryResult<ProjectByQuery, ProjectByQueryVariables>;
 export const GetProjectsMetricsDocument = gql`
-    query GetProjectsMetrics($view: VisualizationViewType) {
-  getProjectMetrics(view: $view) {
-    colors {
-      blue {
+  query GetProjectsMetrics($view: VisualizationViewType) {
+    getProjectMetrics(view: $view) {
+      colors {
+        blue {
+          key
+          value
+        }
+        green {
+          key
+          value
+        }
+        orange {
+          key
+          value
+        }
+      }
+      localization {
+        value
+        country {
+          flag
+          iso
+          name
+        }
+      }
+      standards {
         key
         value
       }
-      green {
-        key
-        value
+      types {
+        avoidance
+        removal
       }
-      orange {
-        key
-        value
-      }
-    }
-    localization {
-      value
-      country {
-        flag
-        iso
-        name
-      }
-    }
-    standards {
-      key
-      value
-    }
-    types {
-      avoidance
-      removal
     }
   }
-}
-    `;
+`;
 
 /**
  * __useGetProjectsMetricsQuery__
@@ -2463,46 +4691,74 @@ export const GetProjectsMetricsDocument = gql`
  *   },
  * });
  */
-export function useGetProjectsMetricsQuery(baseOptions?: Apollo.QueryHookOptions<GetProjectsMetricsQuery, GetProjectsMetricsQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetProjectsMetricsQuery, GetProjectsMetricsQueryVariables>(GetProjectsMetricsDocument, options);
-      }
-export function useGetProjectsMetricsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetProjectsMetricsQuery, GetProjectsMetricsQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetProjectsMetricsQuery, GetProjectsMetricsQueryVariables>(GetProjectsMetricsDocument, options);
-        }
-export function useGetProjectsMetricsSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetProjectsMetricsQuery, GetProjectsMetricsQueryVariables>) {
-          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
-          return Apollo.useSuspenseQuery<GetProjectsMetricsQuery, GetProjectsMetricsQueryVariables>(GetProjectsMetricsDocument, options);
-        }
+export function useGetProjectsMetricsQuery(
+  baseOptions?: Apollo.QueryHookOptions<GetProjectsMetricsQuery, GetProjectsMetricsQueryVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<GetProjectsMetricsQuery, GetProjectsMetricsQueryVariables>(
+    GetProjectsMetricsDocument,
+    options,
+  );
+}
+export function useGetProjectsMetricsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetProjectsMetricsQuery,
+    GetProjectsMetricsQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<GetProjectsMetricsQuery, GetProjectsMetricsQueryVariables>(
+    GetProjectsMetricsDocument,
+    options,
+  );
+}
+export function useGetProjectsMetricsSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<GetProjectsMetricsQuery, GetProjectsMetricsQueryVariables>,
+) {
+  const options =
+    baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<GetProjectsMetricsQuery, GetProjectsMetricsQueryVariables>(
+    GetProjectsMetricsDocument,
+    options,
+  );
+}
 export type GetProjectsMetricsQueryHookResult = ReturnType<typeof useGetProjectsMetricsQuery>;
-export type GetProjectsMetricsLazyQueryHookResult = ReturnType<typeof useGetProjectsMetricsLazyQuery>;
-export type GetProjectsMetricsSuspenseQueryHookResult = ReturnType<typeof useGetProjectsMetricsSuspenseQuery>;
-export type GetProjectsMetricsQueryResult = Apollo.QueryResult<GetProjectsMetricsQuery, GetProjectsMetricsQueryVariables>;
+export type GetProjectsMetricsLazyQueryHookResult = ReturnType<
+  typeof useGetProjectsMetricsLazyQuery
+>;
+export type GetProjectsMetricsSuspenseQueryHookResult = ReturnType<
+  typeof useGetProjectsMetricsSuspenseQuery
+>;
+export type GetProjectsMetricsQueryResult = Apollo.QueryResult<
+  GetProjectsMetricsQuery,
+  GetProjectsMetricsQueryVariables
+>;
 export const GetStockDocument = gql`
-    query GetStock($view: VisualizationViewType!, $pagination: Pagination) {
-  getStock(view: $view, pagination: $pagination) {
-    data {
-      project {
-        id
-        name
-        metadata {
-          key
-          value
+  query GetStock($view: VisualizationViewType!, $pagination: Pagination) {
+    getStock(view: $view, pagination: $pagination) {
+      data {
+        project {
+          id
+          name
+          metadata {
+            key
+            value
+          }
         }
+        vintage
+        quantity
+        available
       }
-      vintage
-      quantity
-      available
-    }
-    page_info {
-      has_next_page
-      has_previous_page
-      total_page
+      page_info {
+        has_next_page
+        has_previous_page
+        total_page
+      }
     }
   }
-}
-    `;
+`;
 
 /**
  * __useGetStockQuery__
@@ -2521,18 +4777,28 @@ export const GetStockDocument = gql`
  *   },
  * });
  */
-export function useGetStockQuery(baseOptions: Apollo.QueryHookOptions<GetStockQuery, GetStockQueryVariables> & ({ variables: GetStockQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetStockQuery, GetStockQueryVariables>(GetStockDocument, options);
-      }
-export function useGetStockLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetStockQuery, GetStockQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetStockQuery, GetStockQueryVariables>(GetStockDocument, options);
-        }
-export function useGetStockSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetStockQuery, GetStockQueryVariables>) {
-          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
-          return Apollo.useSuspenseQuery<GetStockQuery, GetStockQueryVariables>(GetStockDocument, options);
-        }
+export function useGetStockQuery(
+  baseOptions: Apollo.QueryHookOptions<GetStockQuery, GetStockQueryVariables> &
+    ({ variables: GetStockQueryVariables; skip?: boolean } | { skip: boolean }),
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<GetStockQuery, GetStockQueryVariables>(GetStockDocument, options);
+}
+export function useGetStockLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<GetStockQuery, GetStockQueryVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<GetStockQuery, GetStockQueryVariables>(GetStockDocument, options);
+}
+export function useGetStockSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<GetStockQuery, GetStockQueryVariables>,
+) {
+  const options =
+    baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<GetStockQuery, GetStockQueryVariables>(GetStockDocument, options);
+}
 export type GetStockQueryHookResult = ReturnType<typeof useGetStockQuery>;
 export type GetStockLazyQueryHookResult = ReturnType<typeof useGetStockLazyQuery>;
 export type GetStockSuspenseQueryHookResult = ReturnType<typeof useGetStockSuspenseQuery>;

@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import { PageInfo, StockData } from '@/graphql/__generated__/graphql';
 import { GET_STOCKS } from '@/graphql/queries/stock';

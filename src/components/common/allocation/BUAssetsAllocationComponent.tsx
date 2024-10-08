@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import { BusinessUnitCarbonAssetAllocationData, PageInfo } from '@/graphql/__generated__/graphql';
 import { ErrorReloadTable, NoDataTable } from '../ErrorReload';
