@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import { BackButton, GreenButton } from "../common/Button";
 import ProjectInfo from "./ProjectInfo";
@@ -9,12 +9,9 @@ export default function ProjectHeader() {
   const { project } = useProject();
 
   if (project === undefined) {
-    return (
-      <>
-        Loading...
-      </>
-    )
+    return <>Loading...</>;
   }
+  console.log(`Project : ${JSON.stringify(project)}`);
 
   return (
     <div className="bg-project-info">
@@ -22,7 +19,10 @@ export default function ProjectHeader() {
         <BackButton href="/portfolio">Back</BackButton>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 md:gap-4 xl:gap-8 mt-8">
           <div className="order-1 lg:order-2">
-            <img src={project.metadata?.collection_image_url} alt={`${project.name} project`} />
+            <img
+              src={project.metadata?.collection_image_url}
+              alt={`${project.name} project`}
+            />
           </div>
           <div className="order-2 lg:order-1 lg:col-span-2">
             <ProjectInfo name={project.name} data={project.global_data} />
@@ -33,5 +33,5 @@ export default function ProjectHeader() {
         </div>
       </div>
     </div>
-  )
+  );
 }
