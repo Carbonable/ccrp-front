@@ -1,6 +1,6 @@
 'use client';
 
-import { BackButton, GreenButton } from '../common/Button';
+import { BackButton } from '../common/Button';
 import ProjectInfo from './ProjectInfo';
 import { useProject } from '@/context/ProjectContext';
 import ProjectAllocationButton from '../allocation/ProjectAllocationModal';
