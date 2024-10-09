@@ -200,7 +200,7 @@ export type Cumulative = {
 export type CumulativeData = {
   __typename?: 'CumulativeData';
   actual_rate?: Maybe<Scalars['Float']['output']>;
-  debt?: Maybe<Scalars['Int']['output']>;
+  debt?: Maybe<Scalars['Float']['output']>;
   delta?: Maybe<Scalars['Float']['output']>;
   emissions?: Maybe<Scalars['Float']['output']>;
   ex_ante_stock?: Maybe<Scalars['Int']['output']>;
