@@ -11,7 +11,6 @@ export default function ProjectHeader() {
   if (project === undefined) {
     return <>Loading...</>;
   }
-  console.log(`Project : ${JSON.stringify(project)}`);
 
   return (
     <div className="bg-project-info">

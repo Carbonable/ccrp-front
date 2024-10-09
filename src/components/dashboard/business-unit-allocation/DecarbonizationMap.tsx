@@ -10,8 +10,6 @@ export default function DecarbonizationMap() {
 
   const businessUnits: BusinessUnit[] = data?.businessUnits;
 
-  console.log(error);
-
   if (loading)
     return (
       <BusinessUnitWrapper>

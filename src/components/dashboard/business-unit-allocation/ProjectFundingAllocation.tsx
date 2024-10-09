@@ -27,7 +27,6 @@ export default function ProjectFundingAllocation({ businessUnitId }: { businessU
   };
 
   useEffect(() => {
-    console.log('DATA');
     console.table(data);
     refetchData();
   }, [currentPage]);
