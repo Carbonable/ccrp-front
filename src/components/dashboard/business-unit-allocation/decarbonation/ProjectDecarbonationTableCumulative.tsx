@@ -125,8 +125,8 @@ function ProjectedDecarbonationLoaded({ cumulative }: { cumulative: CumulativeDa
             <td className="px-4">{ex_post_retired}</td>
             <td className="px-4">{ex_post_issued}</td>
             <td className="px-4">{ex_post_purchased}</td>
-            <td className="px-4">{delta ? delta : 0}</td>
-            <td className="px-4">{debt ? debt : 'n/a'}</td>
+            <td className="px-4">{delta ?  parseFloat(delta.toFixed(3)): 0}</td>
+            <td className="px-4">{debt ? parseFloat(debt.toFixed(3)) : 'n/a'}</td>
           </tr>
         );
       })}
