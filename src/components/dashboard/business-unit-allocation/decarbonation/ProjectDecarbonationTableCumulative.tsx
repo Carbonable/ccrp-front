@@ -6,6 +6,7 @@ import TableLoading from '@/components/table/TableLoading';
 import { CumulativeData, PageInfo } from '@/graphql/__generated__/graphql';
 import { CUMULATIVE } from '@/graphql/queries/net-zero';
 import { RESULT_PER_PAGE } from '@/utils/constant';
+import { roundIfFloat } from '@/utils/numbers';
 import { useQuery } from '@apollo/client';
 import { useEffect, useState } from 'react';
 
@@ -125,8 +126,8 @@ function ProjectedDecarbonationLoaded({ cumulative }: { cumulative: CumulativeDa
             <td className="px-4">{ex_post_retired}</td>
             <td className="px-4">{ex_post_issued}</td>
             <td className="px-4">{ex_post_purchased}</td>
-            <td className="px-4">{delta ?  parseFloat(delta.toFixed(3)): 0}</td>
-            <td className="px-4">{debt ? parseFloat(debt.toFixed(3)) : 'n/a'}</td>
+            <td className="px-4">{delta ?  roundIfFloat(delta): 0}</td>
+            <td className="px-4">{debt ? roundIfFloat(debt) : 'n/a'}</td>
           </tr>
         );
       })}

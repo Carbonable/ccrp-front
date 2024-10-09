@@ -9,6 +9,7 @@ import Title from '../../common/Title';
 import TableLoading from '@/components/table/TableLoading';
 import { ErrorReloadTable, NoDataTable } from '../../common/ErrorReload';
 import PaginationComponent from '../../common/Pagination';
+import { roundIfFloat } from '@/utils/numbers';
 
 export default function ProjectDecarbonationTableCumulative() {
   const [currentPage, setCurrentPage] = useState(1);
@@ -127,8 +128,8 @@ function ProjectedDecarbonationLoaded({ cumulative }: { cumulative: CumulativeDa
             <td className="px-4">{ex_post_retired}</td>
             <td className="px-4">{ex_post_issued}</td>
             <td className="px-4">{ex_post_purchased}</td>
-            <td className="px-4">{delta ? delta : 0}</td>
-            <td className="px-4">{debt ? debt : 'n/a'}</td>
+            <td className="px-4">{delta ?  roundIfFloat(delta): 0}</td>
+            <td className="px-4">{debt ? roundIfFloat(debt) : 'n/a'}</td>
           </tr>
         );
       })}
