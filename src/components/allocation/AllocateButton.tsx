@@ -37,9 +37,6 @@ export default function AllocateButton({
         },
         refetchQueries: 'active',
       });
-
-      // Handle the result as needed
-      console.log('Mutation result:', result);
     } catch (error) {
       // Handle any errors
       console.error('Mutation error:', error);

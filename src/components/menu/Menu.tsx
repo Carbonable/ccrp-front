@@ -4,8 +4,8 @@ import NavLinkInside from './NavLinkInside';
 import NavLinkOutside from './NavLinkOutside';
 import { adminLink, links } from './links';
 import Logout from './Logout';
-import { useUser } from '@clerk/nextjs';
 import { useEffect, useState } from 'react';
+import { useAuth } from '../auth/AuthProvider';
 
 export default function Menu({
   openMenu,
@@ -14,17 +14,7 @@ export default function Menu({
   openMenu: boolean;
   setOpenMenu: (open: boolean) => void;
 }) {
-  const { user } = useUser();
-  const [isAdmin, setIsAdmin] = useState(false);
-
-  useEffect(() => {
-    if (
-      user &&
-      user?.organizationMemberships.some((membership) => membership.role === 'org:admin')
-    ) {
-      setIsAdmin(true);
-    }
-  }, [user]);
+  const { user, isAdmin } = useAuth();
 
   return (
     <div
@@ -50,7 +40,7 @@ export default function Menu({
               </div>
             ),
         )}
-        {isAdmin && (
+        {isAdmin() && (
           <div key="admin_mobile" className="my-2">
             <NavLinkInside link={adminLink} setOpenMenu={setOpenMenu} />
           </div>
