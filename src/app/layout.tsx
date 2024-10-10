@@ -4,8 +4,9 @@ import BaseLayout from './base-layout';
 import { usePathname } from 'next/navigation';
 import { ApolloWrapper } from './ApolloWrapper';
 import FullWidthLayout from './full-width-layout';
-import { ClerkProvider } from '@clerk/nextjs';
-import { dark } from '@clerk/themes';
+import { useRouter } from 'next/router';
+import { AuthProvider } from '@/components/auth/AuthProvider';
+import ProtectedRoute from '@/components/auth/ProtectedRoute';
 
 export default function RootLayout({
   children,
@@ -13,17 +14,20 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   const pathname = usePathname();
+  const publicRoutes = ['/sign-in', '/sign-up', '/'];
 
-  if (pathname === '/login') {
+  if (pathname === '/sign-in' || pathname === '/sign-up') {
     return (
       <BaseLayout>
-        <ClerkProvider
-          appearance={{
-            baseTheme: dark,
-          }}
-        >
-          <div className="z-0 mx-auto max-w-screen-2xl p-4 md:p-12">{children}</div>
-        </ClerkProvider>
+        <AuthProvider>
+          {publicRoutes.includes(pathname) ? (
+            <div className="z-0 mx-auto max-w-screen-2xl p-4 md:p-12">{children}</div>
+          ) : (
+            <ProtectedRoute>
+              <div className="z-0 mx-auto max-w-screen-2xl p-4 md:p-12">{children}</div>
+            </ProtectedRoute>
+          )}
+        </AuthProvider>
       </BaseLayout>
     );
   }
@@ -31,36 +35,58 @@ export default function RootLayout({
   if (pathname.includes('/projects')) {
     return (
       <FullWidthLayout>
-        <ClerkProvider
-          appearance={{
-            baseTheme: dark,
-          }}
-        >
-          <MenuWrapper />
-          <ApolloWrapper>
-            <div className="ml-0 mt-[66px] min-h-screen max-w-full lg:mx-auto lg:mt-0 lg:pl-[222px]">
-              {children}
-            </div>
-          </ApolloWrapper>
-        </ClerkProvider>
+        <AuthProvider>
+          {publicRoutes.includes(pathname) ? (
+            <>
+            <MenuWrapper />
+            <ApolloWrapper>
+              <div className="ml-0 mt-[66px] min-h-screen max-w-full lg:mx-auto lg:mt-0 lg:pl-[222px]">
+                {children}
+              </div>
+            </ApolloWrapper>
+            </>
+          ) : (
+            <ProtectedRoute>
+              <>
+              <MenuWrapper />
+              <ApolloWrapper>
+                <div className="ml-0 mt-[66px] min-h-screen max-w-full lg:mx-auto lg:mt-0 lg:pl-[222px]">
+                  {children}
+                </div>
+              </ApolloWrapper>
+              </>
+            </ProtectedRoute>
+          )}
+        </AuthProvider>
       </FullWidthLayout>
     );
   }
 
   return (
     <BaseLayout>
-      <ClerkProvider
-        appearance={{
-          baseTheme: dark,
-        }}
-      >
-        <MenuWrapper />
-        <ApolloWrapper>
-          <div className="2xl:max-w-8xl ml-0 mt-[66px] min-h-screen max-w-full p-4 md:p-8 lg:mx-auto lg:mt-0 lg:max-w-6xl lg:p-4 lg:pl-[240px] xl:max-w-7xl">
-            {children}
-          </div>
-        </ApolloWrapper>
-      </ClerkProvider>
+    <AuthProvider>
+          {publicRoutes.includes(pathname) ? (
+            <>
+            <MenuWrapper />
+            <ApolloWrapper>
+              <div className="2xl:max-w-8xl ml-0 mt-[66px] min-h-screen max-w-full p-4 md:p-8 lg:mx-auto lg:mt-0 lg:max-w-6xl lg:p-4 lg:pl-[240px] xl:max-w-7xl">
+                {children}
+              </div>
+            </ApolloWrapper>
+            </>
+          ) : (
+            <ProtectedRoute>
+              <>
+              <MenuWrapper />
+              <ApolloWrapper>
+                <div className="2xl:max-w-8xl ml-0 mt-[66px] min-h-screen max-w-full p-4 md:p-8 lg:mx-auto lg:mt-0 lg:max-w-6xl lg:p-4 lg:pl-[240px] xl:max-w-7xl">
+                  {children}
+                </div>
+              </ApolloWrapper>
+              </>
+            </ProtectedRoute>
+          )}
+        </AuthProvider>
     </BaseLayout>
   );
 }

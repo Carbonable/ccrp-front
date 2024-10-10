@@ -1,14 +1,14 @@
 'use server';
-import { FileType } from '@/types/admin';
+
+import { getJwtToken } from "@/utils/auth";
 
 interface UploadResult {
   success: boolean;
   message: string;
 }
 
-export async function uploadFile(formData: FormData, token: string): Promise<UploadResult> {
-  'use server';
-
+export async function uploadFile(formData: FormData): Promise<UploadResult> {
+  const token = getJwtToken();
   const file = formData.get('file') as File | null;
   const type = formData.get('type') as string | null;
 
@@ -16,7 +16,7 @@ export async function uploadFile(formData: FormData, token: string): Promise<Upl
     return { success: false, message: 'No file or type provided' };
   }
 
-  const endpoint = `http://localhost:8080/${type.toLowerCase()}/upload`;
+  const endpoint = `${process.env.API_URL}/${type.toLowerCase()}/upload`;
 
   try {
     const response = await fetch(endpoint, {
