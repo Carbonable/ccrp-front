@@ -13,7 +13,7 @@ export default function Menu({
   openMenu: boolean;
   setOpenMenu: (open: boolean) => void;
 }) {
-  const { user, isAdmin } = useAuth();
+  const { isAdmin } = useAuth();
 
   return (
     <div
