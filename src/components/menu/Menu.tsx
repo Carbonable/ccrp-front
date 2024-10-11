@@ -4,7 +4,6 @@ import NavLinkInside from './NavLinkInside';
 import NavLinkOutside from './NavLinkOutside';
 import { adminLink, links } from './links';
 import Logout from './Logout';
-import { useEffect, useState } from 'react';
 import { useAuth } from '../auth/AuthProvider';
 
 export default function Menu({
