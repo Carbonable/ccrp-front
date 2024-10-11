@@ -8,7 +8,7 @@ interface UploadResult {
 }
 
 export async function uploadFile(formData: FormData): Promise<UploadResult> {
-  const token = getJwtToken();
+  const token = await getJwtToken();
   const file = formData.get('file') as File | null;
   const type = formData.get('type') as string | null;
 
