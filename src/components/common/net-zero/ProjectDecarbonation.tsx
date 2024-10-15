@@ -120,8 +120,8 @@ export default function ProjectDecarbonationComponent({
       return (
         <div className="font-inter rounded-lg bg-neutral-700 px-8 pb-4 pt-4 text-center text-xs font-extralight text-neutral-100">
           <p>{`Carbon emission: ${payload[0].value}t`}</p>
-          <p>{`CO² contribution: ${parseInt(payload[1].value + payload[2].value)}t`}</p>
-          <p>{`Retired: ${parseInt(payload[3].value)}t`}</p>
+          <p>{`CO² contribution: ${parseInt(payload[1].value + payload[3].value)}t`}</p>
+          <p>{`Retired: ${parseInt(payload[2].value)}t`}</p>
           <p>{`Target: ${payload[4].value}%`}</p>
           <p>{`Actual: ${payload[5].value}%`}</p>
         </div>
