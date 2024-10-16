@@ -17,7 +17,7 @@ export default function ProjectInfo({
             <KPI title="$ Amount" kpi={`TBD`} />
             <KPI title="Source" kpi={`TBD`} />
             <KPI title="Rating" kpi={`TBD`} />
-            <KPI title="Allocation units" kpi={`TBD`} />
+            <KPI title="Allocated units" kpi={`TBD`} />
             <KPI title="Available ex-post" kpi={`TBD`} />
             <KPI title="Available ex-ante" kpi={`TBD`} />
           </div>
@@ -34,7 +34,7 @@ export default function ProjectInfo({
           <KPI title="$ Amount" kpi={data.amount} />
           <KPI title="Source" kpi={data.source} />
           <KPI title="Rating" kpi={data.rating} />
-          <KPI title="Allocation units" kpi={data.allocated_units} />
+          <KPI title="Allocated units" kpi={data.allocated_units} />
           <KPI title="Available ex-post" kpi={data.available_ex_post} />
           <KPI title="Available ex-ante" kpi={data.available_ex_ante} />
         </div>
