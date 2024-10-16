@@ -77,7 +77,7 @@ export function KPI({
   return (
     <div className={cssClass}>
       <div className="text-sm font-light text-neutral-200">{title}</div>
-      <div className="mt-2 text-xl capitalize text-neutral-100">{kpi.toString().toLowerCase()}</div>
+      <div className="mt-2 text-xl  text-neutral-100">{kpi}</div>
     </div>
   );
 }
