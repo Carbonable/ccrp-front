@@ -168,7 +168,7 @@ export type Country = {
 
 export type CreateBusinessUnitRequest = {
   company_id: Scalars['String']['input'];
-  default_forecasted_emission?: InputMaybe<Scalars['Int']['input']>;
+  default_demanded_emission?: InputMaybe<Scalars['Int']['input']>;
   default_target?: InputMaybe<Scalars['Int']['input']>;
   description: Scalars['String']['input'];
   metadata: Scalars['String']['input'];
@@ -181,7 +181,7 @@ export type CreateBusinessUnitResponse = {
   id: Scalars['String']['output'];
 };
 
-export type CreateForecastedEmissionsRequest = {
+export type CreateDemandRequest = {
   business_unit_id: Scalars['String']['input'];
   data: Array<ForecastedData>;
 };
@@ -293,7 +293,7 @@ export type Mutation = {
   __typename?: 'Mutation';
   addAllocations?: Maybe<AddAllocationResponse>;
   createBusinessUnit?: Maybe<DomainResponse>;
-  createForecastedEmissions?: Maybe<DomainResponse>;
+  createDemand?: Maybe<DomainResponse>;
   createForecastedTargets?: Maybe<DomainResponse>;
 };
 
@@ -308,8 +308,8 @@ export type MutationCreateBusinessUnitArgs = {
 };
 
 
-export type MutationCreateForecastedEmissionsArgs = {
-  request: CreateForecastedEmissionsRequest;
+export type MutationCreateDemandArgs = {
+  request: CreateDemandRequest;
 };
 
 

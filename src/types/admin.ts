@@ -9,6 +9,5 @@ export const supportedFileTypes: FileType[] = [
   'project-sdgs',
   'absorption-curve',
   'business-units',
-  'forecast-emission',
-  'forecast-target',
+  'demands',
 ];
