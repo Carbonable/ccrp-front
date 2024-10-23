@@ -19,8 +19,10 @@ export type Scalars = {
 };
 
 export type AddAllocationRequestItem = {
+  allow_over_allocation?: InputMaybe<Scalars['Boolean']['input']>;
+  allow_vintage_homogeneisation?: InputMaybe<Scalars['Boolean']['input']>;
+  amount: Scalars['Int']['input'];
   business_unit_id: Scalars['String']['input'];
-  percentage: Scalars['Int']['input'];
   project_id?: InputMaybe<Scalars['String']['input']>;
 };
 
