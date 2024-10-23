@@ -32,7 +32,7 @@ export default function AllocateButton({
           request: {
             project_id: projectId,
             business_unit_id: businessUnitId,
-            percentage: parseInt(amount.toString()),
+           amount,
           },
         },
         refetchQueries: 'active',

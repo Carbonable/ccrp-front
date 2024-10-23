@@ -25,7 +25,7 @@ export default function ProjectAllocationButton({ projectId }: { projectId: stri
     available_percent: number;
     available_units: number;
   }>();
-  const [amountPerc, setAmountPerc] = useState<string>('');
+  const [amount, setAmount] = useState<string>('');
   const [hasError, setHasError] = useState(false);
 
   const { loading, error, data } = useQuery(GET_PROJECT_WITHOUT_VINTAGES, {
@@ -39,23 +39,24 @@ export default function ProjectAllocationButton({ projectId }: { projectId: stri
 
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
+    let available = (availableObject?.available_units ?? 0);
 
     const isValidInteger = /^[0-9]*$/.test(value);
 
     if (!isValidInteger || value === '') {
       setHasError(true);
-      setAmountPerc('');
+      setAmount('');
       return;
     }
     const parsedValue = parseInt(value, 10);
-    if (parsedValue > 100) {
-      setAmountPerc('100');
+    if (parsedValue > available) {
+      setAmount(available.toString());
       return;
     } else if (parsedValue < 0) {
-      setAmountPerc('0');
+      setAmount('0');
       return;
     }
-    setAmountPerc(parsedValue.toString());
+    setAmount(parsedValue.toString());
     setHasError(false);
   };
 
@@ -134,7 +135,7 @@ export default function ProjectAllocationButton({ projectId }: { projectId: stri
                       </div>
                       <div className="mt-8 font-light">
                         <div className="text-left uppercase text-neutral-200">
-                          Percentage to allocate
+                          Amount to allocate
                         </div>
                       </div>
                       <div className="relative mt-1 w-full">
@@ -143,8 +144,8 @@ export default function ProjectAllocationButton({ projectId }: { projectId: stri
                             hasError ? 'border-red-500 focus:border-red-500' : ''
                           }`}
                           type="number"
-                          value={amountPerc}
-                          max={100}
+                          value={amount}
+                          max={availableObject?.available_units}
                           name="amount"
                           aria-label="Amount"
                           onChange={handleAmountChange}
@@ -166,7 +167,7 @@ export default function ProjectAllocationButton({ projectId }: { projectId: stri
                         <div className="ml-4">
                           To allocate
                           <span className="ml-1 font-bold text-neutral-50">
-                          {(amountPerc !== '' ? parseInt(amountPerc) * availableObject?.available_units! : 0) / 100} Units
+                          {amount !== '' ? parseInt(amount) : 0} Units
                           </span>
                         </div>
                       </div>
@@ -181,7 +182,7 @@ export default function ProjectAllocationButton({ projectId }: { projectId: stri
               <ModalFooter>
                 <div className="my-8 w-full text-right">
                   <AllocateButton
-                    amount={parseInt(amountPerc)}
+                    amount={parseInt(amount)}
                     businessUnitId={selectedBU?.id}
                     projectId={project.id}
                     hasError={hasError}
