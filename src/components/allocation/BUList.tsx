@@ -13,7 +13,9 @@ export default function BUList({
   setSelectedBU: (project: BusinessUnit) => void;
 }) {
   const { loading, error, data } = useQuery(BUSINESS_UNITS);
-  const [value, setValue] = useState<string>('');
+  const [value, setValue] = useState(new Set([]));
+
+
 
   const handleSelectionChange = (e: any) => {
     if (!e.target.value || businessUnits === undefined || businessUnits.length === 0) {
@@ -36,6 +38,7 @@ export default function BUList({
   useEffect(() => {
     if (businessUnits && businessUnits.length > 0) {
       setSelectedBU(businessUnits[0]);
+     
     }
   }, [businessUnits]);
 
@@ -58,11 +61,11 @@ export default function BUList({
         variant="flat"
         className="w-full select-component"
         classNames={{popoverContent: 'bg-neutral-800', value: '!text-neutral-200'}}
-        selectedKeys={[value]}
+        selectedKeys={selectedBU.id!}
         onChange={handleSelectionChange}
       >
-        {businessUnits.map((bu, index) => (
-          <SelectItem key={`bu_${index}`}>{bu.name}</SelectItem>
+        {businessUnits.map((bu) => (
+          <SelectItem key={`${bu.id!}`}>{bu.name}</SelectItem>
         ))}
       </Select>
     </>
