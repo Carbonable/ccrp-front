@@ -19,6 +19,7 @@ import Available from './Available';
 import AllocateButton from './AllocateButton';
 import { onlyPositiveInteger } from './utils';
 
+
 export default function BUAllocationButton({ businessUnitId }: { businessUnitId: string }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [selectedProject, setSelectedProject] = useState<Project | undefined>(undefined);
@@ -41,6 +42,7 @@ export default function BUAllocationButton({ businessUnitId }: { businessUnitId:
 
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
+    let available = (availableObject?.available_units ?? 0);
 
     const isValidInteger = /^[0-9]*$/.test(value);
 
@@ -49,20 +51,18 @@ export default function BUAllocationButton({ businessUnitId }: { businessUnitId:
       setAmount('');
       return;
     }
-
     const parsedValue = parseInt(value, 10);
-
-    if (parsedValue > 100) {
-      setAmount('100');
+    if (parsedValue > available) {
+      setAmount(available.toString());
       return;
     } else if (parsedValue < 0) {
       setAmount('0');
       return;
     }
-
     setAmount(parsedValue.toString());
     setHasError(false);
   };
+
   if (loading) {
     return (
       <>
@@ -140,9 +140,9 @@ export default function BUAllocationButton({ businessUnitId }: { businessUnitId:
                           setSelectedProject={setSelectedProject}
                         />
                       </div>
-                      <div className="mt-8 font-light">
+                       <div className="mt-8 font-light">
                         <div className="text-left uppercase text-neutral-200">
-                          Percentage to allocate
+                          Amount to allocate
                         </div>
                       </div>
                       <div className="relative mt-1 w-full">
@@ -152,7 +152,7 @@ export default function BUAllocationButton({ businessUnitId }: { businessUnitId:
                           }`}
                           type="number"
                           value={amount}
-                          max={100}
+                          max={availableObject?.available_units}
                           name="amount"
                           aria-label="Amount"
                           onChange={handleAmountChange}
@@ -164,7 +164,7 @@ export default function BUAllocationButton({ businessUnitId }: { businessUnitId:
                           Available
                           <span className="ml-1 font-bold text-neutral-50">
                             <Available
-                              businessUnitId={businessUnitId}
+                              businessUnitId={businessUnit?.id}
                               projectId={selectedProject?.id}
                               setAvailableObject={setAvailableObject}
                             />{' '}
@@ -174,7 +174,7 @@ export default function BUAllocationButton({ businessUnitId }: { businessUnitId:
                         <div className="ml-4">
                           To allocate
                           <span className="ml-1 font-bold text-neutral-50">
-                            {(amount !== '' ? parseInt(amount) * availableObject?.available_units! : 0) / 100} Units
+                          {amount !== '' ? parseInt(amount) : 0} Units
                           </span>
                         </div>
                       </div>
