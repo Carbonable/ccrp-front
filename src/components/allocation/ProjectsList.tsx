@@ -13,7 +13,7 @@ export default function ProjectsList({
   setSelectedProject: (project: Project) => void;
 }) {
   const { loading, error, data } = useQuery(GET_PROJECTS);
-  const [value, setValue] = useState<string>('');
+  const [value, setValue] = useState(new Set([]));
 
   const handleSelectionChange = (e: any) => {
     if (!e.target.value || projects === undefined || projects.length === 0) {
@@ -55,7 +55,7 @@ export default function ProjectsList({
         variant="flat"
         className="w-full select-component"
         classNames={{popoverContent: 'bg-neutral-800', value: '!text-neutral-200'}}
-        selectedKeys={[value]}
+        selectedKeys={selectedProject.id!}
         onChange={handleSelectionChange}
       >
         {projects.map((project) => (
