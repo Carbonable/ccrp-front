@@ -122,7 +122,7 @@ export default function ProjectDecarbonationComponent({
         >
           <CartesianGrid stroke="#2B2E36" />
           <XAxis dataKey="vintage" />
-          <YAxis yAxisId="left" label={{ value: 'Tons', angle: -90, position: 'insideLeft' }} />
+          <YAxis yAxisId="left" domain={[0, 'dataMax']} label={{ value: 'Tons', angle: -90, position: 'insideLeft' }} />
           <Tooltip content={<CustomTooltip />} />
           {!isFullScreen && <Legend />}
           <Bar dataKey="ex_post_count" name={bar1Name} yAxisId="left" stackId="a" fill="#046B4D">

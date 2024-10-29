@@ -4,6 +4,7 @@ import AllocationKPI from './block/AllocationKPI';
 import { BusinessUnit } from '@/graphql/__generated__/graphql';
 
 export default function Block({ block }: { block: BusinessUnit }) {
+  const now = new Date().getFullYear();
   return (
     <div className="w-full cursor-pointer rounded-3xl border border-neutral-700 p-4 hover:brightness-[120%] xl:p-8">
       <div className="flex items-center justify-start">
@@ -11,7 +12,7 @@ export default function Block({ block }: { block: BusinessUnit }) {
       </div>
       <div className="mt-4 grid grid-cols-3 gap-x-4 lg:gap-x-8">
         <AllocationKPI title="Yearly Emission" value={block.yearly_emissions?.toString()} />
-        <AllocationKPI title="yearly contribution" value={block.yearly_contributions?.toString()} />
+        <AllocationKPI title={`${now} contribution`} value={block.yearly_contributions?.toString()} />
         <div className="w-full">
           <CircleProgress
             rate={block.actual_rate}
