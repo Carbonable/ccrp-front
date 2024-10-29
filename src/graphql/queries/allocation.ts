@@ -75,15 +75,6 @@ export const GET_BU_ALLOCATIONS = gql`
   }
 `;
 
-export const CREATE_ALLOCATION = gql`
-  mutation addAllocations($request: [AddAllocationRequestItem]!) {
-    addAllocations(request: $request) {
-      allocationIds
-      errors
-    }
-  }
-`;
-
 export const AVAILABLE_ALLOCATION = gql`
   query AvailableToAllocate($project_id: String!, $business_unit_id: String!) {
     availableToAllocate(project_id: $project_id, business_unit_id: $business_unit_id) {
