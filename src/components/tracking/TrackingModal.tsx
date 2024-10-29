@@ -99,8 +99,9 @@ function RGBText() {
       particularly useful. By capturing and rendering the landscape in these three primary colors,
       it enables you to visually track changes over time. This can provide insights into the health
       and growth of vegetation, potential shifts in land use, and progress of carbon sequestration
-      initiatives. Essentially, it gives you the ability to observe the &quot;pulse&quot; of the landscape,
-      and in doing so, better understand the impact and performance of carbon removal projects.
+      initiatives. Essentially, it gives you the ability to observe the &quot;pulse&quot; of the
+      landscape, and in doing so, better understand the impact and performance of carbon removal
+      projects.
     </>
   );
 }

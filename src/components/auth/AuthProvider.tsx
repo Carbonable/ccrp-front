@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 import React, { createContext, useState, useEffect, useContext, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
@@ -41,22 +41,25 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     initAuth();
   }, []);
 
-  const login = useCallback(async (email: string, password: string) => {
-    setLoading(true);
-    try {
-      const userData = await loginAction(email, password);
-      setUser(userData);
-      router.push('/dashboard');
-    } catch (error) {
-      if (error instanceof Error) {
-        throw error;
-      } else {
-        throw new Error('An unexpected error occurred during login');
+  const login = useCallback(
+    async (email: string, password: string) => {
+      setLoading(true);
+      try {
+        const userData = await loginAction(email, password);
+        setUser(userData);
+        router.push('/dashboard');
+      } catch (error) {
+        if (error instanceof Error) {
+          throw error;
+        } else {
+          throw new Error('An unexpected error occurred during login');
+        }
+      } finally {
+        setLoading(false);
       }
-    } finally {
-      setLoading(false);
-    }
-  }, [router]);
+    },
+    [router],
+  );
 
   const logout = useCallback(async () => {
     try {

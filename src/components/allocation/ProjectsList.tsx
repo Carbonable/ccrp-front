@@ -53,8 +53,8 @@ export default function ProjectsList({
       <div className="mb-2 text-left font-light uppercase text-neutral-200">Select Project</div>
       <Select
         variant="flat"
-        className="w-full select-component"
-        classNames={{popoverContent: 'bg-neutral-800', value: '!text-neutral-200'}}
+        className="select-component w-full"
+        classNames={{ popoverContent: 'bg-neutral-800', value: '!text-neutral-200' }}
         selectedKeys={selectedProject.id!}
         onChange={handleSelectionChange}
       >

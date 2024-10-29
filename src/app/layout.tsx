@@ -38,22 +38,22 @@ export default function RootLayout({
         <AuthProvider>
           {publicRoutes.includes(pathname) ? (
             <>
-            <MenuWrapper />
-            <ApolloWrapper>
-              <div className="ml-0 mt-[66px] min-h-screen max-w-full lg:mx-auto lg:mt-0 lg:pl-[222px]">
-                {children}
-              </div>
-            </ApolloWrapper>
-            </>
-          ) : (
-            <ProtectedRoute>
-              <>
               <MenuWrapper />
               <ApolloWrapper>
                 <div className="ml-0 mt-[66px] min-h-screen max-w-full lg:mx-auto lg:mt-0 lg:pl-[222px]">
                   {children}
                 </div>
               </ApolloWrapper>
+            </>
+          ) : (
+            <ProtectedRoute>
+              <>
+                <MenuWrapper />
+                <ApolloWrapper>
+                  <div className="ml-0 mt-[66px] min-h-screen max-w-full lg:mx-auto lg:mt-0 lg:pl-[222px]">
+                    {children}
+                  </div>
+                </ApolloWrapper>
               </>
             </ProtectedRoute>
           )}
@@ -64,29 +64,29 @@ export default function RootLayout({
 
   return (
     <BaseLayout>
-    <AuthProvider>
-          {publicRoutes.includes(pathname) ? (
-            <>
+      <AuthProvider>
+        {publicRoutes.includes(pathname) ? (
+          <>
             <MenuWrapper />
             <ApolloWrapper>
               <div className="2xl:max-w-8xl ml-0 mt-[66px] min-h-screen max-w-full p-4 md:p-8 lg:mx-auto lg:mt-0 lg:max-w-6xl lg:p-4 lg:pl-[240px] xl:max-w-7xl">
                 {children}
               </div>
             </ApolloWrapper>
-            </>
-          ) : (
-            <ProtectedRoute>
-              <>
+          </>
+        ) : (
+          <ProtectedRoute>
+            <>
               <MenuWrapper />
               <ApolloWrapper>
                 <div className="2xl:max-w-8xl ml-0 mt-[66px] min-h-screen max-w-full p-4 md:p-8 lg:mx-auto lg:mt-0 lg:max-w-6xl lg:p-4 lg:pl-[240px] xl:max-w-7xl">
                   {children}
                 </div>
               </ApolloWrapper>
-              </>
-            </ProtectedRoute>
-          )}
-        </AuthProvider>
+            </>
+          </ProtectedRoute>
+        )}
+      </AuthProvider>
     </BaseLayout>
   );
 }

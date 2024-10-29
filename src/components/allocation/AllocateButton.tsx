@@ -44,7 +44,7 @@ export default function AllocateButton({
       setError(
         error instanceof Error
           ? error.message
-          : 'An unexpected error occurred while adding the allocation.'
+          : 'An unexpected error occurred while adding the allocation.',
       );
     } finally {
       setLoading(false);
@@ -73,12 +73,10 @@ export default function AllocateButton({
 
   return (
     <>
-      {error && <div className="text-red-500 mb-2">{error}</div>}
+      {error && <div className="mb-2 text-red-500">{error}</div>}
       <GreenButton
         className={`w-fit ${
-          isDisabled
-            ? 'cursor-not-allowed bg-greenish-500/50 text-neutral-300'
-            : ''
+          isDisabled ? 'cursor-not-allowed bg-greenish-500/50 text-neutral-300' : ''
         }`}
         onClick={handleAction}
         disabled={isDisabled}

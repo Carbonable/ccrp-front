@@ -1,4 +1,4 @@
-'use server'
+'use server';
 
 import { cookies } from 'next/headers';
 import { jwtDecode } from 'jwt-decode';
@@ -34,11 +34,11 @@ export async function login(email: string, password: string) {
     }
 
     // Set the token as an HTTP-only cookie
-    cookies().set('token', data.access_token, { 
-      httpOnly: true, 
+    cookies().set('token', data.access_token, {
+      httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'strict',
-      maxAge: 3600 // 1 hour
+      maxAge: 3600, // 1 hour
     });
 
     // Decode the JWT to get user information
@@ -48,7 +48,7 @@ export async function login(email: string, password: string) {
     return {
       id: decodedToken.id,
       email: decodedToken.email,
-      roles: decodedToken.roles
+      roles: decodedToken.roles,
     };
   } catch (error) {
     if (error instanceof Error) {
@@ -77,7 +77,7 @@ export async function checkAuth() {
     return {
       id: decodedToken.id,
       email: decodedToken.email,
-      roles: decodedToken.roles
+      roles: decodedToken.roles,
     };
   } catch (error) {
     throw new Error('Invalid token');
