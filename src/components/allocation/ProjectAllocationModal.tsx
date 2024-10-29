@@ -11,7 +11,7 @@ import {
   ModalFooter,
   useDisclosure,
 } from '@nextui-org/react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Available from './Available';
 import AllocateButton from './AllocateButton';
 import { GET_PROJECT_WITHOUT_VINTAGES } from '@/graphql/queries/projects';
@@ -28,7 +28,7 @@ export default function ProjectAllocationButton({ projectId }: { projectId: stri
   const [amount, setAmount] = useState<string>('');
   const [hasError, setHasError] = useState(false);
 
-  const { loading, error, data } = useQuery(GET_PROJECT_WITHOUT_VINTAGES, {
+  const { loading, error, data, refetch } = useQuery(GET_PROJECT_WITHOUT_VINTAGES, {
     variables: {
       field: 'id',
       value: projectId,
@@ -36,7 +36,9 @@ export default function ProjectAllocationButton({ projectId }: { projectId: stri
   });
 
   const project: Project = data?.projectBy;
-
+  useEffect(() => {
+    refetch();
+  }, [isOpen]);
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     let available = availableObject?.available_units ?? 0;

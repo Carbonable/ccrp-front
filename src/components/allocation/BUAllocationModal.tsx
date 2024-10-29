@@ -19,6 +19,7 @@ import Available from './Available';
 import AllocateButton from './AllocateButton';
 import { onlyPositiveInteger } from './utils';
 
+
 export default function BUAllocationButton({ businessUnitId }: { businessUnitId: string }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [selectedProject, setSelectedProject] = useState<Project | undefined>(undefined);
@@ -31,7 +32,7 @@ export default function BUAllocationButton({ businessUnitId }: { businessUnitId:
   const [amount, setAmount] = useState<string>('');
   const [hasError, setHasError] = useState(false);
 
-  const { loading, error, data } = useQuery(BUSINESS_UNITS_DETAILS, {
+  const { loading, error, data, refetch } = useQuery(BUSINESS_UNITS_DETAILS, {
     variables: {
       id: businessUnitId,
     },
@@ -61,7 +62,9 @@ export default function BUAllocationButton({ businessUnitId }: { businessUnitId:
     setAmount(parsedValue.toString());
     setHasError(false);
   };
-
+  useEffect(() => {
+    refetch();
+  }, [isOpen]);
   if (loading) {
     return (
       <>
