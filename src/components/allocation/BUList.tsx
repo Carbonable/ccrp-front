@@ -15,8 +15,6 @@ export default function BUList({
   const { loading, error, data } = useQuery(BUSINESS_UNITS);
   const [value, setValue] = useState(new Set([]));
 
-
-
   const handleSelectionChange = (e: any) => {
     if (!e.target.value || businessUnits === undefined || businessUnits.length === 0) {
       return;
@@ -38,7 +36,6 @@ export default function BUList({
   useEffect(() => {
     if (businessUnits && businessUnits.length > 0) {
       setSelectedBU(businessUnits[0]);
-     
     }
   }, [businessUnits]);
 
@@ -59,8 +56,8 @@ export default function BUList({
       </div>
       <Select
         variant="flat"
-        className="w-full select-component"
-        classNames={{popoverContent: 'bg-neutral-800', value: '!text-neutral-200'}}
+        className="select-component w-full"
+        classNames={{ popoverContent: 'bg-neutral-800', value: '!text-neutral-200' }}
         selectedKeys={selectedBU.id!}
         onChange={handleSelectionChange}
       >

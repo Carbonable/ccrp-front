@@ -19,7 +19,6 @@ import Available from './Available';
 import AllocateButton from './AllocateButton';
 import { onlyPositiveInteger } from './utils';
 
-
 export default function BUAllocationButton({ businessUnitId }: { businessUnitId: string }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [selectedProject, setSelectedProject] = useState<Project | undefined>(undefined);
@@ -42,7 +41,7 @@ export default function BUAllocationButton({ businessUnitId }: { businessUnitId:
 
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-    let available = (availableObject?.available_units ?? 0);
+    let available = availableObject?.available_units ?? 0;
 
     const isValidInteger = /^[0-9]*$/.test(value);
 
@@ -140,7 +139,7 @@ export default function BUAllocationButton({ businessUnitId }: { businessUnitId:
                           setSelectedProject={setSelectedProject}
                         />
                       </div>
-                       <div className="mt-8 font-light">
+                      <div className="mt-8 font-light">
                         <div className="text-left uppercase text-neutral-200">
                           Amount to allocate
                         </div>
@@ -174,7 +173,7 @@ export default function BUAllocationButton({ businessUnitId }: { businessUnitId:
                         <div className="ml-4">
                           To allocate
                           <span className="ml-1 font-bold text-neutral-50">
-                          {amount !== '' ? parseInt(amount) : 0} Units
+                            {amount !== '' ? parseInt(amount) : 0} Units
                           </span>
                         </div>
                       </div>

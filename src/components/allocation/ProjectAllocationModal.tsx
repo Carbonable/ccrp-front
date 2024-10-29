@@ -39,7 +39,7 @@ export default function ProjectAllocationButton({ projectId }: { projectId: stri
 
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-    let available = (availableObject?.available_units ?? 0);
+    let available = availableObject?.available_units ?? 0;
 
     const isValidInteger = /^[0-9]*$/.test(value);
 
@@ -167,7 +167,7 @@ export default function ProjectAllocationButton({ projectId }: { projectId: stri
                         <div className="ml-4">
                           To allocate
                           <span className="ml-1 font-bold text-neutral-50">
-                          {amount !== '' ? parseInt(amount) : 0} Units
+                            {amount !== '' ? parseInt(amount) : 0} Units
                           </span>
                         </div>
                       </div>

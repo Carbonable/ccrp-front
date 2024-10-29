@@ -29,9 +29,9 @@ const Login = () => {
   };
 
   return (
-    <div className='mx-auto w-1/2'>
-      <div className='text-2xl text-center'>Welcome !</div>
-      <form onSubmit={handleSubmit} className='mt-12'>
+    <div className="mx-auto w-1/2">
+      <div className="text-center text-2xl">Welcome !</div>
+      <form onSubmit={handleSubmit} className="mt-12">
         <div>
           <input
             type="email"
@@ -43,7 +43,7 @@ const Login = () => {
             disabled={isLoading}
           />
         </div>
-        <div className='mt-4'>
+        <div className="mt-4">
           <input
             type="password"
             value={password}
@@ -54,17 +54,9 @@ const Login = () => {
             disabled={isLoading}
           />
         </div>
-        {error && (
-          <div className='mt-4 text-red-500 text-sm text-left'>
-            {error}
-          </div>
-        )}
-        <div className='mt-4'>
-          <GreenButton 
-            className='w-full' 
-            type='submit' 
-            disabled={isLoading}
-          >
+        {error && <div className="mt-4 text-left text-sm text-red-500">{error}</div>}
+        <div className="mt-4">
+          <GreenButton className="w-full" type="submit" disabled={isLoading}>
             {isLoading ? 'Signing in...' : 'Sign in'}
           </GreenButton>
         </div>

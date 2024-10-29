@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { GreenButton } from '../common/Button';
 import { uploadAllocation } from '@/actions/admin/addAllocations';
+import { useRefetchAll } from '@/context/General';
 
 interface AllocateButtonProps {
   businessUnitId: string | undefined | any;
@@ -21,6 +22,7 @@ export default function AllocateButton({
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const { triggerRefetch } = useRefetchAll();
 
   const handleAction = async () => {
     if (amount === undefined || amount <= 0 || !businessUnitId || !projectId) {
@@ -36,6 +38,7 @@ export default function AllocateButton({
 
       if (result.success) {
         setData(result.message);
+        triggerRefetch();
       } else {
         setError(result.message);
       }
@@ -44,7 +47,7 @@ export default function AllocateButton({
       setError(
         error instanceof Error
           ? error.message
-          : 'An unexpected error occurred while adding the allocation.'
+          : 'An unexpected error occurred while adding the allocation.',
       );
     } finally {
       setLoading(false);
@@ -73,12 +76,10 @@ export default function AllocateButton({
 
   return (
     <>
-      {error && <div className="text-red-500 mb-2">{error}</div>}
+      {error && <div className="mb-2 text-red-500">{error}</div>}
       <GreenButton
         className={`w-fit ${
-          isDisabled
-            ? 'cursor-not-allowed bg-greenish-500/50 text-neutral-300'
-            : ''
+          isDisabled ? 'cursor-not-allowed bg-greenish-500/50 text-neutral-300' : ''
         }`}
         onClick={handleAction}
         disabled={isDisabled}
