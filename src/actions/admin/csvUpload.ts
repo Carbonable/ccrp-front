@@ -1,6 +1,6 @@
 'use server';
 
-import { getJwtToken } from "@/utils/auth";
+import { getJwtToken } from '@/utils/auth';
 
 interface UploadResult {
   success: boolean;

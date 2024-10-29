@@ -3,9 +3,9 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from './AuthProvider';
 
 export function ProtectedRoute({
-    children,
+  children,
 }: Readonly<{
-    children: React.ReactNode;
+  children: React.ReactNode;
 }>) {
   const { user, loading } = useAuth();
   const router = useRouter();
@@ -21,6 +21,6 @@ export function ProtectedRoute({
   }
 
   return user ? <>{children}</> : null;
-};
+}
 
 export default ProtectedRoute;

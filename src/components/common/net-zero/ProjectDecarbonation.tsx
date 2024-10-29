@@ -172,10 +172,7 @@ export default function ProjectDecarbonationComponent({
             {netZeroPlanning.map((entry: any, index: number) => {
               return (
                 // @ts-ignore
-                <Cell
-                  key={`cell-${index}`}
-                  radius={entry.ex_ante_count === 0 ? 10 : undefined}
-                />
+                <Cell key={`cell-${index}`} radius={entry.ex_ante_count === 0 ? 10 : undefined} />
               );
             })}
           </Bar>

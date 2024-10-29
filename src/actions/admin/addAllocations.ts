@@ -1,6 +1,6 @@
 'use server';
 
-import { getJwtToken } from "@/utils/auth";
+import { getJwtToken } from '@/utils/auth';
 
 interface UploadResult {
   success: boolean;
@@ -10,7 +10,7 @@ interface UploadResult {
 export async function uploadAllocation(
   amount: number,
   projectId: string,
-  buId: string
+  buId: string,
 ): Promise<UploadResult> {
   const token = await getJwtToken();
 
@@ -38,9 +38,7 @@ export async function uploadAllocation(
 
     if (!response.ok) {
       const errorData = await response.json();
-      throw new Error(
-        `HTTP error! status: ${response.status}, message: ${errorData.message}`
-      );
+      throw new Error(`HTTP error! status: ${response.status}, message: ${errorData.message}`);
     }
 
     const responseData = await response.json();
@@ -49,9 +47,7 @@ export async function uploadAllocation(
     console.error('Upload error:', error);
     return {
       success: false,
-      message: `Error adding allocation: ${
-        error instanceof Error ? error.message : String(error)
-      }`,
+      message: `Error adding allocation: ${error instanceof Error ? error.message : String(error)}`,
     };
   }
 }
