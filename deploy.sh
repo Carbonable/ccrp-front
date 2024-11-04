@@ -10,7 +10,7 @@ debug_info() {
 }
 
 # Initialize variables
-CONFIG_FILE=""
+CONFIG_FILE="fly-debug.toml"
 
 # Check if the script is being sourced
 if [[ "${BASH_SOURCE[0]}" != "${0}" ]]; then
@@ -55,5 +55,5 @@ done
 debug_info
 
 # Deploy with build args and optional config file
-echo "Deploying with command: fly deploy $CONFIG_FILE $BUILD_ARGS"
-fly deploy $CONFIG_FILE $BUILD_ARGS
+echo "Deploying with command: fly deploy -c $CONFIG_FILE $BUILD_ARGS"
+fly deploy -c $CONFIG_FILE $BUILD_ARGS

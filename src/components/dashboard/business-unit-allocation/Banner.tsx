@@ -20,7 +20,7 @@ export default function Banner() {
       <div className="relative flex w-full flex-wrap items-start justify-start rounded-3xl border border-neutral-700 bg-planification bg-cover bg-bottom px-4 py-6 md:p-10 lg:p-12">
         <div className="grid grid-cols-3 gap-3 md:auto-cols-max md:grid-flow-col md:grid-cols-none md:gap-6 xl:gap-16">
           <BannerKPI title="My Net-zero objective" value={'0'} loading={loading} error={error} />
-          <BannerKPI title="Missing contributions" value={'0'} loading={loading} error={error} />
+          <BannerKPI title="Uncompensated Emissions" value={'0'} loading={loading} error={error} />
         </div>
         <img
           src="/assets/images/common/logo-transparent.svg"

@@ -1,6 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
-import { GreenButton } from '../common/Button';
+import { GreenButton } from '@/components/common/Button';
 import { uploadAllocation } from '@/actions/admin/addAllocations';
 import { useRefetchAll } from '@/context/General';
 
