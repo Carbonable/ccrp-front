@@ -1,9 +1,10 @@
 'use client';
 
 import { uploadFile } from '@/actions/admin/csvUpload';
-import { FileType } from '@/types/admin';
+import { CURVE_POINTS, DEMAND, FileType } from '@/types/admin';
 import { ChangeEvent, useState } from 'react';
 import { GreenButton } from '../common/Button';
+import { useRefetchAll } from '@/context/General';
 
 interface FileUploadSectionProps {
   type: FileType;
@@ -14,9 +15,12 @@ interface UploadResult {
   message: string;
 }
 
+
+
 export default function UploadCSV({ type }: FileUploadSectionProps) {
   const [file, setFile] = useState<File | null>(null);
   const [uploadResult, setUploadResult] = useState<UploadResult | null>(null);
+  const {triggerRefetch } = useRefetchAll();
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
@@ -41,6 +45,9 @@ export default function UploadCSV({ type }: FileUploadSectionProps) {
     try {
       const result = await uploadFile(formData);
       setUploadResult(result);
+      if (type === DEMAND|| type === CURVE_POINTS) {
+        triggerRefetch();
+      }
     } catch (error) {
       setUploadResult({
         success: false,
