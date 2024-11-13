@@ -12,7 +12,7 @@ export default function AdminPage() {
       {supportedFileTypes.map((type) => (
         <UploadCSV key={type} type={type} />
       ))}
-      <DangerButton />
+      { env !== 'production' && <DangerButton />}
     </div>
   );
 }
