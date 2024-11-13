@@ -1,6 +1,6 @@
 
 import UploadCSV from '@/components/admin/UploadCSV';
-import DangerButton from '@/components/dev/BigRedButton';
+import DangerButton from '@/actions/dev/BigRedButton';
 import { supportedFileTypes } from '@/types/admin';
 
 export default function AdminPage() {
