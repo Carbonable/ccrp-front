@@ -1,6 +1,6 @@
 
 import UploadCSV from '@/components/admin/UploadCSV';
-import DangerButton from '@/actions/dev/BigRedButton';
+import DangerButton from '@/components/admin/BigRedButton';
 import { supportedFileTypes } from '@/types/admin';
 
 export default function AdminPage() {
@@ -12,7 +12,7 @@ export default function AdminPage() {
       {supportedFileTypes.map((type) => (
         <UploadCSV key={type} type={type} />
       ))}
-      {(env === 'test' || env ==='development') &&<DangerButton />}
+      <DangerButton />
     </div>
   );
 }
