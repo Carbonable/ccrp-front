@@ -1,7 +1,7 @@
 'use client';
 import { useRefetchAll } from '@/context/General';
 import React, { useState } from 'react';
-import { resetDatabase } from './resetDb';
+import { resetDatabase } from '../../actions/dev/resetDb';
 
 const DangerButton = () => {
   const { triggerRefetch } = useRefetchAll();
