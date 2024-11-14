@@ -8,7 +8,6 @@ export const supportedFileTypes: FileType[] = [
   'certifier',
   'developper',
   'project',
-  'project-sdgs',
   CURVE_POINTS,
   'business-units',
   DEMAND,
