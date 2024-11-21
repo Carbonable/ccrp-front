@@ -21,10 +21,26 @@ export default function ProjectsColors({ colors }: { colors: ProjectColorReparti
       name: 'Agro & Soil',
       color: '#CFBD70',
     },
+    {
+      type: 'grey',
+      name: 'Solar Panels',
+      color: '#888888',
+    },
+    {
+      type: 'red',
+      name: 'Co2 capture plant',
+      color: '#B32133',
+    },
+    {
+      type: 'black',
+      name: 'Biochar',
+      color: '#000000',
+    },
   ];
 
   const newColors = { ...colors };
   delete newColors.__typename;
+  console.log(newColors)
   const filteredNewColors = Object.assign(newColors);
   // Convert the colors object into an array
   const transformedColors = Object.keys(newColors).map((colorName: string) => ({
@@ -32,7 +48,7 @@ export default function ProjectsColors({ colors }: { colors: ProjectColorReparti
     value: getNumericPercentage(filteredNewColors[colorName].value),
     color: legendPayload.filter((legend) => legend.type === colorName)[0].color,
   }));
-
+  
   const RADIAN = Math.PI / 180;
   const renderCustomizedLabel = ({
     cx,
@@ -60,7 +76,6 @@ export default function ProjectsColors({ colors }: { colors: ProjectColorReparti
       </text>
     );
   };
-
   return (
     <div>
       <SmallTitle title="Projects Colors" />

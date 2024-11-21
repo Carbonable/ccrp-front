@@ -65,6 +65,18 @@ export const GET_PROJECTS_METRICS = gql`
           key
           value
         }
+        black {
+          key
+          value
+        }
+        red {
+          key
+          value
+        }
+        grey {
+          key
+          value
+        }
       }
       localization {
         value
