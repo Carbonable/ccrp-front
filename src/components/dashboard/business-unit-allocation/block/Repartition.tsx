@@ -39,7 +39,6 @@ function AllocationPercentage({
   if (!allocation.amount) {
     return null;
   }
-
   const percentage = Math.round((allocation.amount / totalConsumption) * 100);
   const colors = [
     '#29A46F',
@@ -59,7 +58,7 @@ function AllocationPercentage({
   return (
     <div
       className={`${idx === 0 ? 'rounded-l-full' : ''} ${idx === length - 1 ? 'rounded-r-full' : ''} h-[10px]`}
-      style={{ width: `${percentage}%`, backgroundColor: `${colors[idx]}` }}
+      style={{ width: `${percentage}%`, backgroundColor: `${colors[idx % 7]}` }}
     ></div>
   );
 }
