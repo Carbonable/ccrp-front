@@ -56,8 +56,8 @@ export default function ProjectDecarbonationTableComponent({
               <th className="px-4">Emission (t)</th>
               <th className="px-4">Ex-Post Issued (t)</th>
               <th className="px-4">Ex-Post Purchased (t)</th>
-              <th className="px-4">Ex-Post Retired (t)</th>
               <th className="px-4">Total Ex-Post (t)</th>
+              <th className="px-4">Ex-Post Retired (t)</th>
               <th className="px-4">Total Ex-Ante (t)</th>
               <th className="px-4">Neutrality Target (%)</th>
               <th className="px-4">Actual Rate (%)</th>
@@ -126,8 +126,8 @@ function ProjectedDecarbonationLoaded({ annual }: { annual: AnnualData[] }) {
             <td className="px-4">{roundIfFloat(emissions)}</td>
             <td className="px-4">{roundIfFloat(ex_post_issued)}</td>
             <td className="px-4">{roundIfFloat(ex_post_purchased)}</td>
-            <td className="px-4">{roundIfFloat(ex_post_retired)}</td>
             <td className="px-4">{roundIfFloat(total_ex_post)}</td>
+            <td className="px-4">{roundIfFloat(ex_post_retired)}</td>
             <td className="px-4">{roundIfFloat(total_ex_ante)}</td>
             <td className="px-4">{roundIfFloat(target)}</td>
             <td className="px-4">{roundIfFloat(actual_rate)}</td>
