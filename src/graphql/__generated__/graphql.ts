@@ -72,6 +72,7 @@ export type AssetAllocationItem = {
   id: Scalars['String']['output'];
   metadata: Array<Maybe<Map>>;
   name: Scalars['String']['output'];
+  slug: Scalars['String']['output'];
 };
 
 export type BusinessUnit = {
@@ -153,6 +154,7 @@ export type CompanyCarbonAssetAllocationData = {
   price?: Maybe<Scalars['Float']['output']>;
   project_completion?: Maybe<Scalars['String']['output']>;
   project_name?: Maybe<Scalars['String']['output']>;
+  project_slug?: Maybe<Scalars['String']['output']>;
   total_allocated_to_date?: Maybe<Scalars['Int']['output']>;
   total_amount?: Maybe<Scalars['Float']['output']>;
   total_available_to_date?: Maybe<Scalars['Int']['output']>;
@@ -348,7 +350,7 @@ export type OrderData = {
   deficit: Scalars['Int']['output'];
   order_for_year: Scalars['Int']['output'];
   quantity: Scalars['Int']['output'];
-  status: Scalars['Int']['output'];
+  status: Scalars['String']['output'];
   vintage: Scalars['Int']['output'];
 };
 
@@ -410,13 +412,13 @@ export type ProjectCarbonAssetAllocationData = {
 
 export type ProjectColorRepartition = {
   __typename?: 'ProjectColorRepartition';
-  grey: Map;
   blue: Map;
-  green: Map;
-  yellow: Map;
-  na: Map;
   brown: Map;
+  green: Map;
+  grey: Map;
+  na: Map;
   red: Map;
+  yellow: Map;
 };
 
 export type ProjectFundingAllocation = {
@@ -785,7 +787,7 @@ export type GetOrderQueryVariables = Exact<{
 }>;
 
 
-export type GetOrderQuery = { __typename?: 'Query', getOrder?: { __typename?: 'Order', data: Array<{ __typename?: 'OrderData', created_at: string, order_for_year: number, vintage: number, quantity: number, deficit: number, status: number } | null>, page_info?: { __typename?: 'PageInfo', has_next_page: boolean, has_previous_page: boolean, total_page: number } | null } | null };
+export type GetOrderQuery = { __typename?: 'Query', getOrder?: { __typename?: 'Order', data: Array<{ __typename?: 'OrderData', created_at: string, order_for_year: number, vintage: number, quantity: number, deficit: number, status: string } | null>, page_info?: { __typename?: 'PageInfo', has_next_page: boolean, has_previous_page: boolean, total_page: number } | null } | null };
 
 export type ProjectsQueryVariables = Exact<{ [key: string]: never; }>;
 

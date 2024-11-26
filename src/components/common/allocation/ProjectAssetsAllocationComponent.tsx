@@ -7,6 +7,7 @@ import { RESULT_PER_PAGE } from '@/utils/constant';
 import { SecondaryButton } from '../Button';
 import PaginationComponent from '../Pagination';
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
 
 //TODO check actual and allocation_amount
 
@@ -102,7 +103,10 @@ function ProjectFundingAllocationLoaded({
                 <div className="p-2">
                   <SquaredInitials text={allocation.business_unit.name} color="random" />
                 </div>
-                <div className="ml-2 font-bold">{allocation.business_unit.name}</div>
+                <div className="ml-2 font-bold"><Link href={`/dashboard/business-units-allocation/${allocation.business_unit.id}`} >
+                {allocation.business_unit.name}
+                </Link>
+                </div>
               </div>
             </td>
             <td className="px-4">{allocation.allocated}</td>

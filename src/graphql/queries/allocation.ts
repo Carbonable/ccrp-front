@@ -59,6 +59,7 @@ export const GET_BU_ALLOCATIONS = gql`
         project {
           id
           name
+          slug
         }
         total_cu
         allocated

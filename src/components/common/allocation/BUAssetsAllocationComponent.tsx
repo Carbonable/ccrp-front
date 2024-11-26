@@ -8,6 +8,8 @@ import PaginationComponent from '../Pagination';
 import TableLoading from '@/components/table/TableLoading';
 import { RESULT_PER_PAGE } from '@/utils/constant';
 import { SecondaryButton } from '../Button';
+import Link from 'next/link';
+import { projectId } from '../../../utils/sanity/config';
 
 interface TableLoadingProps {
   data: any;
@@ -105,7 +107,10 @@ function ProjectFundingAllocationLoaded({
                   <div className="p-2">
                     <SquaredInitials text={allocation.project.name} color="random" />
                   </div>
-                  <div className="ml-2 font-bold">{allocation.project.name}</div>
+                  <div className="ml-2 font-bold"><Link href={`/projects/${allocation.project.slug}`}>
+                  {allocation.project.name}
+                  </Link>
+                  </div>
                 </div>
               </td>
               <td className="px-4">{allocation.total_cu}</td>
