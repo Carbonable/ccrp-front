@@ -75,8 +75,6 @@ export default function FinancialAnalysisTable() {
               <th className="px-4">All time avg issued price ($/t)</th>
               <th className="px-4">All time avg price ($/t)</th>
               <th className="px-4">Cumulative Total Amount ($)</th>
-              <th className="px-4">Emission Debt ($)</th>
-              <th className="px-4">Cumulative Emission Debt ($)</th>
             </tr>
           </thead>
           <tbody>
@@ -113,9 +111,7 @@ function TableLoaded({ financialAnalysis }: { financialAnalysis: FinancialAnalys
           avg_issued_price,
           avg_purchased_price,
           avg_price,
-          cumulative_emission_debt,
           cumulative_total_amount,
-          emission_debt,
           total_amount,
           total_issued_amount,
           total_purchased_amount,
@@ -141,8 +137,6 @@ function TableLoaded({ financialAnalysis }: { financialAnalysis: FinancialAnalys
             <td className="px-4">{all_time_avg_issued_price}</td>
             <td className="px-4">{all_time_avg_price}</td>
             <td className="px-4">{cumulative_total_amount}</td>
-            <td className="px-4">{emission_debt}</td>
-            <td className="px-4">{cumulative_emission_debt}</td>
           </tr>
         );
       })}
