@@ -17,14 +17,14 @@ export default function ProjectsColors({ colors }: { colors: ProjectColorReparti
       color: '#334566',
     },
     {
-      type: 'orange',
+      type: 'brown',
       name: 'Agro & Soil',
-      color: '#CFBD70',
+      color: '#A0522D',
     },
     {
-      type: 'grey',
+      type: 'yellow',
       name: 'Solar Panels',
-      color: '#888888',
+      color: '#FDB813',
     },
     {
       type: 'red',
@@ -32,9 +32,9 @@ export default function ProjectsColors({ colors }: { colors: ProjectColorReparti
       color: '#B32133',
     },
     {
-      type: 'black',
+      type: 'grey',
       name: 'Biochar',
-      color: '#000000',
+      color: '#888888',
     },
   ];
 
