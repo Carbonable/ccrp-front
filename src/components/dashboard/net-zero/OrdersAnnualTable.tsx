@@ -10,7 +10,7 @@ import { ErrorReloadTable, NoDataTable } from '../../common/ErrorReload';
 import TableLoading from '@/components/table/TableLoading';
 import PaginationComponent from '../../common/Pagination';
 import { GET_ORDERS } from '@/graphql/queries/orders';
-import { format } from 'date-fns';
+import  moment  from 'moment';
 
 
 export default function OrdersAnnualTable() {
@@ -112,7 +112,7 @@ function TableLoaded({ orders }: { orders: OrderData[] }) {
         if (!vintage) {
           return null;
         }
-        const formattedWithDateFns = format(created_at, 'yyyy-MM-dd');
+        const formattedWithDateFns = moment(created_at).format('YYYY-MM-DD HH:MM:SS');
         return (
           <tr
             key={`projection_${idx}`}
