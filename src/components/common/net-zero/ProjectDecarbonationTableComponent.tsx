@@ -16,6 +16,7 @@ export default function ProjectDecarbonationTableComponent({
   refetchData,
   currentPage,
   setCurrentPage,
+  buView
 }: {
   loading: boolean;
   error: any;
@@ -23,6 +24,7 @@ export default function ProjectDecarbonationTableComponent({
   refetchData: any;
   currentPage: number;
   setCurrentPage: (page: number) => void;
+  buView: boolean;
 }) {
   const [totalPages, setTotalPages] = useState<number>(1);
 
@@ -63,14 +65,14 @@ export default function ProjectDecarbonationTableComponent({
               <th className="px-4">Actual Rate (%)</th>
               <th className="px-4">Delta (%)</th>
               <th className="px-4">Debt (t)</th>
-              <th className="px-4">Ex-Post Stock (t)</th>
-              <th className="px-4">Ex-ante Stock (t)</th>
+              {!buView && <th className="px-4">Ex-Post Stock (t)</th>}
+              {!buView && <th className="px-4">Ex-ante Stock (t)</th>}
             </tr>
           </thead>
           <tbody>
             {loading && <TableLoading resultsPerPage={RESULT_PER_PAGE} numberOfColumns={11} />}
             {error && <ErrorReloadTable refetchData={refetchData} />}
-            {!loading && !error && <ProjectedDecarbonationLoaded annual={annual} />}
+            {!loading && !error && <ProjectedDecarbonationLoaded annual={annual} buView={buView} />}
           </tbody>
         </table>
       </div>
@@ -85,7 +87,7 @@ export default function ProjectDecarbonationTableComponent({
   );
 }
 
-function ProjectedDecarbonationLoaded({ annual }: { annual: AnnualData[] }) {
+function ProjectedDecarbonationLoaded({ annual, buView }: { annual: AnnualData[],buView: boolean }) {
   if (annual.length === 0) {
     return <NoDataTable />;
   }
@@ -133,8 +135,8 @@ function ProjectedDecarbonationLoaded({ annual }: { annual: AnnualData[] }) {
             <td className="px-4">{roundIfFloat(actual_rate)}</td>
             <td className="px-4">{roundIfFloat(delta)}</td>
             <td className="px-4">{roundIfFloat(debt)}</td>
-            <td className="px-4">{roundIfFloat(ex_post_stock)}</td>
-            <td className="px-4">{roundIfFloat(ex_ante_stock)}</td>
+            {!buView && <td className="px-4">{roundIfFloat(ex_post_stock)}</td>}
+            {!buView && <td className="px-4">{roundIfFloat(ex_ante_stock)}</td>}
           </tr>
         );
       })}

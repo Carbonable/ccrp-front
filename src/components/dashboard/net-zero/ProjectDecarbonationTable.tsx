@@ -45,6 +45,7 @@ export default function ProjectDecarbonationTable() {
       refetchData={refetchData}
       currentPage={currentPage}
       setCurrentPage={setCurrentPage}
+      buView={false}
     />
   );
 }

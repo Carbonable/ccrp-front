@@ -43,6 +43,7 @@ export default function ProjectDecarbonationTable({ businessUnitId }: { business
       refetchData={refetchData}
       currentPage={currentPage}
       setCurrentPage={setCurrentPage}
+      buView={true}
     />
   );
 }

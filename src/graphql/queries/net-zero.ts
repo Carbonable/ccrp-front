@@ -89,9 +89,7 @@ export const FINANCIAL_ANALYSIS = gql`
         avg_issued_price
         avg_purchased_price
         avg_price
-        cumulative_emission_debt
         cumulative_total_amount
-        emission_debt
         total_amount
         total_issued_amount
         total_purchased_amount
