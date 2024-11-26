@@ -61,11 +61,11 @@ export const GET_PROJECTS_METRICS = gql`
           key
           value
         }
-        orange {
+        brown {
           key
           value
         }
-        black {
+        grey {
           key
           value
         }
@@ -73,7 +73,7 @@ export const GET_PROJECTS_METRICS = gql`
           key
           value
         }
-        grey {
+        yellow {
           key
           value
         }
