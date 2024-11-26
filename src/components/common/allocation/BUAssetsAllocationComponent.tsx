@@ -9,7 +9,6 @@ import TableLoading from '@/components/table/TableLoading';
 import { RESULT_PER_PAGE } from '@/utils/constant';
 import { SecondaryButton } from '../Button';
 import Link from 'next/link';
-import { projectId } from '../../../utils/sanity/config';
 
 interface TableLoadingProps {
   data: any;
