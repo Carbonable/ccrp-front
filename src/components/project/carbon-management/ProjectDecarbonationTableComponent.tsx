@@ -52,8 +52,8 @@ export default function ProjectDecarbonationTableComponent({
           <thead className="h-10 whitespace-nowrap bg-neutral-500 text-neutral-100">
             <tr>
               <th className="sticky left-0 z-10 bg-neutral-500 px-4">Time Period</th>
-              <th className="px-4">Ex-Post Issued (t)</th>
-              <th className="px-4">Ex-Post Purchased (t)</th>
+              <th className="px-4">Ex-Post Forward (t)</th>
+              <th className="px-4">Ex-Post Spot (t)</th>
               <th className="px-4">Total Ex-Post (t)</th>
               <th className="px-4">Total Ex-Ante (t)</th>
               <th className="px-4">Ex-Post Retired (t)</th>
