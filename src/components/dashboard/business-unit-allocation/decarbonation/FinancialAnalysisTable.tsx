@@ -73,8 +73,6 @@ export default function FinancialAnalysisTable({ businessUnitId }: { businessUni
               <th className="px-4">All time avg issued price ($/t)</th>
               <th className="px-4">All time avg price ($/t)</th>
               <th className="px-4">Cumulative Total Amount ($)</th>
-              <th className="px-4">Emission Debt ($)</th>
-              <th className="px-4">Cumulative Emission Debt ($)</th>
             </tr>
           </thead>
           <tbody>
