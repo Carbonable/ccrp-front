@@ -65,11 +65,11 @@ export default function FinancialAnalysisTable() {
           <thead className="h-10 whitespace-nowrap bg-neutral-500 text-neutral-100">
             <tr>
               <th className="sticky left-0 z-10 bg-neutral-500 px-4">Time Period</th>
-              <th className="px-4">Average Purchased price ($/t)</th>
-              <th className="px-4">Average Issued price ($/t)</th>
+              <th className="px-4">Average Spot price ($/t)</th>
+              <th className="px-4">Average Forward price ($/t)</th>
               <th className="px-4">Average price ($/t)</th>
-              <th className="px-4">Total Purchased amount ($)</th>
-              <th className="px-4">Total Issued amount ($)</th>
+              <th className="px-4">Total Spot amount ($)</th>
+              <th className="px-4">Total Forward amount ($)</th>
               <th className="px-4">Total amount ($)</th>
               <th className="px-4">All time avg purchased price ($/t)</th>
               <th className="px-4">All time avg issued price ($/t)</th>
