@@ -47,7 +47,7 @@ export default function ProjectsColors({ colors }: { colors: ProjectColorReparti
     name: colorName,
     value: getNumericPercentage(filteredNewColors[colorName].value),
     color: legendPayload.filter((legend) => legend.type === colorName)[0].color,
-  }));
+  })).filter((x) => x.value > 0);
   
   const RADIAN = Math.PI / 180;
   const renderCustomizedLabel = ({
