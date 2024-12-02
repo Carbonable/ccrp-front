@@ -36,15 +36,15 @@ export default function GlobalDataComponent({ loading, error, data, refetch }: G
         refetchData={refetchData}
       />
       <GlobalKPI
-        title="Debt (current year)"
+        title="Delta (current year)"
         kpi={globalData?.debt}
         loading={loading}
         error={error}
         refetchData={refetchData}
       />
       <GlobalKPI
-        title="Number of projects"
-        kpi={globalData?.number_of_projects}
+        title="Delta (total)"
+        kpi={globalData?.cumulative_debt}
         loading={loading}
         error={error}
         refetchData={refetchData}
