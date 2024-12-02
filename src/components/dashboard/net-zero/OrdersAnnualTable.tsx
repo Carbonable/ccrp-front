@@ -28,7 +28,6 @@ export default function OrdersAnnualTable() {
       },
     },
   });
-console.log("Dat" ,data)
 
   const refetchData = () => {
     refetch({

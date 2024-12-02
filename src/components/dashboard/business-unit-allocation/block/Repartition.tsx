@@ -1,23 +1,27 @@
 import { Allocation, BusinessUnit } from '@/graphql/__generated__/graphql';
+import { ColorAmount } from '../../../../graphql/__generated__/graphql';
+import { colorLegendPayload } from '@/components/project/ProjectsColors';
 
 export default function Repartition({ block }: { block: BusinessUnit }) {
-  if (!block.allocations || block.allocations.length === 0) {
+  if (!block.allocations || block.allocations.length === 0 || !block.colors_amount || block.colors_amount.length == 0) {
+    
     return <div className="h-[10px] w-full rounded-full bg-opacityLight-5"></div>;
   }
 
-  const totalConsumption = block.allocations.reduce(
-    (sum, allocation: any) => sum + allocation.amount,
+  const totalAllocation = block.colors_amount.reduce(
+    (sum, color: any) => sum + color.amount,
     0,
   );
 
+
   return (
     <>
-      {block.allocations.map((allocation: any, idx: number) => (
+      {block.colors_amount.map((colorAmount: any, idx: number) => (
         <AllocationPercentage
-          allocation={allocation}
+          colorAmount={colorAmount}
           idx={idx}
-          totalConsumption={totalConsumption}
-          length={block.allocations ? block.allocations.length : 0}
+          totalAllocation={totalAllocation}
+          length={block.colors_amount ? block.colors_amount.length: 0}
           key={`allocation_${idx}`}
         />
       ))}
@@ -26,39 +30,24 @@ export default function Repartition({ block }: { block: BusinessUnit }) {
 }
 
 function AllocationPercentage({
-  allocation,
+  colorAmount,
   idx,
-  totalConsumption,
+  totalAllocation,
   length,
 }: {
-  allocation: Allocation;
+  colorAmount: ColorAmount;
   idx: number;
-  totalConsumption: number;
+  totalAllocation: number;
   length: number;
 }) {
-  if (!allocation.amount) {
-    return null;
-  }
-  const percentage = Math.round((allocation.amount / totalConsumption) * 100);
-  const colors = [
-    '#29A46F',
-    '#F9C74F',
-    '#F8961E',
-    '#F3722C',
-    '#F94144',
-    '#277DA1',
-    '#9C6644',
-    '#553C9A',
-    '#2A9D8F',
-    '#E9C46A',
-    '#E76F51',
-    '#264653',
-  ];
+
+const percentage = Math.round(colorAmount.amount / totalAllocation * 100);
+let color = colorLegendPayload.filter((legend) => legend.type.toUpperCase() === colorAmount.color)[0].color;
 
   return (
     <div
       className={`${idx === 0 ? 'rounded-l-full' : ''} ${idx === length - 1 ? 'rounded-r-full' : ''} h-[10px]`}
-      style={{ width: `${percentage}%`, backgroundColor: `${colors[idx % 7]}` }}
+      style={{ width: `${percentage}%`, backgroundColor: `${color}` }}
     ></div>
   );
 }

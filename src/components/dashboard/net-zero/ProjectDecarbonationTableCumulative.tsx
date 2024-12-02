@@ -105,7 +105,6 @@ function ProjectedDecarbonationLoaded({ cumulative }: { cumulative: CumulativeDa
           ex_post_issued,
           ex_post_purchased,
           ex_post_retired,
-          delta,
           debt,
         } = data;
 

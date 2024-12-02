@@ -9,6 +9,14 @@ export const BUSINESS_UNITS = gql`
       default_emission
       default_target
       actual_rate
+      compensation_in_t,
+      delta_in_t,
+      colors_amount
+       {
+        color
+        amount},
+        
+      compensation_ratio,
       metadata {
         key
         value

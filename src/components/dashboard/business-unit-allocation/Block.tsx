@@ -5,17 +5,19 @@ import { BusinessUnit } from '@/graphql/__generated__/graphql';
 
 export default function Block({ block }: { block: BusinessUnit }) {
   const now = new Date().getFullYear();
+  let {compensation_in_t,delta_in_t, compensation_ratio} = block;
+  console.log(block)
   return (
     <div className="w-full cursor-pointer rounded-3xl border border-neutral-700 p-4 hover:brightness-[120%] xl:p-8">
       <div className="flex items-center justify-start">
         <div className="text-xl text-neutral-50">{block.name}</div>
       </div>
       <div className="mt-4 grid grid-cols-3 gap-x-4 lg:gap-x-8">
-        <AllocationKPI title="Yearly Emission" value={block.yearly_emissions?.toString()} />
-        <AllocationKPI title={`${now} contribution`} value={block.yearly_contributions?.toString()} />
+        <AllocationKPI title="Contributions (current year)" value={compensation_in_t?.toString()} />
+        <AllocationKPI title="Delta (current year)" value={delta_in_t?.toString()} />
         <div className="w-full">
           <CircleProgress
-            rate={block.actual_rate}
+            rate={compensation_ratio * 100}
             size={52}
             bgColor="#29A46F"
             progressColor="#363840"
