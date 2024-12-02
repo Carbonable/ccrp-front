@@ -39,6 +39,7 @@ export const GET_PROJECT_ALLOCATIONS = gql`
         }
         allocated
         allocation_amount
+        share_of_project
         target
         actual
         start_date
