@@ -64,7 +64,6 @@ export const CUMULATIVE = gql`
         ex_post_retired
         target
         actual_rate
-        delta
         debt
         ex_post_stock
         ex_ante_stock

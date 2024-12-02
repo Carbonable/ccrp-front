@@ -4,49 +4,49 @@ import { SmallTitle } from '../common/Title';
 import { Cell, Pie, PieChart, ResponsiveContainer } from 'recharts';
 import { CustomLegend } from '../common/CustomGraphLegend';
 
+export const  colorLegendPayload = [
+  {
+    type: 'green',
+    name: 'Forest & Wetland',
+    color: '#1B6B49',
+  },
+  {
+    type: 'blue',
+    name: 'Coasts & Submarine',
+    color: '#334566',
+  },
+  {
+    type: 'brown',
+    name: 'Agro & Soil',
+    color: '#A0522D',
+  },
+  {
+    type: 'yellow',
+    name: 'Solar Panels',
+    color: '#FDB813',
+  },
+  {
+    type: 'red',
+    name: 'Co2 capture plant',
+    color: '#B32133',
+  },
+  {
+    type: 'grey',
+    name: 'Biochar',
+    color: '#888888',
+  },
+];
 export default function ProjectsColors({ colors }: { colors: ProjectColorRepartition }) {
-  const legendPayload = [
-    {
-      type: 'green',
-      name: 'Forest & Wetland',
-      color: '#1B6B49',
-    },
-    {
-      type: 'blue',
-      name: 'Coasts & Submarine',
-      color: '#334566',
-    },
-    {
-      type: 'brown',
-      name: 'Agro & Soil',
-      color: '#A0522D',
-    },
-    {
-      type: 'yellow',
-      name: 'Solar Panels',
-      color: '#FDB813',
-    },
-    {
-      type: 'red',
-      name: 'Co2 capture plant',
-      color: '#B32133',
-    },
-    {
-      type: 'grey',
-      name: 'Biochar',
-      color: '#888888',
-    },
-  ];
+
 
   const newColors = { ...colors };
   delete newColors.__typename;
-  console.log(newColors)
   const filteredNewColors = Object.assign(newColors);
   // Convert the colors object into an array
   const transformedColors = Object.keys(newColors).map((colorName: string) => ({
     name: colorName,
     value: getNumericPercentage(filteredNewColors[colorName].value),
-    color: legendPayload.filter((legend) => legend.type === colorName)[0].color,
+    color: colorLegendPayload.filter((legend) => legend.type === colorName)[0].color,
   })).filter((x) => x.value > 0);
   
   const RADIAN = Math.PI / 180;
@@ -99,7 +99,7 @@ export default function ProjectsColors({ colors }: { colors: ProjectColorReparti
           </PieChart>
         </ResponsiveContainer>
         <div className="font-inter mx-auto w-fit text-center text-sm text-neutral-300 md:mt-2 lg:mt-0 lg:text-lg">
-          <CustomLegend payload={legendPayload} />
+          <CustomLegend payload={colorLegendPayload} />
         </div>
       </div>
     </div>

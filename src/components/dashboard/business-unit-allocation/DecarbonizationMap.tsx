@@ -8,6 +8,7 @@ import ErrorReload from '@/components/common/ErrorReload';
 export default function DecarbonizationMap() {
   const { loading, error, data, refetch } = useQuery(BUSINESS_UNITS);
 
+
   const businessUnits: BusinessUnit[] = data?.businessUnits;
 
   if (loading)
