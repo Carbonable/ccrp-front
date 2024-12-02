@@ -6,7 +6,7 @@ import { BusinessUnit } from '@/graphql/__generated__/graphql';
 export default function Block({ block }: { block: BusinessUnit }) {
   const now = new Date().getFullYear();
   let {compensation_in_t,delta_in_t, compensation_ratio} = block;
-  console.log(block)
+ 
   return (
     <div className="w-full cursor-pointer rounded-3xl border border-neutral-700 p-4 hover:brightness-[120%] xl:p-8">
       <div className="flex items-center justify-start">

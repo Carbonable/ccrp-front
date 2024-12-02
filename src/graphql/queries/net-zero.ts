@@ -6,6 +6,7 @@ export const GET_GLOBAL_DATA = gql`
       target
       actual
       debt
+      cumulative_debt
       number_of_projects
       invested_amount
     }
