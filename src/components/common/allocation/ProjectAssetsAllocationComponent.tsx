@@ -9,7 +9,6 @@ import PaginationComponent from '../Pagination';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 
-//TODO check actual and allocation_amount
 
 export default function ProjectAssetsAllocationComponent({
   data,
@@ -56,7 +55,8 @@ export default function ProjectAssetsAllocationComponent({
               <th className="px-4">Allocated (t)</th>
               <th className="px-4">Allocation amount ($)</th>
               <th className="px-4">Target (%)</th>
-              <th className="px-4">Actual (%)</th>
+              <th className="px-4">Share (%)</th>
+              <th className="px-4">Bu Allocation (%)</th>
               <th className="px-4">Start date</th>
               <th className="px-4"></th>
             </tr>
@@ -112,6 +112,7 @@ function ProjectFundingAllocationLoaded({
             <td className="px-4">{allocation.allocated}</td>
             <td className="px-4">{allocation.allocation_amount}</td>
             <td className="px-4">{allocation.target}</td>
+            <td className="px-4">{allocation.share_of_project}</td>
             <td className="px-4">{allocation.actual}</td>
             <td className="px-4">{allocation.start_date}</td>
             <td className="px-4">
