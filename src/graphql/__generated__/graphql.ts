@@ -81,7 +81,7 @@ export type BusinessUnit = {
   allocations?: Maybe<Array<Maybe<Allocation>>>;
   colors_amount?: Maybe<Array<Maybe<ColorAmount>>>;
   compensation_in_t?: Maybe<Scalars['String']['output']>;
-  compensation_ratio: Scalars['Int']['output'];
+  compensation_ratio: Scalars['Float']['output'];
   default_emission?: Maybe<Scalars['String']['output']>;
   default_target?: Maybe<Scalars['Int']['output']>;
   delta_in_t?: Maybe<Scalars['String']['output']>;
