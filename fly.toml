@@ -3,7 +3,7 @@
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
 
-app = 'ccrp-front'
+app = 'debug-ccrp-front'
 primary_region = 'cdg'
 
 [build]
@@ -13,7 +13,7 @@ primary_region = 'cdg'
     NEXT_PUBLIC_TRACKING_ACTIVATED = "false"
     NEXT_PUBLIC_SANITY_API_VERSION = "v2021-03-25"
     NEXT_PUBLIC_SANITY_DATASET = "production"
-    NEXT_PUBLIC_SANITY_PROJECT_ID = "placeholder"
+    NEXT_PUBLIC_SANITY_PROJECT_ID = "h2rdmkp4"
     NEXT_PUBLIC_ENABLED_MENU_ITEMS = "Dashboard,Portfolio,Calculator"
 
 [http_service]
