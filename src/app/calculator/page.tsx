@@ -1,7 +1,7 @@
 'use client';
 
 export default function CalculatorPage() {
-  const iframeUrl = 'https://kalculator.carbonable.io';
+  const iframeUrl = 'https://planifier.carbonable.io';
 
   return (
     <div className="w-full">
