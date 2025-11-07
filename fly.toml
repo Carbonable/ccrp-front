@@ -14,7 +14,7 @@ primary_region = 'cdg'
     NEXT_PUBLIC_SANITY_API_VERSION = "v2021-03-25"
     NEXT_PUBLIC_SANITY_DATASET = "production"
     NEXT_PUBLIC_SANITY_PROJECT_ID = "h2rdmkp4"
-    NEXT_PUBLIC_ENABLED_MENU_ITEMS = "Dashboard,Portfolio,Calculator"
+    NEXT_PUBLIC_ENABLED_MENU_ITEMS = "Dashboard,Portfolio,Calculator,Baseline"
 
 [http_service]
   internal_port = 3000
