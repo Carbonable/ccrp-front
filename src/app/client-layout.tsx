@@ -7,6 +7,7 @@ import { ApolloWrapper } from './ApolloWrapper';
 import FullWidthLayout from './full-width-layout';
 import { SignedIn, SignedOut, RedirectToSignIn } from '@clerk/nextjs';
 import { RefetchProvider } from '@/context/General';
+import { AuthProvider } from '@/components/auth/AuthProvider';
 
 export default function ClientLayout({
   children,
@@ -27,12 +28,14 @@ export default function ClientLayout({
     return (
       <FullWidthLayout>
         <SignedIn>
-          <MenuWrapper />
-          <ApolloWrapper>
-            <div className="ml-0 mt-[66px] min-h-screen max-w-full lg:mx-auto lg:mt-0 lg:pl-[222px]">
-              {children}
-            </div>
-          </ApolloWrapper>
+          <AuthProvider>
+            <MenuWrapper />
+            <ApolloWrapper>
+              <div className="ml-0 mt-[66px] min-h-screen max-w-full lg:mx-auto lg:mt-0 lg:pl-[222px]">
+                {children}
+              </div>
+            </ApolloWrapper>
+          </AuthProvider>
         </SignedIn>
         <SignedOut>
           <RedirectToSignIn />
@@ -44,14 +47,16 @@ export default function ClientLayout({
   return (
     <BaseLayout>
       <SignedIn>
-        <MenuWrapper />
-        <ApolloWrapper>
-          <RefetchProvider>
-            <div className="2xl:max-w-8xl ml-0 mt-[66px] min-h-screen max-w-full p-4 md:p-8 lg:mx-auto lg:mt-0 lg:max-w-6xl lg:p-4 lg:pl-[240px] xl:max-w-7xl">
-              {children}
-            </div>
-          </RefetchProvider>
-        </ApolloWrapper>
+        <AuthProvider>
+          <MenuWrapper />
+          <ApolloWrapper>
+            <RefetchProvider>
+              <div className="2xl:max-w-8xl ml-0 mt-[66px] min-h-screen max-w-full p-4 md:p-8 lg:mx-auto lg:mt-0 lg:max-w-6xl lg:p-4 lg:pl-[240px] xl:max-w-7xl">
+                {children}
+              </div>
+            </RefetchProvider>
+          </ApolloWrapper>
+        </AuthProvider>
       </SignedIn>
       <SignedOut>
         <RedirectToSignIn />
