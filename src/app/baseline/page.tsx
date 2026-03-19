@@ -161,7 +161,7 @@ function Step1({
     <div>
       <StepLabel step={1} />
       <h2 className="text-3xl md:text-4xl font-bold text-white mb-2">
-        What's your project called?
+        What&apos;s your project called?
       </h2>
       <p className="text-neutral-400 mb-8">
         Give your carbon project a clear, descriptive name.
@@ -325,7 +325,7 @@ function Step4({
     <div>
       <StepLabel step={4} />
       <h2 className="text-3xl md:text-4xl font-bold text-white mb-2">
-        What's the project area?
+        What&apos;s the project area?
       </h2>
       <p className="text-neutral-400 mb-8">
         Enter the total land area in hectares.
@@ -404,7 +404,7 @@ function Step5({
         When does the project start?
       </h2>
       <p className="text-neutral-400 mb-8">
-        Select the project's start year for baseline calculation.
+        Select the project&apos;s start year for baseline calculation.
       </p>
       <div className="grid grid-cols-3 sm:grid-cols-5 gap-3">
         {YEAR_OPTIONS.map((year) => (
