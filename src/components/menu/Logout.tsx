@@ -1,18 +1,20 @@
 'use client';
 
-import { UserButton } from '@clerk/nextjs';
+import { useAuth } from '../auth/AuthProvider';
 
 export default function Logout() {
+  const { user, logout } = useAuth();
+
+  if (!user) return null;
+
   return (
-    <div className="flex items-center gap-2 px-4 py-2">
-      <UserButton
-        afterSignOutUrl="/sign-in"
-        appearance={{
-          elements: {
-            avatarBox: 'w-8 h-8',
-          },
-        }}
-      />
+    <div className="text-sm">
+      <div className="text-left">
+        <div className="overflow-hidden text-ellipsis">{user.email}</div>
+        <button className="mt-2 text-red-500" onClick={logout}>
+          Logout
+        </button>
+      </div>
     </div>
   );
 }
