@@ -22,7 +22,7 @@ export const links = [
   },
   {
     href: '/calculator',
-    label: 'Calculator',
+    label: 'Planifier',
     isOpen: true,
     outsideLink: false,
     icon: 'calculator',

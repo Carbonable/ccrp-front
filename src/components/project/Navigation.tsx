@@ -5,9 +5,17 @@ import { Tabs, Tab } from '@nextui-org/react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 
+// Projects that have dMRV data available
+const DMRV_PROJECTS: Record<string, string> = {
+  'banegas-farm': 'banegas-farm',
+  'las-delicias': 'las-delicias',
+  'manjarisoa': 'manjarisoa',
+};
+
 const ProjectNavigationTabs = ({ slug }: { slug: string }) => {
   const pathname = usePathname();
   const isTrackingActivated = process.env.NEXT_PUBLIC_TRACKING_ACTIVATED;
+  const hasDmrv = slug in DMRV_PROJECTS;
 
   return (
     <Tabs
@@ -49,6 +57,16 @@ const ProjectNavigationTabs = ({ slug }: { slug: string }) => {
           </Link>
         }
       />
+      {hasDmrv && (
+        <Tab
+          key={`/projects/${slug}/dmrv`}
+          title={
+            <Link href={`/projects/${slug}/dmrv`} prefetch>
+              dMRV
+            </Link>
+          }
+        />
+      )}
     </Tabs>
   );
 };
