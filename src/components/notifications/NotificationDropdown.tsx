@@ -57,7 +57,7 @@ export default function NotificationDropdown({ open, onClose }: Props) {
   return (
     <div
       ref={ref}
-      className="absolute right-0 top-full mt-2 z-[200] w-[380px] max-w-[calc(100vw-2rem)] rounded-xl border border-neutral-700 bg-neutral-900 shadow-2xl flex flex-col"
+      className="absolute left-0 bottom-full mb-2 z-[200] w-[380px] max-w-[calc(100vw-2rem)] rounded-xl border border-neutral-700 bg-neutral-900 shadow-2xl flex flex-col"
       style={{ maxHeight: '520px' }}
     >
       {/* Header */}
