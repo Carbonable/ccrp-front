@@ -33,7 +33,7 @@ export default function DmrvPage({ params }: Readonly<{ params: { slug: string }
       <iframe
         src={`${DMRV_BASE_URL}/${dmrvSlug}`}
         title="dMRV Satellite Monitoring"
-        sandbox="allow-scripts allow-same-origin"
+        allow="webgl; fullscreen"
         style={{
           width: '100%',
           height: 'calc(100vh - 200px)',
