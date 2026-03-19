@@ -1,6 +1,6 @@
 'use client';
 
-const DMRV_BASE_URL = 'https://dmrv.carbonable.io/projects';
+const DMRV_BASE_URL = 'https://dmrv.carbonable.io/embed';
 
 /**
  * Maps CCRP Sanity project slugs to dMRV slugs.
