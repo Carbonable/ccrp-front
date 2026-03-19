@@ -34,7 +34,8 @@
     "react-dom": "^18",
     "react-draggable": "^4.4.6",
     "react-player": "^2.16.0",
-    "recharts": "^2.12.7"
+    "recharts": "^2.12.7",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@flydotio/dockerfile": "^0.5.9",
