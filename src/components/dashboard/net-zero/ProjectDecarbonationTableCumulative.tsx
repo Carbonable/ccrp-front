@@ -10,6 +10,7 @@ import TableLoading from '@/components/table/TableLoading';
 import { ErrorReloadTable, NoDataTable } from '../../common/ErrorReload';
 import PaginationComponent from '../../common/Pagination';
 import { roundIfFloat } from '@/utils/numbers';
+import ExportButton from '@/components/common/ExportButton';
 
 export default function ProjectDecarbonationTableCumulative() {
   const [currentPage, setCurrentPage] = useState(1);
@@ -58,9 +59,29 @@ export default function ProjectDecarbonationTableCumulative() {
     refetchData();
   }, [currentPage]);
 
+  const exportColumns = [
+    { header: 'Time Period', key: 'time_period' },
+    { header: 'Cumulative Emissions (t)', key: 'emissions' },
+    { header: 'Cumulative Retired (t)', key: 'ex_post_retired' },
+    { header: 'Cumulative Forward (t)', key: 'ex_post_issued' },
+    { header: 'Cumulative Spot (t)', key: 'ex_post_purchased' },
+    { header: 'Cumulative Emission Debt (t)', key: 'debt' },
+  ];
+  const exportData: Record<string, unknown>[] = (cumulative || []).map((d: any) => ({
+    time_period: d.time_period,
+    emissions: d.emissions,
+    ex_post_retired: d.ex_post_retired,
+    ex_post_issued: d.ex_post_issued,
+    ex_post_purchased: d.ex_post_purchased,
+    debt: d.debt,
+  }));
+
   return (
     <div className="mt-12 w-full">
-      <Title title="Stock - Cumulative" />
+      <div className="flex items-center justify-between">
+        <Title title="Stock - Cumulative" />
+        <ExportButton data={exportData} columns={exportColumns} tableName="stock-cumulative" />
+      </div>
       <div className="font-inter mt-4 w-full overflow-x-auto border border-neutral-600 text-sm">
         <table className="min-w-full table-auto text-left">
           <thead className="h-10 whitespace-nowrap bg-neutral-500 text-neutral-100">

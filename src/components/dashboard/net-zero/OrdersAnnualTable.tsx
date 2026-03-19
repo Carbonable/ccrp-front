@@ -11,6 +11,7 @@ import TableLoading from '@/components/table/TableLoading';
 import PaginationComponent from '../../common/Pagination';
 import { GET_ORDERS } from '@/graphql/queries/orders';
 import  moment  from 'moment';
+import ExportButton from '@/components/common/ExportButton';
 
 
 export default function OrdersAnnualTable() {
@@ -60,9 +61,29 @@ export default function OrdersAnnualTable() {
     refetchData();
   }, [currentPage]);
 
+  const exportColumns = [
+    { header: 'For Year', key: 'order_for_year' },
+    { header: 'Vintage', key: 'vintage' },
+    { header: 'Quantity', key: 'quantity' },
+    { header: 'Deficit', key: 'deficit' },
+    { header: 'Created At', key: 'created_at' },
+    { header: 'Status', key: 'status' },
+  ];
+  const exportData: Record<string, unknown>[] = (orders || []).map((d: OrderData) => ({
+    order_for_year: d.order_for_year,
+    vintage: d.vintage,
+    quantity: d.quantity,
+    deficit: d.deficit,
+    created_at: d.created_at ? moment(d.created_at).format('YYYY-MM-DD HH:mm:ss') : '',
+    status: d.status,
+  }));
+
   return (
     <div className="mt-12 w-full">
-      <Title title="Orders - Annual" />
+      <div className="flex items-center justify-between">
+        <Title title="Orders - Annual" />
+        <ExportButton data={exportData} columns={exportColumns} tableName="orders-annual" />
+      </div>
       <div className="font-inter mt-4 w-full overflow-x-auto border border-neutral-600 text-sm">
         <table className="min-w-full table-auto text-left">
           <thead className="h-10 whitespace-nowrap bg-neutral-500 text-neutral-100">

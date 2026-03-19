@@ -5,6 +5,7 @@ import NavLinkOutside from './NavLinkOutside';
 import { adminLink, links } from './links';
 import Logout from './Logout';
 import { useAuth } from '../auth/AuthProvider';
+import NotificationBell from '@/components/notifications/NotificationBell';
 
 export default function Menu({
   openMenu,
@@ -45,8 +46,11 @@ export default function Menu({
           </div>
         )}
       </div>
-      <div className="absolute bottom-1 left-1 flex w-full items-center justify-start p-2">
+      <div className="absolute bottom-1 left-1 flex w-full items-center justify-between p-2 pr-6">
         <Logout />
+        <div className="hidden lg:block">
+          <NotificationBell />
+        </div>
       </div>
     </div>
   );

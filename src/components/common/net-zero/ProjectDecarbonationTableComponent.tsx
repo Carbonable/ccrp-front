@@ -8,6 +8,7 @@ import TableLoading from '@/components/table/TableLoading';
 import { RESULT_PER_PAGE } from '@/utils/constant';
 import { useEffect, useState } from 'react';
 import { roundIfFloat } from '@/utils/numbers';
+import ExportButton from '@/components/common/ExportButton';
 
 export default function ProjectDecarbonationTableComponent({
   loading,
@@ -47,9 +48,42 @@ export default function ProjectDecarbonationTableComponent({
     setCurrentPage(data);
   };
 
+  const exportColumns = [
+    { header: 'Time Period', key: 'time_period' },
+    { header: 'Emission (t)', key: 'emissions' },
+    { header: 'Ex-Post Forward (t)', key: 'ex_post_issued' },
+    { header: 'Ex-Post Spot (t)', key: 'ex_post_purchased' },
+    { header: 'Total Ex-Post (t)', key: 'total_ex_post' },
+    { header: 'Ex-Post Retired (t)', key: 'ex_post_retired' },
+    { header: 'Total Ex-Ante (t)', key: 'total_ex_ante' },
+    { header: 'Neutrality Target (%)', key: 'target' },
+    { header: 'Actual Rate (%)', key: 'actual_rate' },
+    { header: 'Delta (%)', key: 'delta' },
+    { header: 'Debt (t)', key: 'debt' },
+    ...(!buView ? [{ header: 'Ex-Post Stock (t)', key: 'ex_post_stock' }, { header: 'Ex-Ante Stock (t)', key: 'ex_ante_stock' }] : []),
+  ];
+  const exportData: Record<string, unknown>[] = (annual || []).map((d) => ({
+    time_period: d.time_period,
+    emissions: d.emissions,
+    ex_post_issued: d.ex_post_issued,
+    ex_post_purchased: d.ex_post_purchased,
+    total_ex_post: d.total_ex_post,
+    ex_post_retired: d.ex_post_retired,
+    total_ex_ante: d.total_ex_ante,
+    target: d.target,
+    actual_rate: d.actual_rate,
+    delta: d.delta,
+    debt: d.debt,
+    ex_post_stock: d.ex_post_stock,
+    ex_ante_stock: d.ex_ante_stock,
+  }));
+
   return (
     <div className="mt-12 w-full">
-      <Title title="Stock - Annual" />
+      <div className="flex items-center justify-between">
+        <Title title="Stock - Annual" />
+        <ExportButton data={exportData} columns={exportColumns} tableName="stock-annual" />
+      </div>
       <div className="font-inter mt-4 w-full overflow-x-auto border border-neutral-600 text-sm">
         <table className="min-w-full table-auto text-left">
           <thead className="h-10 whitespace-nowrap bg-neutral-500 text-neutral-100">
