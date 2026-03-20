@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { BellIcon } from '@heroicons/react/24/outline';
 import { useNotifications } from '@/context/NotificationContext';
 import NotificationDropdown from './NotificationDropdown';
@@ -8,10 +8,12 @@ import NotificationDropdown from './NotificationDropdown';
 export default function NotificationBell() {
   const [open, setOpen] = useState(false);
   const { unreadCount } = useNotifications();
+  const bellRef = useRef<HTMLButtonElement>(null);
 
   return (
-    <div className="relative">
+    <>
       <button
+        ref={bellRef}
         onClick={() => setOpen((v) => !v)}
         className="relative flex h-9 w-9 items-center justify-center rounded-full border border-neutral-700 bg-neutral-800 text-neutral-300 hover:border-greenish-600 hover:text-greenish-400 transition-colors"
         aria-label="Notifications"
@@ -23,7 +25,7 @@ export default function NotificationBell() {
           </span>
         )}
       </button>
-      <NotificationDropdown open={open} onClose={() => setOpen(false)} />
-    </div>
+      <NotificationDropdown open={open} onClose={() => setOpen(false)} anchorRef={bellRef} />
+    </>
   );
 }

@@ -1,6 +1,7 @@
 'use client';
 
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import Link from 'next/link';
 import { BellIcon, XMarkIcon, CheckIcon } from '@heroicons/react/24/outline';
 import { useNotifications } from '@/context/NotificationContext';
@@ -34,15 +35,54 @@ function formatDate(iso: string): string {
 interface Props {
   open: boolean;
   onClose: () => void;
+  anchorRef: React.RefObject<HTMLElement | null>;
 }
 
-export default function NotificationDropdown({ open, onClose }: Props) {
+export default function NotificationDropdown({ open, onClose, anchorRef }: Props) {
   const { notifications, unreadCount, markAllAsRead, markAsRead } = useNotifications();
   const ref = useRef<HTMLDivElement>(null);
+  const [position, setPosition] = useState({ top: 0, left: 0 });
+  const [mounted, setMounted] = useState(false);
 
+  // Ensure portal target exists (SSR safe)
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Position the dropdown relative to the bell icon
+  useEffect(() => {
+    if (!open || !anchorRef.current) return;
+
+    const updatePosition = () => {
+      const rect = anchorRef.current!.getBoundingClientRect();
+      const dropdownWidth = 380;
+      const dropdownMaxHeight = 520;
+
+      // Position above the bell, aligned to left edge of sidebar
+      setPosition({
+        top: Math.max(8, rect.top - dropdownMaxHeight - 8),
+        left: Math.max(8, rect.left),
+      });
+    };
+
+    updatePosition();
+    window.addEventListener('resize', updatePosition);
+    window.addEventListener('scroll', updatePosition, true);
+    return () => {
+      window.removeEventListener('resize', updatePosition);
+      window.removeEventListener('scroll', updatePosition, true);
+    };
+  }, [open, anchorRef]);
+
+  // Click outside to close
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
-      if (ref.current && !ref.current.contains(e.target as Node)) {
+      if (
+        ref.current &&
+        !ref.current.contains(e.target as Node) &&
+        anchorRef.current &&
+        !anchorRef.current.contains(e.target as Node)
+      ) {
         onClose();
       }
     }
@@ -50,15 +90,15 @@ export default function NotificationDropdown({ open, onClose }: Props) {
       document.addEventListener('mousedown', handleClickOutside);
     }
     return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [open, onClose]);
+  }, [open, onClose, anchorRef]);
 
-  if (!open) return null;
+  if (!open || !mounted) return null;
 
-  return (
+  const dropdown = (
     <div
       ref={ref}
-      className="absolute left-0 bottom-full mb-2 z-[9999] w-[380px] max-w-[calc(100vw-2rem)] rounded-xl border border-neutral-700 bg-neutral-900 shadow-2xl flex flex-col isolate"
-      style={{ maxHeight: '520px' }}
+      className="fixed z-[99999] w-[380px] max-w-[calc(100vw-2rem)] rounded-xl border border-neutral-700 bg-neutral-900 shadow-2xl flex flex-col"
+      style={{ top: position.top, left: position.left, maxHeight: '520px' }}
     >
       {/* Header */}
       <div className="flex items-center justify-between border-b border-neutral-700 px-4 py-3">
@@ -164,4 +204,6 @@ export default function NotificationDropdown({ open, onClose }: Props) {
       </div>
     </div>
   );
+
+  return createPortal(dropdown, document.body);
 }

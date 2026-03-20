@@ -2,11 +2,12 @@
 
 import { UserButton, OrganizationSwitcher } from '@clerk/nextjs';
 import { dark } from '@clerk/themes';
+import NotificationBell from '@/components/notifications/NotificationBell';
 
 export default function Logout() {
   return (
-    <div className="flex w-full flex-col gap-3 px-2">
-      {/* Organization Switcher — full width above user */}
+    <div className="flex w-full flex-col gap-3">
+      {/* Organization Switcher — full width */}
       <OrganizationSwitcher
         hidePersonal={true}
         appearance={{
@@ -20,7 +21,7 @@ export default function Logout() {
               'transition-colors duration-150',
             ].join(' '),
             organizationSwitcherPopoverCard:
-              'bg-neutral-900 border border-neutral-700 shadow-2xl backdrop-blur-sm',
+              'bg-neutral-900 border border-neutral-700 shadow-2xl',
             organizationPreview: 'text-neutral-200',
             organizationSwitcherPopoverActionButton: 'text-neutral-300 hover:bg-neutral-800',
           },
@@ -29,28 +30,23 @@ export default function Logout() {
         afterSelectOrganizationUrl="/dashboard"
       />
 
-      {/* User button — compact row */}
-      <UserButton
-        afterSignOutUrl="/sign-in"
-        appearance={{
-          baseTheme: dark,
-          elements: {
-            rootBox: 'w-full',
-            userButtonBox: 'w-full',
-            userButtonTrigger: [
-              'w-full justify-start px-3 py-2 rounded-lg',
-              'hover:bg-neutral-800/80 transition-colors duration-150',
-            ].join(' '),
-            avatarBox: 'w-7 h-7',
-            userButtonOuterIdentifier: 'text-xs text-neutral-300 truncate',
-            userButtonPopoverCard:
-              'bg-neutral-900 border border-neutral-700 shadow-2xl backdrop-blur-sm',
-            userButtonPopoverActionButton: 'text-neutral-300 hover:bg-neutral-800',
-            userButtonPopoverFooter: 'hidden',
-          },
-        }}
-        showName={true}
-      />
+      {/* Avatar + Notification bell — same row */}
+      <div className="flex items-center justify-between px-1">
+        <UserButton
+          afterSignOutUrl="/sign-in"
+          appearance={{
+            baseTheme: dark,
+            elements: {
+              avatarBox: 'w-8 h-8',
+              userButtonPopoverCard:
+                'bg-neutral-900 border border-neutral-700 shadow-2xl',
+              userButtonPopoverActionButton: 'text-neutral-300 hover:bg-neutral-800',
+              userButtonPopoverFooter: 'hidden',
+            },
+          }}
+        />
+        <NotificationBell />
+      </div>
     </div>
   );
 }
