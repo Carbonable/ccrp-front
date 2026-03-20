@@ -18,7 +18,7 @@ export default function Menu({
 
   return (
     <div
-      className={`${openMenu ? 'fixed z-50 block w-[300px] bg-neutral-900' : 'hidden w-0 bg-neutral-900'} left-0 h-[calc(100vh_-_68px)] pr-4 pt-4 lg:fixed lg:block lg:h-[100vh] lg:w-[222px] lg:bg-neutral-900`}
+      className={`${openMenu ? 'fixed z-50 block w-[300px] bg-neutral-900' : 'hidden w-0 bg-neutral-900'} left-0 h-[calc(100vh_-_68px)] pt-4 lg:fixed lg:block lg:h-[100vh] lg:w-[222px] lg:bg-neutral-900`}
     >
       <Image
         src="/assets/logo/logo.svg"
@@ -46,9 +46,9 @@ export default function Menu({
           </div>
         )}
       </div>
-      <div className="absolute bottom-1 left-1 flex w-full items-center justify-between p-2 pr-6">
+      <div className="absolute bottom-0 left-0 flex w-full flex-col gap-2 border-t border-neutral-700/40 p-3">
         <Logout />
-        <div className="hidden lg:block">
+        <div className="hidden items-center justify-center lg:flex">
           <NotificationBell />
         </div>
       </div>

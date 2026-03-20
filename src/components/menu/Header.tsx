@@ -10,8 +10,8 @@ export default function Header({
   setOpenMenu: (open: boolean) => void;
 }) {
   return (
-    <div className="fixed top-0 z-50 w-full lg:hidden">
-      <div className="flex w-full items-center justify-between bg-neutral-900/90 p-4 backdrop-blur-sm">
+    <div className="fixed top-0 z-50 w-full lg:hidden isolate">
+      <div className="flex w-full items-center justify-between bg-neutral-900 p-4">
         <div className="flex items-center">
           {!openMenu && (
             <Bars3Icon
