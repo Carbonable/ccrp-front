@@ -99,9 +99,9 @@ export default function NotificationSettingsPage() {
             <BellIcon className="h-6 w-6" />
           </div>
           <div>
-            <h1 className="text-xl font-bold text-neutral-100">Préférences de notification</h1>
+            <h1 className="text-xl font-bold text-neutral-100">Notification preferences</h1>
             <p className="text-sm text-neutral-400">
-              Choisissez comment vous souhaitez être notifié des événements importants.
+              Choose how you want to be notified about important events.
             </p>
           </div>
         </div>
@@ -111,22 +111,22 @@ export default function NotificationSettingsPage() {
       <div className="space-y-3">
         <PrefRow
           icon={<BellIcon className="h-5 w-5" />}
-          title="Notifications in-app"
-          description="Recevez des notifications directement dans l'application via la cloche en haut à droite."
+          title="In-app notifications"
+          description="Receive notifications directly in the app via the bell icon."
           checked={prefs.inApp}
           onChange={(val) => update('inApp', val)}
         />
         <PrefRow
           icon={<EnvelopeIcon className="h-5 w-5" />}
-          title="Notifications par email"
-          description="Recevez un résumé des événements importants par email (projets, échéances, stocks critiques)."
+          title="Email notifications"
+          description="Receive a summary of important events by email (projects, deadlines, critical stocks)."
           checked={prefs.email}
           onChange={(val) => update('email', val)}
         />
         <PrefRow
           icon={<DevicePhoneMobileIcon className="h-5 w-5" />}
-          title="Notifications mobiles"
-          description="Recevez des push notifications sur votre appareil mobile (application Carbonable)."
+          title="Mobile notifications"
+          description="Receive push notifications on your mobile device (Carbonable app)."
           checked={prefs.mobile}
           onChange={(val) => update('mobile', val)}
         />
@@ -139,14 +139,14 @@ export default function NotificationSettingsPage() {
         }`}
       >
         <span className="rounded-full bg-greenish-900/40 px-4 py-1.5 text-sm text-greenish-400 border border-greenish-700">
-          ✓ Préférences enregistrées
+          ✓ Preferences saved
         </span>
       </div>
 
       {/* Info note */}
       <div className="mt-8 rounded-xl border border-neutral-700 bg-neutral-800/30 px-5 py-4">
         <p className="text-xs text-neutral-500 leading-relaxed">
-          Les préférences sont enregistrées localement dans votre navigateur. Les notifications email
+          Preferences are stored locally in your browser. Email and mobile notifications require server-side configuration (coming soon).
           et mobiles nécessitent une configuration côté serveur (disponible prochainement).
         </p>
       </div>

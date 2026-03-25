@@ -11,12 +11,12 @@ const TYPE_CONFIG: Record<
   NotificationType,
   { label: string; className: string }
 > = {
-  project: { label: 'Projet', className: 'bg-blue-900/60 text-blue-300 border border-blue-700' },
+  project: { label: 'Project', className: 'bg-blue-900/60 text-blue-300 border border-blue-700' },
   stock: { label: 'Stock', className: 'bg-yellow-900/60 text-yellow-300 border border-yellow-700' },
-  critical: { label: 'Critique', className: 'bg-red-900/60 text-red-300 border border-red-700' },
-  update: { label: 'Mise à jour', className: 'bg-green-900/60 text-green-300 border border-green-700' },
-  deadline: { label: 'Échéance', className: 'bg-orange-900/60 text-orange-300 border border-orange-700' },
-  review: { label: 'Revue', className: 'bg-purple-900/60 text-purple-300 border border-purple-700' },
+  critical: { label: 'Critical', className: 'bg-red-900/60 text-red-300 border border-red-700' },
+  update: { label: 'Update', className: 'bg-green-900/60 text-green-300 border border-green-700' },
+  deadline: { label: 'Deadline', className: 'bg-orange-900/60 text-orange-300 border border-orange-700' },
+  review: { label: 'Review', className: 'bg-purple-900/60 text-purple-300 border border-purple-700' },
 };
 
 function formatDate(iso: string): string {
@@ -27,9 +27,9 @@ function formatDate(iso: string): string {
   const diffD = Math.floor(diffH / 24);
 
   if (diffH < 1) return 'À l\'instant';
-  if (diffH < 24) return `Il y a ${diffH}h`;
-  if (diffD === 1) return 'Hier';
-  return date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' });
+  if (diffH < 24) return `${diffH}h ago`;
+  if (diffD === 1) return 'Yesterday';
+  return date.toLocaleDateString('en-US', { day: 'numeric', month: 'short' });
 }
 
 interface Props {
@@ -118,7 +118,7 @@ export default function NotificationDropdown({ open, onClose, anchorRef }: Props
               className="flex items-center gap-1 rounded-md px-2 py-1 text-xs text-neutral-400 hover:bg-neutral-800 hover:text-greenish-400 transition-colors"
             >
               <CheckIcon className="h-3.5 w-3.5" />
-              Tout marquer lu
+              Mark all read
             </button>
           )}
           <button
@@ -135,7 +135,7 @@ export default function NotificationDropdown({ open, onClose, anchorRef }: Props
         {notifications.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-12 text-neutral-500">
             <BellIcon className="h-10 w-10 mb-2 opacity-40" />
-            <p className="text-sm">Aucune notification</p>
+            <p className="text-sm">No notifications</p>
           </div>
         ) : (
           notifications.map((notif) => {
@@ -199,7 +199,7 @@ export default function NotificationDropdown({ open, onClose, anchorRef }: Props
           onClick={onClose}
           className="text-xs text-neutral-500 hover:text-greenish-400 transition-colors"
         >
-          Gérer les préférences de notification →
+          Manage notification preferences →
         </Link>
       </div>
     </div>
