@@ -14,12 +14,10 @@ function hasDmrvData(slug: string): boolean {
 
 const ProjectNavigationTabs = ({ slug }: { slug: string }) => {
   const pathname = usePathname();
-  const isTrackingActivated = process.env.NEXT_PUBLIC_TRACKING_ACTIVATED;
   const showDmrv = hasDmrvData(slug);
 
   return (
     <Tabs
-      disabledKeys={isTrackingActivated === 'false' ? [`/projects/${slug}/tracking`] : []}
       selectedKey={pathname}
       classNames={{
         tabList: 'bg-opacityLight-5 text-neutral-100',
@@ -32,10 +30,6 @@ const ProjectNavigationTabs = ({ slug }: { slug: string }) => {
       <Tab
         key={`/projects/${slug}/carbon-management`}
         title={<Link href={`/projects/${slug}/carbon-management`} prefetch>Carbon Management</Link>}
-      />
-      <Tab
-        key={`/projects/${slug}/tracking`}
-        title={<Link href={`/projects/${slug}/tracking`} prefetch>Tracking</Link>}
       />
       <Tab
         key={`/projects/${slug}/impact`}
