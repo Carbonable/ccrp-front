@@ -24,6 +24,8 @@ export default function Logout() {
               'bg-neutral-900 border border-neutral-700 shadow-2xl',
             organizationPreview: 'text-neutral-200',
             organizationSwitcherPopoverActionButton: 'text-neutral-300 hover:bg-neutral-800',
+            organizationSwitcherPopoverActionButton__createOrganization: 'hidden',
+            organizationSwitcherPopoverFooter: 'hidden',
           },
         }}
         afterCreateOrganizationUrl="/dashboard"
