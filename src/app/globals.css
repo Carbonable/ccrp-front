@@ -64,5 +64,5 @@ body {
 }
 
 html {
-  background-color: #0a0a0a; /* neutral-950 — prevents white flash on overscroll */
+  background-color: #0a0a0a !important; /* neutral-950 — prevents white flash on overscroll */
 }
