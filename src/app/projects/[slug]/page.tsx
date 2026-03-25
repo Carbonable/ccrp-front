@@ -3,7 +3,6 @@
 import Title from '@/components/common/Title';
 import ImageGallery from '@/components/project/overview/ImagesGallery';
 import SectionWrapper from '@/components/project/overview/SectionWrapper';
-import { client } from '@/utils/sanity/client';
 import { SanityContent } from '@/utils/sanity/types';
 import { useEffect, useState } from 'react';
 
@@ -13,11 +12,12 @@ export default function ProjectPage({ params }: Readonly<{ params: { slug: strin
   useEffect(() => {
     const fetchProjectData = async () => {
       try {
-        const result = await client.fetch(`*[_type == "project" && slug.current == $slug]`, {
-          slug: params.slug,
-        });
+        const query = `*[_type == "project" && slug.current == $slug]`;
+        const queryParams = JSON.stringify({ slug: params.slug });
+        const res = await fetch(`/api/sanity?query=${encodeURIComponent(query)}&params=${encodeURIComponent(queryParams)}`);
+        const result = await res.json();
 
-        setContent(result[0]);
+        setContent(Array.isArray(result) ? result[0] : undefined);
       } catch (error) {
         console.error('Error fetching project data:', error);
       }
