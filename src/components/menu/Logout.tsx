@@ -11,7 +11,7 @@ export default function Logout() {
       {/* Avatar + Notification bell — same row */}
       <div className="flex items-center justify-between px-1">
         <UserButton
-          afterSignOutUrl="/sign-in"
+          signInUrl="/sign-in"
           appearance={{
             baseTheme: dark,
             elements: {

@@ -24,9 +24,10 @@ export default function RootLayout({
           colorInputText: '#f5f5f5',
         },
       }}
-      afterSignOutUrl="/sign-in"
       signInForceRedirectUrl="/dashboard"
       signUpForceRedirectUrl="/dashboard"
+      signInFallbackRedirectUrl="/dashboard"
+      signUpFallbackRedirectUrl="/dashboard"
     >
       <ClientLayout>{children}</ClientLayout>
     </ClerkProvider>
