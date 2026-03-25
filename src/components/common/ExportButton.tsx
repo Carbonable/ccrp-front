@@ -24,7 +24,7 @@ export default function ExportButton({ data, columns, tableName }: ExportButtonP
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const baseFilename = `ccrp-${tableName}-${getTodayDateString()}`;
+  const baseFilename = `ccpm-${tableName}-${getTodayDateString()}`;
 
   const handleExcel = () => {
     exportToExcel(data, columns, `${baseFilename}.xlsx`);

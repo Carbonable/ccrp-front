@@ -6,7 +6,7 @@ import { NextUIProvider } from '@nextui-org/react';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'Portfolio manager',
+  title: 'Carbonable CCPM',
   description: 'Your carbon assets portfolio manager by Carbonable',
 };
 
@@ -17,7 +17,7 @@ export default function BaseLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${inter.className} min-h-screen bg-neutral-800 text-neutral-100`}>
+      <body className={`${inter.className} min-h-screen bg-neutral-950 text-neutral-100`}>
         <main>
           <NextUIProvider>{children}</NextUIProvider>
         </main>

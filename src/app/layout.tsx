@@ -3,7 +3,7 @@ import { dark } from '@clerk/themes';
 import ClientLayout from './client-layout';
 
 export const metadata = {
-  title: 'Carbonable CCRP',
+  title: 'Carbonable CCPM',
   description: 'Carbon Credit Retirement Platform',
 };
 
