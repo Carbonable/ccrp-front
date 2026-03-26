@@ -13,10 +13,10 @@ export default function ProjectPage({ params }: Readonly<{ params: { slug: strin
     const fetchProjectData = async () => {
       try {
         const query = `*[_type == "project" && slug.current == $slug]`;
-        const queryParams = JSON.stringify({ slug: params.slug });
-        const res = await fetch(`/api/sanity?query=${encodeURIComponent(query)}&params=${encodeURIComponent(queryParams)}`);
+        const sanityParams = JSON.stringify({ slug: params.slug });
+        const res = await fetch(`/api/sanity?query=${encodeURIComponent(query)}&params=${encodeURIComponent(sanityParams)}`);
+        if (!res.ok) throw new Error(`API error: ${res.status}`);
         const result = await res.json();
-
         setContent(Array.isArray(result) ? result[0] : undefined);
       } catch (error) {
         console.error('Error fetching project data:', error);

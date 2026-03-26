@@ -1,9 +1,18 @@
-import { client } from '@/utils/sanity/client';
 import { NextRequest, NextResponse } from 'next/server';
+import { createClient } from 'next-sanity';
+
+const client = createClient({
+  projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID!,
+  dataset: process.env.NEXT_PUBLIC_SANITY_DATASET!,
+  apiVersion: process.env.NEXT_PUBLIC_SANITY_API_VERSION || '2024-07-11',
+  token: process.env.SANITY_API_TOKEN,
+  useCdn: true,
+});
 
 export async function GET(request: NextRequest) {
-  const query = request.nextUrl.searchParams.get('query');
-  const params = request.nextUrl.searchParams.get('params');
+  const { searchParams } = new URL(request.url);
+  const query = searchParams.get('query');
+  const params = searchParams.get('params');
 
   if (!query) {
     return NextResponse.json({ error: 'Missing query parameter' }, { status: 400 });
