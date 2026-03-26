@@ -33,7 +33,7 @@ export default function CalculatorPage() {
       {
         type: 'net-zero-planning-data',
         payload: rows
-          .filter((r) => r.vintage >= 2025 && r.vintage <= 2050)
+          .filter((r) => r.vintage >= 2025)
           .map((r) => ({
             year: r.vintage,
             gap: Math.max(0, Math.round(r.emission * r.target / 100) - r.retired),
