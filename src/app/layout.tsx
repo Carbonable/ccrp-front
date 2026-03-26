@@ -23,6 +23,10 @@ export default function RootLayout({
           colorInputBackground: '#262626',
           colorInputText: '#f5f5f5',
         },
+        elements: {
+          footer: 'hidden',
+          footerAction: 'hidden',
+        },
       }}
       signInForceRedirectUrl="/dashboard"
       signUpForceRedirectUrl="/dashboard"

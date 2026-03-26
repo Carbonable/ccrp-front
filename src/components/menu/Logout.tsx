@@ -28,7 +28,7 @@ export default function Logout() {
             <UserButton.Action
               label="Manage organization"
               labelIcon={<BuildingOfficeIcon className="h-4 w-4" />}
-              open="organization"
+              open="organizationProfile"
             />
             <UserButton.Action label="signOut" />
           </UserButton.MenuItems>

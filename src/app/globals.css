@@ -66,3 +66,8 @@ body {
 html {
   background-color: #0a0a0a !important; /* neutral-950 — prevents white flash on overscroll */
 }
+
+/* Hide Clerk development mode badge */
+.cl-internal-b3fm6y {
+  display: none !important;
+}
