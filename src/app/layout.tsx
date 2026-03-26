@@ -1,6 +1,10 @@
 import { ClerkProvider } from '@clerk/nextjs';
 import { dark } from '@clerk/themes';
+import { NextIntlClientProvider } from 'next-intl';
 import ClientLayout from './client-layout';
+
+// Default messages for non-locale routes (fallback to English)
+import messages from '../../messages/en.json';
 
 export const metadata = {
   title: 'Carbonable CCPM',
@@ -33,7 +37,9 @@ export default function RootLayout({
       signInFallbackRedirectUrl="/dashboard"
       signUpFallbackRedirectUrl="/dashboard"
     >
-      <ClientLayout>{children}</ClientLayout>
+      <NextIntlClientProvider locale="en" messages={messages}>
+        <ClientLayout>{children}</ClientLayout>
+      </NextIntlClientProvider>
     </ClerkProvider>
   );
 }
