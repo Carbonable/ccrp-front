@@ -1,7 +1,5 @@
 'use server';
 
-import { getJwtToken } from '@/utils/auth';
-
 interface UploadResult {
   success: boolean;
   message: string;
@@ -12,36 +10,52 @@ export async function uploadAllocation(
   projectId: string,
   buId: string,
 ): Promise<UploadResult> {
-  const token = await getJwtToken();
+  const graphqlUrl = process.env.NEXT_PUBLIC_GRAPHQL_API_URL || `${process.env.API_URL}/graphql`;
 
-  const endpoint = `${process.env.API_URL}/allocation/add`;
+  const mutation = `
+    mutation AddAllocations($request: [AddAllocationRequestItem]!) {
+      addAllocations(request: $request) {
+        allocationIds
+        errors
+      }
+    }
+  `;
 
-  // Construct the allocation request item
-  const allocationRequestItem = {
-    project_id: projectId,
-    business_unit_id: buId,
-    amount: amount,
-    allow_over_allocation: false, // Set to true if needed
-    allow_vintage_homogeneisation: false, // Set to true if needed
+  const variables = {
+    request: [
+      {
+        project_id: projectId,
+        business_unit_id: buId,
+        amount: amount,
+      },
+    ],
   };
 
   try {
-    const response = await fetch(endpoint, {
+    const response = await fetch(graphqlUrl, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
       },
-      // Send the data as an array of allocation items
-      body: JSON.stringify([allocationRequestItem]),
+      body: JSON.stringify({ query: mutation, variables }),
     });
 
     if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(`HTTP error! status: ${response.status}, message: ${errorData.message}`);
+      const errorData = await response.text();
+      throw new Error(`HTTP error! status: ${response.status}, message: ${errorData}`);
     }
 
-    const responseData = await response.json();
+    const result = await response.json();
+
+    if (result.errors && result.errors.length > 0) {
+      throw new Error(result.errors.map((e: { message: string }) => e.message).join(', '));
+    }
+
+    const data = result.data?.addAllocations;
+    if (data?.errors && data.errors.length > 0) {
+      throw new Error(data.errors.join(', '));
+    }
+
     return { success: true, message: 'Allocation added successfully' };
   } catch (error) {
     console.error('Upload error:', error);
