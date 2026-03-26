@@ -1,5 +1,7 @@
 'use client';
 
+import { useState } from 'react';
+import { InformationCircleIcon } from '@heroicons/react/24/outline';
 import { useQuery } from '@apollo/client';
 import { NET_ZERO_PLANNING } from '@/graphql/queries/net-zero';
 import { CARBONABLE_COMPANY_ID } from '@/utils/constant';
@@ -24,36 +26,14 @@ interface NetZeroPlanningRow {
   ex_post_count: number;
 }
 
-interface SummaryCardProps {
-  label: string;
-  value: string;
-  accent?: 'red' | 'green' | 'blue' | 'amber';
-}
-
-function SummaryCard({ label, value, accent = 'green' }: SummaryCardProps) {
-  const accentClass = {
-    red: 'text-red-400',
-    green: 'text-green-400',
-    blue: 'text-blue-400',
-    amber: 'text-amber-400',
-  }[accent];
-
-  return (
-    <div className="bg-neutral-800/50 rounded-2xl p-5 flex flex-col gap-1">
-      <span className="text-neutral-400 text-xs font-medium uppercase tracking-wide">{label}</span>
-      <span className={`text-2xl font-bold ${accentClass}`}>{value}</span>
-    </div>
-  );
-}
-
-export default function CalculatorPage() {
+function OrgDataPanel() {
   const { data, loading, error } = useQuery(NET_ZERO_PLANNING, {
     variables: { view: { company_id: CARBONABLE_COMPANY_ID } },
   });
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center py-20 px-4">
+      <div className="flex items-center justify-center py-20">
         <div className="animate-spin h-8 w-8 border-2 border-green-500 border-t-transparent rounded-full" />
         <span className="ml-3 text-neutral-400">Loading organization data…</span>
       </div>
@@ -62,27 +42,23 @@ export default function CalculatorPage() {
 
   if (error) {
     return (
-      <div className="mx-4 mt-4 rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-red-300 text-sm">
+      <div className="rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-red-300 text-sm">
         Error loading data: {error.message}
       </div>
     );
   }
 
   const rows: NetZeroPlanningRow[] = (data?.netZeroPlanning ?? [])
+    .filter((r: NetZeroPlanningRow) => r.vintage >= 2024 && r.vintage <= 2050)
     .sort((a: NetZeroPlanningRow, b: NetZeroPlanningRow) => a.vintage - b.vintage);
 
   if (rows.length === 0) {
     return (
-      <div className="text-neutral-400 text-center py-12 px-4">
-        No net-zero planning data available.
+      <div className="text-neutral-400 text-center py-12">
+        No net-zero planning data available for 2024–2050.
       </div>
     );
   }
-
-  const totalEmissions = rows.reduce((sum, r) => sum + r.emission, 0);
-  const totalTarget = rows.reduce((sum, r) => sum + r.target, 0);
-  const totalRetired = rows.reduce((sum, r) => sum + r.retired, 0);
-  const currentGap = totalTarget - totalRetired;
 
   const chartData = rows.map((r) => ({
     year: r.vintage,
@@ -91,43 +67,8 @@ export default function CalculatorPage() {
     Retired: Math.round(r.retired),
   }));
 
-  const fmt = (n: number) =>
-    Math.round(n).toLocaleString('en-US');
-
   return (
-    <div className="w-full px-4 py-4 space-y-6">
-      {/* Page header */}
-      <div>
-        <h1 className="text-white text-xl font-bold">Net Zero Planning</h1>
-        <p className="text-neutral-400 text-sm mt-0.5">
-          Organization emissions vs. target vs. retired credits — all vintages
-        </p>
-      </div>
-
-      {/* Summary cards */}
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-        <SummaryCard
-          label="Total Emissions"
-          value={`${fmt(totalEmissions)} tCO₂`}
-          accent="red"
-        />
-        <SummaryCard
-          label="Total Target"
-          value={`${fmt(totalTarget)} tCO₂`}
-          accent="green"
-        />
-        <SummaryCard
-          label="Total Retired"
-          value={`${fmt(totalRetired)} tCO₂`}
-          accent="blue"
-        />
-        <SummaryCard
-          label="Current Gap"
-          value={`${currentGap > 0 ? '+' : ''}${fmt(currentGap)} tCO₂`}
-          accent={currentGap > 0 ? 'amber' : 'green'}
-        />
-      </div>
-
+    <div className="space-y-6">
       {/* Chart */}
       <div className="bg-neutral-800/50 rounded-2xl p-5">
         <h3 className="text-white font-semibold mb-4">
@@ -205,9 +146,56 @@ export default function CalculatorPage() {
         </div>
       </div>
 
+      {/* Legend note */}
       <p className="text-neutral-500 text-xs px-1">
         Delta = Target − Actual Retired. Positive values indicate a gap to fill with credits.
       </p>
+    </div>
+  );
+}
+
+export default function CalculatorPage() {
+  const [showOrgData, setShowOrgData] = useState(false);
+  const iframeUrl = 'https://kalculator.carbonable.io';
+
+  return (
+    <div className="w-full">
+      {/* Banner */}
+      <div className="mx-4 mt-4 mb-2 flex items-start gap-3 rounded-xl border border-amber-500/30 bg-amber-500/10 px-4 py-3">
+        <InformationCircleIcon className="h-5 w-5 shrink-0 text-amber-400 mt-0.5" />
+        <div className="flex-1">
+          <p className="text-sm text-amber-200">
+            {showOrgData
+              ? 'Showing real organization data from your Net Zero Planning.'
+              : 'Data shown is from demo calculations. Connect to your organization data for accurate projections.'}
+          </p>
+        </div>
+        <button
+          onClick={() => setShowOrgData(!showOrgData)}
+          className="shrink-0 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200 cursor-pointer bg-green-500 hover:bg-green-400 text-neutral-900"
+        >
+          {showOrgData ? '🔢 View Calculator' : '📊 View org data'}
+        </button>
+      </div>
+
+      {showOrgData ? (
+        <div className="px-4 pb-4">
+          <OrgDataPanel />
+        </div>
+      ) : (
+        <iframe
+          key={iframeUrl}
+          src={iframeUrl}
+          title="Kalculator"
+          sandbox="allow-scripts allow-same-origin"
+          style={{
+            width: '100%',
+            height: 'calc(100vh - 60px)',
+            border: 'none',
+            overflow: 'hidden',
+          }}
+        />
+      )}
     </div>
   );
 }
