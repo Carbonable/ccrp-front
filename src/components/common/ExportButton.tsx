@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
+import { useTranslations } from 'next-intl';
 import { ArrowDownTrayIcon, ChevronDownIcon } from '@heroicons/react/24/outline';
 import { exportToExcel, exportToCSV, ExportColumn, getTodayDateString } from '@/utils/export';
 
@@ -11,6 +12,7 @@ interface ExportButtonProps {
 }
 
 export default function ExportButton({ data, columns, tableName }: ExportButtonProps) {
+  const t = useTranslations('common');
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -42,7 +44,7 @@ export default function ExportButton({ data, columns, tableName }: ExportButtonP
         onClick={() => setOpen((prev) => !prev)}
         disabled={!data || data.length === 0}
         className="flex items-center gap-1 rounded border border-neutral-600 bg-neutral-700 px-2 py-1 text-xs text-neutral-300 transition hover:bg-neutral-600 disabled:cursor-not-allowed disabled:opacity-40"
-        title="Export data"
+        title={t('export')}
       >
         <ArrowDownTrayIcon className="h-3.5 w-3.5" />
         Export

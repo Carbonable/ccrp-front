@@ -205,5 +205,5 @@ export default function NotificationDropdown({ open, onClose, anchorRef }: Props
     </div>
   );
 
-  return createPortal(dropdown, document.body);
+  return createPortal(dropdown, document.body) as unknown as React.ReactElement;
 }
