@@ -67,7 +67,18 @@ html {
   background-color: #0a0a0a !important; /* neutral-950 — prevents white flash on overscroll */
 }
 
-/* Hide Clerk development mode badge */
-.cl-internal-b3fm6y {
+/* Hide Clerk development mode badge + footer */
+.cl-internal-b3fm6y,
+[class*="cl-internal"] a[href*="clerk.com"],
+.cl-userButtonPopoverFooter,
+.cl-footer,
+.cl-footerAction {
+  display: none !important;
+}
+
+/* Hide "Secured by Clerk / Development mode" in modals */
+div[class*="powered"],
+a[aria-label*="Clerk"],
+div:has(> a[href*="clerk.com/docs"]) {
   display: none !important;
 }
