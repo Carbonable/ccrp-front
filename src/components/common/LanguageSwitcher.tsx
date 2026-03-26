@@ -1,15 +1,28 @@
 'use client';
 
 import { useLocale } from 'next-intl';
-import { useRouter, usePathname } from '@/i18n/navigation';
+import { usePathname as useNextPathname } from 'next/navigation';
+import { useRouter } from '@/i18n/navigation';
 import { routing, type Locale } from '@/i18n/routing';
 
 export default function LanguageSwitcher() {
   const locale = useLocale();
   const router = useRouter();
-  const pathname = usePathname();
+  const rawPathname = useNextPathname();
 
   function switchLocale(newLocale: Locale) {
+    // Strip any existing locale prefix to avoid /fr/fr/dashboard
+    let pathname = rawPathname;
+    for (const loc of routing.locales) {
+      if (pathname.startsWith(`/${loc}/`)) {
+        pathname = pathname.slice(loc.length + 1);
+        break;
+      }
+      if (pathname === `/${loc}`) {
+        pathname = '/';
+        break;
+      }
+    }
     router.replace(pathname, { locale: newLocale });
   }
 
