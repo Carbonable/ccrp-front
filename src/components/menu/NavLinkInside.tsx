@@ -1,8 +1,10 @@
 'use client';
+
 import { MenuLink } from '@/types/Link';
 import Image from 'next/image';
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { Link } from '@/i18n/navigation';
+import { usePathname } from '@/i18n/navigation';
+import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
 
 export default function NavLinkInside({
@@ -12,6 +14,8 @@ export default function NavLinkInside({
   link: MenuLink;
   setOpenMenu: (open: boolean) => void;
 }) {
+  const t = useTranslations('menu');
+  const tc = useTranslations('common');
   const [isShown, setIsShown] = useState(true);
   const pathName = usePathname();
   const [isActive, setIsActive] = useState(false);
@@ -24,9 +28,11 @@ export default function NavLinkInside({
     }
   }, [pathName, link.href]);
 
+  const label = t(link.labelKey);
+
   if (link.isOpen === false) {
     return (
-      <div key={link.label} className="font-inter text-base uppercase">
+      <div key={link.labelKey} className="font-inter text-base uppercase">
         <div className="flex w-full items-center justify-start">
           <div className="h-[44px] w-[3px] bg-transparent"></div>
           <div
@@ -41,8 +47,8 @@ export default function NavLinkInside({
               height={24}
               className="h-6 w-6"
             />
-            {isShown && <div className="py-3 pl-2">{link.label}</div>}
-            {!isShown && <div className="py-3 pl-2">COMING SOON</div>}
+            {isShown && <div className="py-3 pl-2">{label}</div>}
+            {!isShown && <div className="py-3 pl-2">{tc('comingSoon')}</div>}
           </div>
         </div>
       </div>
@@ -52,7 +58,7 @@ export default function NavLinkInside({
   return (
     <Link
       prefetch
-      key={link.label}
+      key={link.labelKey}
       className="font-inter text-base uppercase"
       href={link.href}
       onClick={() => setOpenMenu(false)}
@@ -71,7 +77,7 @@ export default function NavLinkInside({
             height={6}
             className="h-6 w-6"
           />
-          <div className="py-3 pl-2">{link.label}</div>
+          <div className="py-3 pl-2">{label}</div>
         </div>
       </div>
     </Link>

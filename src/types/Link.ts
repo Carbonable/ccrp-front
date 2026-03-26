@@ -1,6 +1,7 @@
 export interface MenuLink {
-  label: string;
+  labelKey: string;
   href: string;
   icon: string;
   isOpen: boolean;
+  outsideLink: boolean;
 }

@@ -4,8 +4,6 @@ import { useState, useEffect, useRef, useCallback } from "react";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
-type RoleType = "project-funder" | "project-holder";
-
 interface FormData {
   agb: number; // Above-Ground Biomass (tDM/ha) from dMRV
   hectares: number; // Number of hectares
@@ -107,48 +105,6 @@ function ContinueButton({
       {label}
       {!disabled && <span className="text-xs opacity-70">↵</span>}
     </button>
-  );
-}
-
-// ─── Role Selection (landing page) ───────────────────────────────────────────
-
-function RoleSelection({ onSelect }: { onSelect: (role: RoleType) => void }) {
-  return (
-    <div className="animate-fade-in">
-      <h1 className="text-4xl md:text-5xl font-bold text-white mb-3">
-        Baseline Calculator
-      </h1>
-      <p className="text-neutral-400 mb-2 text-lg">by Carbonable</p>
-      <p className="text-neutral-500 mb-10">
-        Estimate your project&apos;s carbon baseline using IPCC Tier-1 methodology.
-      </p>
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-xl">
-        <button
-          onClick={() => onSelect("project-funder")}
-          className="group relative overflow-hidden rounded-2xl border-2 border-neutral-700 bg-neutral-800/50 hover:border-green-500 hover:bg-green-500/5 transition-all duration-300 cursor-pointer p-8 text-left"
-        >
-          <span className="text-4xl mb-4 block">💰</span>
-          <h3 className="text-xl font-bold text-white mb-2">Project Funder</h3>
-          <p className="text-neutral-400 text-sm">
-            Estimate baseline for a project you&apos;re funding or evaluating.
-          </p>
-          <span className="absolute top-4 right-4 text-neutral-600 group-hover:text-green-500 transition-colors">→</span>
-        </button>
-
-        <button
-          onClick={() => onSelect("project-holder")}
-          className="group relative overflow-hidden rounded-2xl border-2 border-neutral-700 bg-neutral-800/50 hover:border-green-500 hover:bg-green-500/5 transition-all duration-300 cursor-pointer p-8 text-left"
-        >
-          <span className="text-4xl mb-4 block">🌿</span>
-          <h3 className="text-xl font-bold text-white mb-2">Project Holder</h3>
-          <p className="text-neutral-400 text-sm">
-            Calculate baseline for a project you own or manage.
-          </p>
-          <span className="absolute top-4 right-4 text-neutral-600 group-hover:text-green-500 transition-colors">→</span>
-        </button>
-      </div>
-    </div>
   );
 }
 
@@ -555,7 +511,6 @@ const DEFAULT_FORM: FormData = {
 };
 
 export default function BaselinePage() {
-  const [role, setRole] = useState<RoleType | null>(null);
   const [step, setStep] = useState(1);
   const [form, setForm] = useState<FormData>(DEFAULT_FORM);
   const [direction, setDirection] = useState<"forward" | "back">("forward");
@@ -573,13 +528,8 @@ export default function BaselinePage() {
 
   const goBack = useCallback(() => {
     setDirection("back");
-    if (step === 1 && !showResult) {
-      // Go back to role selection
-      setRole(null);
-    } else {
-      setStep((s) => Math.max(s - 1, 1));
-    }
-  }, [step, showResult]);
+    setStep((s) => Math.max(s - 1, 1));
+  }, []);
 
   const update = useCallback(
     <K extends keyof FormData>(key: K, value: FormData[K]) => {
@@ -602,21 +552,11 @@ export default function BaselinePage() {
     setStep(1);
     setShowResult(false);
     setDirection("forward");
-    setRole(null);
   };
 
   if (!mounted) return null;
 
   const isSummaryStep = step === TOTAL_STEPS + 1;
-
-  // Role selection page
-  if (!role) {
-    return (
-      <div className="min-h-screen bg-neutral-900 flex flex-col items-center justify-center px-6">
-        <RoleSelection onSelect={(r) => setRole(r)} />
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-neutral-900 flex flex-col">

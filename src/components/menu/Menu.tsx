@@ -5,6 +5,7 @@ import NavLinkOutside from './NavLinkOutside';
 import { adminLink, links } from './links';
 import Logout from './Logout';
 import { useAuth } from '../auth/AuthProvider';
+import { useTranslations } from 'next-intl';
 
 export default function Menu({
   openMenu,
@@ -14,6 +15,7 @@ export default function Menu({
   setOpenMenu: (open: boolean) => void;
 }) {
   const { isAdmin } = useAuth();
+  const t = useTranslations('menu');
 
   return (
     <div
@@ -27,13 +29,13 @@ export default function Menu({
         className="hidden pl-4 lg:block"
       />
       <div className="hidden pl-[70px] font-extrabold uppercase text-greenish-600 lg:block">
-        CCPM
+        {t('ccpm')}
       </div>
       <div className="mt-6 w-full lg:mt-12">
         {links.map(
           (link) =>
-            isLinkEnabled(link.label) && (
-              <div key={`${link.label}_mobile`} className="my-2">
+            isLinkEnabled(link.labelKey) && (
+              <div key={`${link.labelKey}_mobile`} className="my-2">
                 {link.outsideLink && <NavLinkOutside link={link} />}
                 {!link.outsideLink && <NavLinkInside link={link} setOpenMenu={setOpenMenu} />}
               </div>
@@ -52,7 +54,16 @@ export default function Menu({
   );
 }
 
-export function isLinkEnabled(label: string) {
+export function isLinkEnabled(labelKey: string) {
   const enabledItems = process.env.NEXT_PUBLIC_ENABLED_MENU_ITEMS?.split(',') || [];
-  return enabledItems.includes(label);
+  // Support both labelKey (new) and old label format
+  const labelMap: Record<string, string> = {
+    dashboard: 'Dashboard',
+    portfolio: 'Portfolio',
+    impact: 'Impact',
+    planifier: 'Planifier',
+    baseline: 'Baseline',
+    admin: 'Admin',
+  };
+  return enabledItems.includes(labelMap[labelKey] || labelKey);
 }
