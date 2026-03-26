@@ -51,6 +51,18 @@ export default function CalculatorPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);
 
+  // Listen for requests from the kalculator iframe
+  useEffect(() => {
+    const handleMessage = (event: MessageEvent) => {
+      if (event.data?.type === 'request-net-zero-planning') {
+        sendDataToIframe();
+      }
+    };
+    window.addEventListener('message', handleMessage);
+    return () => window.removeEventListener('message', handleMessage);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data]);
+
   return (
     <div className="w-full">
       {/* Banner */}
