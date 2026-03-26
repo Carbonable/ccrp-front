@@ -16,7 +16,7 @@ export default function ClientLayout({
 }>) {
   const pathname = usePathname();
 
-  if (pathname === '/sign-in' || pathname === '/sign-up') {
+  if (pathname.endsWith('/sign-in') || pathname.endsWith('/sign-up')) {
     return (
       <BaseLayout>
         <div className="z-0 mx-auto max-w-screen-2xl p-4 md:p-12">{children}</div>
