@@ -1,20 +1,41 @@
-import { auth } from '@clerk/nextjs/server';
-import jwt from 'jsonwebtoken';
+let cachedToken: { token: string; expiresAt: number } | null = null;
 
 export async function getJwtToken(): Promise<string | null> {
-  const { userId } = await auth();
-  if (!userId) return null;
+  // Return cached token if still valid (with 30s buffer)
+  if (cachedToken && cachedToken.expiresAt > Date.now() + 30_000) {
+    return cachedToken.token;
+  }
 
-  const secret = process.env.JWT_SECRET;
-  if (!secret) {
-    console.error('JWT_SECRET not configured');
+  const apiUrl = process.env.API_URL;
+  const email = process.env.BACKEND_ADMIN_EMAIL || 'infra@carbonable.io';
+  const password = process.env.BACKEND_ADMIN_PASSWORD || 'admin';
+
+  if (!apiUrl) {
+    console.error('API_URL not configured');
     return null;
   }
 
-  // Sign a short-lived token for the backend API
-  return jwt.sign(
-    { id: userId, roles: ['admin'] },
-    secret,
-    { expiresIn: '5m' },
-  );
+  try {
+    const res = await fetch(`${apiUrl}/auth/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password }),
+    });
+
+    if (!res.ok) {
+      console.error(`Backend login failed: ${res.status}`);
+      return null;
+    }
+
+    const data = await res.json();
+    const token = data.access_token;
+
+    // Cache for ~55 minutes (backend tokens expire in 1h)
+    cachedToken = { token, expiresAt: Date.now() + 55 * 60 * 1000 };
+
+    return token;
+  } catch (error) {
+    console.error('Backend login error:', error);
+    return null;
+  }
 }
