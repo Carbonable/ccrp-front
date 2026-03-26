@@ -4,62 +4,31 @@ import { useState, useEffect, useRef, useCallback } from "react";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
-type ProjectType =
-  | "Restoration"
-  | "Conservation"
-  | "Reforestation"
-  | "DAC"
-  | "Biochar";
+type RoleType = "project-funder" | "project-holder";
 
 interface FormData {
-  projectName: string;
-  projectType: ProjectType | "";
-  location: string;
-  area: number;
-  startYear: number;
-  duration: number;
-  annualSequestration: number;
+  agb: number; // Above-Ground Biomass (tDM/ha) from dMRV
+  hectares: number; // Number of hectares
+  crownCover: number; // Crown cover (0–1)
 }
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
-const PROJECT_TYPES: { label: ProjectType; icon: string; desc: string }[] = [
-  {
-    label: "Restoration",
-    icon: "🌿",
-    desc: "Restoring degraded ecosystems",
-  },
-  {
-    label: "Conservation",
-    icon: "🛡️",
-    desc: "Protecting existing carbon stocks",
-  },
-  {
-    label: "Reforestation",
-    icon: "🌲",
-    desc: "Planting trees in deforested areas",
-  },
-  {
-    label: "DAC",
-    icon: "⚙️",
-    desc: "Direct Air Capture technology",
-  },
-  {
-    label: "Biochar",
-    icon: "🔥",
-    desc: "Carbon-rich charcoal from biomass",
-  },
-];
+const TOTAL_STEPS = 3;
 
-const TOTAL_STEPS = 7;
+// IPCC Tier-1 baseline formula coefficients
+const CARBON_FRACTION = 0.47; // CF: fraction of carbon in dry biomass
+const CO2_C_RATIO = 44 / 12; // molecular weight ratio CO₂/C
+const BEF = 1.25; // Biomass Expansion Factor (roots, branches)
 
-const currentYear = new Date().getFullYear();
-const YEAR_OPTIONS = Array.from({ length: 10 }, (_, i) => currentYear + i);
+function calculateBaseline(data: FormData): number {
+  return CARBON_FRACTION * CO2_C_RATIO * data.agb * BEF * data.hectares * data.crownCover;
+}
 
 // ─── Progress Bar ─────────────────────────────────────────────────────────────
 
-function ProgressBar({ step }: { step: number }) {
-  const pct = Math.round((step / TOTAL_STEPS) * 100);
+function ProgressBar({ step, total }: { step: number; total: number }) {
+  const pct = Math.round((step / total) * 100);
   return (
     <div className="fixed top-0 left-0 right-0 z-50 h-1 bg-neutral-800">
       <div
@@ -141,15 +110,57 @@ function ContinueButton({
   );
 }
 
-// ─── Step 1: Project Name ─────────────────────────────────────────────────────
+// ─── Role Selection (landing page) ───────────────────────────────────────────
+
+function RoleSelection({ onSelect }: { onSelect: (role: RoleType) => void }) {
+  return (
+    <div className="animate-fade-in">
+      <h1 className="text-4xl md:text-5xl font-bold text-white mb-3">
+        Baseline Calculator
+      </h1>
+      <p className="text-neutral-400 mb-2 text-lg">by Carbonable</p>
+      <p className="text-neutral-500 mb-10">
+        Estimate your project&apos;s carbon baseline using IPCC Tier-1 methodology.
+      </p>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-xl">
+        <button
+          onClick={() => onSelect("project-funder")}
+          className="group relative overflow-hidden rounded-2xl border-2 border-neutral-700 bg-neutral-800/50 hover:border-green-500 hover:bg-green-500/5 transition-all duration-300 cursor-pointer p-8 text-left"
+        >
+          <span className="text-4xl mb-4 block">💰</span>
+          <h3 className="text-xl font-bold text-white mb-2">Project Funder</h3>
+          <p className="text-neutral-400 text-sm">
+            Estimate baseline for a project you&apos;re funding or evaluating.
+          </p>
+          <span className="absolute top-4 right-4 text-neutral-600 group-hover:text-green-500 transition-colors">→</span>
+        </button>
+
+        <button
+          onClick={() => onSelect("project-holder")}
+          className="group relative overflow-hidden rounded-2xl border-2 border-neutral-700 bg-neutral-800/50 hover:border-green-500 hover:bg-green-500/5 transition-all duration-300 cursor-pointer p-8 text-left"
+        >
+          <span className="text-4xl mb-4 block">🌿</span>
+          <h3 className="text-xl font-bold text-white mb-2">Project Holder</h3>
+          <p className="text-neutral-400 text-sm">
+            Calculate baseline for a project you own or manage.
+          </p>
+          <span className="absolute top-4 right-4 text-neutral-600 group-hover:text-green-500 transition-colors">→</span>
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ─── Step 1: Above-Ground Biomass ─────────────────────────────────────────────
 
 function Step1({
   value,
   onChange,
   onNext,
 }: {
-  value: string;
-  onChange: (v: string) => void;
+  value: number;
+  onChange: (v: number) => void;
   onNext: () => void;
 }) {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -161,153 +172,40 @@ function Step1({
     <div>
       <StepLabel step={1} />
       <h2 className="text-3xl md:text-4xl font-bold text-white mb-2">
-        What&apos;s your project called?
+        What is the Above-Ground Biomass (AGB) from the dMRV per ha?
       </h2>
       <p className="text-neutral-400 mb-8">
-        Give your carbon project a clear, descriptive name.
+        Tonnes of dry matter per hectare (tDM/ha). Put zero if you don&apos;t have it.
       </p>
-      <input
-        ref={inputRef}
-        type="text"
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        onKeyDown={(e) => e.key === "Enter" && value.trim() && onNext()}
-        placeholder="e.g. Amazon Reforestation Initiative"
-        className="
-          w-full bg-transparent border-0 border-b-2 border-neutral-600
-          focus:border-green-500 outline-none text-white text-xl md:text-2xl
-          pb-3 placeholder-neutral-600 transition-colors duration-200
-        "
-      />
-      <ContinueButton onClick={onNext} disabled={!value.trim()} />
+
+      <div className="flex items-baseline gap-3 mb-6">
+        <input
+          ref={inputRef}
+          type="number"
+          min={0}
+          step={0.1}
+          value={value || ""}
+          onChange={(e) => onChange(Number(e.target.value))}
+          onKeyDown={(e) => e.key === "Enter" && onNext()}
+          placeholder="0"
+          className="
+            bg-transparent border-0 border-b-2 border-neutral-600
+            focus:border-green-500 outline-none text-white text-4xl md:text-5xl
+            font-bold w-40 pb-2 placeholder-neutral-700 transition-colors duration-200
+            [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none
+          "
+        />
+        <span className="text-neutral-400 text-lg">tDM/ha</span>
+      </div>
+
+      <ContinueButton onClick={onNext} disabled={false} />
     </div>
   );
 }
 
-// ─── Step 2: Project Type ─────────────────────────────────────────────────────
+// ─── Step 2: Number of Hectares ───────────────────────────────────────────────
 
 function Step2({
-  value,
-  onChange,
-  onNext,
-}: {
-  value: ProjectType | "";
-  onChange: (v: ProjectType) => void;
-  onNext: () => void;
-}) {
-  return (
-    <div>
-      <StepLabel step={2} />
-      <h2 className="text-3xl md:text-4xl font-bold text-white mb-2">
-        What type of project is it?
-      </h2>
-      <p className="text-neutral-400 mb-8">
-        Select the carbon removal methodology.
-      </p>
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        {PROJECT_TYPES.map((pt) => (
-          <button
-            key={pt.label}
-            onClick={() => {
-              onChange(pt.label);
-              setTimeout(onNext, 250);
-            }}
-            className={`
-              p-4 rounded-xl border-2 text-left transition-all duration-200
-              flex items-center gap-4 cursor-pointer
-              ${
-                value === pt.label
-                  ? "border-green-500 bg-green-500/10 shadow-lg shadow-green-500/10"
-                  : "border-neutral-700 bg-neutral-800/50 hover:border-neutral-500 hover:bg-neutral-800"
-              }
-            `}
-          >
-            <span className="text-3xl">{pt.icon}</span>
-            <div>
-              <div className="font-semibold text-white text-lg">
-                {pt.label}
-              </div>
-              <div className="text-neutral-400 text-sm">{pt.desc}</div>
-            </div>
-            {value === pt.label && (
-              <span className="ml-auto text-green-500 text-xl">✓</span>
-            )}
-          </button>
-        ))}
-      </div>
-      <ContinueButton onClick={onNext} disabled={!value} />
-    </div>
-  );
-}
-
-// ─── Step 3: Location ─────────────────────────────────────────────────────────
-
-const COUNTRIES = [
-  "Brazil",
-  "Colombia",
-  "Peru",
-  "Indonesia",
-  "Democratic Republic of Congo",
-  "Kenya",
-  "Tanzania",
-  "Madagascar",
-  "India",
-  "China",
-  "United States",
-  "Canada",
-  "Australia",
-  "France",
-  "Germany",
-  "Other",
-];
-
-function Step3({
-  value,
-  onChange,
-  onNext,
-}: {
-  value: string;
-  onChange: (v: string) => void;
-  onNext: () => void;
-}) {
-  return (
-    <div>
-      <StepLabel step={3} />
-      <h2 className="text-3xl md:text-4xl font-bold text-white mb-2">
-        Where is the project located?
-      </h2>
-      <p className="text-neutral-400 mb-8">
-        Select the country or region of implementation.
-      </p>
-      <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-        {COUNTRIES.map((country) => (
-          <button
-            key={country}
-            onClick={() => {
-              onChange(country);
-              setTimeout(onNext, 250);
-            }}
-            className={`
-              p-3 rounded-lg border text-sm font-medium transition-all duration-200 cursor-pointer
-              ${
-                value === country
-                  ? "border-green-500 bg-green-500/10 text-green-400"
-                  : "border-neutral-700 text-neutral-300 hover:border-neutral-500 hover:bg-neutral-800 bg-neutral-800/30"
-              }
-            `}
-          >
-            {country}
-          </button>
-        ))}
-      </div>
-      <ContinueButton onClick={onNext} disabled={!value} />
-    </div>
-  );
-}
-
-// ─── Step 4: Area ─────────────────────────────────────────────────────────────
-
-function Step4({
   value,
   onChange,
   onNext,
@@ -323,22 +221,23 @@ function Step4({
 
   return (
     <div>
-      <StepLabel step={4} />
+      <StepLabel step={2} />
       <h2 className="text-3xl md:text-4xl font-bold text-white mb-2">
-        What&apos;s the project area?
+        Number of ha of the project
       </h2>
       <p className="text-neutral-400 mb-8">
-        Enter the total land area in hectares.
+        Total project area in hectares. Put zero if you don&apos;t have it.
       </p>
 
       <div className="flex items-baseline gap-3 mb-6">
         <input
           ref={inputRef}
           type="number"
-          min={1}
+          min={0}
+          step={1}
           value={value || ""}
           onChange={(e) => onChange(Number(e.target.value))}
-          onKeyDown={(e) => e.key === "Enter" && value > 0 && onNext()}
+          onKeyDown={(e) => e.key === "Enter" && onNext()}
           placeholder="0"
           className="
             bg-transparent border-0 border-b-2 border-neutral-600
@@ -347,29 +246,11 @@ function Step4({
             [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none
           "
         />
-        <span className="text-neutral-400 text-xl">hectares</span>
-      </div>
-
-      {/* Slider */}
-      <div className="mt-4">
-        <input
-          type="range"
-          min={1}
-          max={100000}
-          step={100}
-          value={value || 0}
-          onChange={(e) => onChange(Number(e.target.value))}
-          className="w-full accent-green-500 cursor-pointer"
-        />
-        <div className="flex justify-between text-neutral-500 text-xs mt-1">
-          <span>1 ha</span>
-          <span>10,000 ha</span>
-          <span>100,000 ha</span>
-        </div>
+        <span className="text-neutral-400 text-lg">hectares</span>
       </div>
 
       {value > 0 && (
-        <p className="mt-4 text-neutral-400 text-sm">
+        <p className="mt-2 text-neutral-500 text-sm">
           ≈{" "}
           <span className="text-green-400 font-semibold">
             {(value * 10000).toLocaleString()} m²
@@ -381,14 +262,14 @@ function Step4({
         </p>
       )}
 
-      <ContinueButton onClick={onNext} disabled={!value || value <= 0} />
+      <ContinueButton onClick={onNext} disabled={false} />
     </div>
   );
 }
 
-// ─── Step 5: Start Year ───────────────────────────────────────────────────────
+// ─── Step 3: Crown Cover ──────────────────────────────────────────────────────
 
-function Step5({
+function Step3({
   value,
   onChange,
   onNext,
@@ -396,201 +277,90 @@ function Step5({
   value: number;
   onChange: (v: number) => void;
   onNext: () => void;
-}) {
-  return (
-    <div>
-      <StepLabel step={5} />
-      <h2 className="text-3xl md:text-4xl font-bold text-white mb-2">
-        When does the project start?
-      </h2>
-      <p className="text-neutral-400 mb-8">
-        Select the project&apos;s start year for baseline calculation.
-      </p>
-      <div className="grid grid-cols-3 sm:grid-cols-5 gap-3">
-        {YEAR_OPTIONS.map((year) => (
-          <button
-            key={year}
-            onClick={() => {
-              onChange(year);
-              setTimeout(onNext, 250);
-            }}
-            className={`
-              py-4 rounded-xl border-2 font-bold text-lg transition-all duration-200 cursor-pointer
-              ${
-                value === year
-                  ? "border-green-500 bg-green-500/10 text-green-400 shadow-lg shadow-green-500/10"
-                  : "border-neutral-700 text-neutral-300 hover:border-neutral-500 hover:bg-neutral-800"
-              }
-            `}
-          >
-            {year}
-          </button>
-        ))}
-      </div>
-      <ContinueButton onClick={onNext} disabled={!value} />
-    </div>
-  );
-}
-
-// ─── Step 6: Duration ─────────────────────────────────────────────────────────
-
-function Step6({
-  value,
-  onChange,
-  onNext,
-}: {
-  value: number;
-  onChange: (v: number) => void;
-  onNext: () => void;
-}) {
-  const DURATIONS = [5, 10, 15, 20, 25, 30];
-
-  return (
-    <div>
-      <StepLabel step={6} />
-      <h2 className="text-3xl md:text-4xl font-bold text-white mb-2">
-        Project duration?
-      </h2>
-      <p className="text-neutral-400 mb-8">
-        How many years will the project run? (5–30 years)
-      </p>
-      <div className="grid grid-cols-3 sm:grid-cols-6 gap-3">
-        {DURATIONS.map((d) => (
-          <button
-            key={d}
-            onClick={() => {
-              onChange(d);
-              setTimeout(onNext, 250);
-            }}
-            className={`
-              py-5 rounded-xl border-2 font-bold text-xl transition-all duration-200 cursor-pointer
-              ${
-                value === d
-                  ? "border-green-500 bg-green-500/10 text-green-400 shadow-lg shadow-green-500/10"
-                  : "border-neutral-700 text-neutral-300 hover:border-neutral-500 hover:bg-neutral-800"
-              }
-            `}
-          >
-            {d}
-            <div className="text-xs font-normal text-neutral-400 mt-1">
-              years
-            </div>
-          </button>
-        ))}
-      </div>
-      <ContinueButton onClick={onNext} disabled={!value} />
-    </div>
-  );
-}
-
-// ─── Step 7: Annual Sequestration ─────────────────────────────────────────────
-
-function Step7({
-  value,
-  onChange,
-  onNext,
-  projectType,
-}: {
-  value: number;
-  onChange: (v: number) => void;
-  onNext: () => void;
-  projectType: ProjectType | "";
 }) {
   const inputRef = useRef<HTMLInputElement>(null);
   useEffect(() => {
     inputRef.current?.focus();
   }, []);
 
-  const BENCHMARKS: Record<string, { min: number; max: number }> = {
-    Restoration: { min: 2, max: 8 },
-    Conservation: { min: 1, max: 5 },
-    Reforestation: { min: 3, max: 12 },
-    DAC: { min: 50, max: 500 },
-    Biochar: { min: 1, max: 4 },
+  const [error, setError] = useState("");
+
+  const handleChange = (v: number) => {
+    onChange(v);
+    if (v < 0 || v > 1) {
+      setError("Crown cover must be between 0 and 1");
+    } else {
+      setError("");
+    }
   };
 
-  const bench = projectType ? BENCHMARKS[projectType] : null;
+  const handleNext = () => {
+    if (value >= 0 && value <= 1) {
+      onNext();
+    } else {
+      setError("Crown cover must be between 0 and 1");
+    }
+  };
 
   return (
     <div>
-      <StepLabel step={7} />
+      <StepLabel step={3} />
       <h2 className="text-3xl md:text-4xl font-bold text-white mb-2">
-        Expected annual sequestration?
+        Provide your crown cover if you have it
       </h2>
-      <p className="text-neutral-400 mb-2">
-        Tonnes of CO₂ removed per hectare per year (tCO₂/ha/year).
+      <p className="text-neutral-400 mb-8">
+        Value between 0 and 1 (e.g. 0.8 = 80% canopy cover). Put zero if you don&apos;t have it.
       </p>
-      {bench && (
-        <p className="text-sm text-green-400 mb-8">
-          Typical range for {projectType}:{" "}
-          <strong>
-            {bench.min}–{bench.max}
-          </strong>{" "}
-          tCO₂/ha/year
-        </p>
-      )}
-      {!bench && <div className="mb-8" />}
 
       <div className="flex items-baseline gap-3 mb-6">
         <input
           ref={inputRef}
           type="number"
-          min={0.1}
-          step={0.1}
+          min={0}
+          max={1}
+          step={0.01}
           value={value || ""}
-          onChange={(e) => onChange(Number(e.target.value))}
-          onKeyDown={(e) => e.key === "Enter" && value > 0 && onNext()}
+          onChange={(e) => handleChange(Number(e.target.value))}
+          onKeyDown={(e) => e.key === "Enter" && handleNext()}
           placeholder="0"
           className="
             bg-transparent border-0 border-b-2 border-neutral-600
             focus:border-green-500 outline-none text-white text-4xl md:text-5xl
-            font-bold w-32 pb-2 placeholder-neutral-700 transition-colors duration-200
+            font-bold w-40 pb-2 placeholder-neutral-700 transition-colors duration-200
             [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none
           "
         />
-        <span className="text-neutral-400 text-sm leading-tight">
-          tCO₂
-          <br />
-          ha/yr
-        </span>
+        <span className="text-neutral-400 text-lg">ratio</span>
       </div>
 
       {/* Quick picks */}
-      {bench && (
-        <div className="flex gap-2 flex-wrap">
-          {[bench.min, Math.round((bench.min + bench.max) / 2), bench.max].map(
-            (v) => (
-              <button
-                key={v}
-                onClick={() => onChange(v)}
-                className={`
-                px-4 py-1.5 rounded-full border text-sm font-medium transition-all duration-200 cursor-pointer
-                ${
-                  value === v
-                    ? "border-green-500 bg-green-500/20 text-green-400"
-                    : "border-neutral-600 text-neutral-400 hover:border-neutral-400"
-                }
-              `}
-              >
-                {v} (
-                {v === bench.min
-                  ? "low"
-                  : v === bench.max
-                    ? "high"
-                    : "median"}
-                )
-              </button>
-            ),
-          )}
-        </div>
-      )}
+      <div className="flex gap-2 flex-wrap mb-4">
+        {[0.3, 0.5, 0.7, 0.8, 0.9, 1.0].map((v) => (
+          <button
+            key={v}
+            onClick={() => handleChange(v)}
+            className={`
+              px-4 py-1.5 rounded-full border text-sm font-medium transition-all duration-200 cursor-pointer
+              ${
+                value === v
+                  ? "border-green-500 bg-green-500/20 text-green-400"
+                  : "border-neutral-600 text-neutral-400 hover:border-neutral-400"
+              }
+            `}
+          >
+            {v} ({Math.round(v * 100)}%)
+          </button>
+        ))}
+      </div>
 
-      <ContinueButton onClick={onNext} disabled={!value || value <= 0} />
+      {error && <p className="text-red-400 text-sm mb-2">{error}</p>}
+
+      <ContinueButton onClick={handleNext} disabled={false} label="Calculate" />
     </div>
   );
 }
 
-// ─── Summary + Results ────────────────────────────────────────────────────────
+// ─── Summary Row ──────────────────────────────────────────────────────────────
 
 function SummaryRow({
   label,
@@ -607,6 +377,8 @@ function SummaryRow({
   );
 }
 
+// ─── Result View ──────────────────────────────────────────────────────────────
+
 function ResultView({
   data,
   onReset,
@@ -614,15 +386,10 @@ function ResultView({
   data: FormData;
   onReset: () => void;
 }) {
-  const total = data.area * data.duration * data.annualSequestration;
-  const annualTotal = data.area * data.annualSequestration;
+  const result = calculateBaseline(data);
 
-  // Build chart bars
-  const years = Array.from({ length: data.duration }, (_, i) => ({
-    year: data.startYear + i,
-    cumulative: annualTotal * (i + 1),
-  }));
-  const maxVal = years[years.length - 1]?.cumulative || 1;
+  const formatNumber = (num: number) =>
+    num.toLocaleString("en-US", { maximumFractionDigits: 2 });
 
   return (
     <div className="animate-fade-in">
@@ -636,80 +403,67 @@ function ResultView({
       <h2 className="text-3xl md:text-4xl font-bold text-white mb-2">
         Project Baseline
       </h2>
-      <p className="text-neutral-400 mb-8">{data.projectName}</p>
+      <p className="text-neutral-400 mb-8">
+        IPCC Tier-1 carbon stock estimation
+      </p>
 
       {/* Key Metric */}
       <div className="bg-gradient-to-br from-green-500/10 to-neutral-900 border border-green-500/20 rounded-2xl p-6 mb-6">
         <p className="text-neutral-400 text-sm mb-1">
-          Total Estimated Sequestration
+          Total Estimated Carbon Stock
         </p>
         <div className="flex items-baseline gap-2">
           <span className="text-5xl md:text-6xl font-bold text-white">
-            {total >= 1000000
-              ? `${(total / 1000000).toFixed(2)}M`
-              : total >= 1000
-                ? `${(total / 1000).toFixed(1)}k`
-                : total.toFixed(0)}
+            {result >= 1000000
+              ? `${(result / 1000000).toFixed(2)}M`
+              : result >= 1000
+                ? `${(result / 1000).toFixed(1)}k`
+                : formatNumber(result)}
           </span>
           <span className="text-green-400 font-semibold">tCO₂</span>
         </div>
-        <p className="text-neutral-500 text-sm mt-2">
-          Over {data.duration} years ·{" "}
-          {annualTotal.toLocaleString(undefined, { maximumFractionDigits: 0 })}{" "}
-          tCO₂/year
-        </p>
       </div>
 
-      {/* Chart */}
+      {/* Formula breakdown */}
       <div className="bg-neutral-800/50 rounded-2xl p-5 mb-6">
         <p className="text-neutral-400 text-sm mb-4">
-          Cumulative sequestration (tCO₂)
+          Formula: CF × (44/12) × AGB × BEF × Area × Crown Cover
         </p>
-        <div className="flex items-end gap-1 h-28">
-          {years.map((y, i) => (
-            <div
-              key={y.year}
-              className="flex-1 flex flex-col items-center gap-1"
-              title={`${y.year}: ${y.cumulative.toLocaleString(undefined, { maximumFractionDigits: 0 })} tCO₂`}
-            >
-              <div
-                className="w-full rounded-t transition-all duration-700 bg-green-500/70 hover:bg-green-400 cursor-pointer"
-                style={{
-                  height: `${(y.cumulative / maxVal) * 100}%`,
-                  animationDelay: `${i * 50}ms`,
-                }}
-              />
-              {(i === 0 ||
-                i === Math.floor(years.length / 2) ||
-                i === years.length - 1) && (
-                <span className="text-neutral-500 text-[9px]">{y.year}</span>
-              )}
-            </div>
-          ))}
+        <div className="font-mono text-sm text-neutral-300 space-y-1">
+          <p>
+            <span className="text-green-400">{CARBON_FRACTION}</span> × <span className="text-green-400">{(CO2_C_RATIO).toFixed(4)}</span> × <span className="text-green-400">{data.agb}</span> × <span className="text-green-400">{BEF}</span> × <span className="text-green-400">{data.hectares}</span> × <span className="text-green-400">{data.crownCover}</span>
+          </p>
+          <p className="text-white font-bold pt-2 border-t border-neutral-700 mt-2">
+            = {formatNumber(result)} tCO₂
+          </p>
         </div>
       </div>
 
-      {/* Summary */}
+      {/* Coefficients legend */}
+      <div className="bg-neutral-800/30 rounded-2xl px-5 mb-6">
+        <SummaryRow label="CF (Carbon Fraction)" value={CARBON_FRACTION} />
+        <SummaryRow label="CO₂/C molecular ratio (44/12)" value={(CO2_C_RATIO).toFixed(4)} />
+        <SummaryRow label="BEF (Biomass Expansion Factor)" value={BEF} />
+      </div>
+
+      {/* Input summary */}
       <div className="bg-neutral-800/30 rounded-2xl px-5 mb-8">
-        <SummaryRow label="Project type" value={data.projectType} />
-        <SummaryRow label="Location" value={data.location} />
         <SummaryRow
-          label="Area"
-          value={`${data.area.toLocaleString()} ha`}
+          label="AGB (dMRV)"
+          value={`${data.agb} tDM/ha`}
         />
-        <SummaryRow label="Start year" value={data.startYear} />
-        <SummaryRow label="Duration" value={`${data.duration} years`} />
         <SummaryRow
-          label="Annual sequestration"
-          value={`${data.annualSequestration} tCO₂/ha/yr`}
+          label="Project area"
+          value={`${data.hectares.toLocaleString()} ha`}
+        />
+        <SummaryRow
+          label="Crown cover"
+          value={`${data.crownCover} (${Math.round(data.crownCover * 100)}%)`}
         />
       </div>
 
       {/* Actions */}
       <div className="flex gap-3 flex-wrap">
-        <button className="px-8 py-3 rounded-xl font-semibold bg-green-500 hover:bg-green-400 text-neutral-900 transition-all duration-200 hover:scale-105 active:scale-95 shadow-lg shadow-green-500/20 cursor-pointer">
-          Download Report
-        </button>
         <button
           onClick={onReset}
           className="px-8 py-3 rounded-xl font-semibold border border-neutral-700 text-neutral-300 hover:border-neutral-500 hover:text-white transition-all duration-200 cursor-pointer"
@@ -732,32 +486,46 @@ function SummaryStep({
   onCalculate: () => void;
   onBack: () => void;
 }) {
+  const preview = calculateBaseline(data);
+  const formatNumber = (num: number) =>
+    num.toLocaleString("en-US", { maximumFractionDigits: 2 });
+
   return (
     <div>
       <p className="text-sm font-medium text-green-500 mb-3 tracking-widest uppercase">
         Almost there
       </p>
       <h2 className="text-3xl md:text-4xl font-bold text-white mb-2">
-        Review your project
+        Review your inputs
       </h2>
       <p className="text-neutral-400 mb-8">
-        Confirm the details before calculating the baseline.
+        Confirm the data before calculating the baseline.
       </p>
 
-      <div className="bg-neutral-800/30 rounded-2xl px-5 mb-8">
-        <SummaryRow label="Project name" value={data.projectName} />
-        <SummaryRow label="Project type" value={data.projectType} />
-        <SummaryRow label="Location" value={data.location} />
+      <div className="bg-neutral-800/30 rounded-2xl px-5 mb-6">
         <SummaryRow
-          label="Area"
-          value={`${data.area.toLocaleString()} ha`}
+          label="Above-Ground Biomass (AGB)"
+          value={`${data.agb} tDM/ha`}
         />
-        <SummaryRow label="Start year" value={data.startYear} />
-        <SummaryRow label="Duration" value={`${data.duration} years`} />
         <SummaryRow
-          label="Annual sequestration"
-          value={`${data.annualSequestration} tCO₂/ha/yr`}
+          label="Project area"
+          value={`${data.hectares.toLocaleString()} ha`}
         />
+        <SummaryRow
+          label="Crown cover"
+          value={`${data.crownCover} (${Math.round(data.crownCover * 100)}%)`}
+        />
+      </div>
+
+      {/* Preview result */}
+      <div className="bg-neutral-800/50 rounded-2xl p-4 mb-8">
+        <p className="text-neutral-500 text-sm">Estimated result</p>
+        <p className="text-2xl font-bold text-green-400">
+          {formatNumber(preview)} tCO₂
+        </p>
+        <p className="text-neutral-600 text-xs mt-1">
+          CF({CARBON_FRACTION}) × CO₂/C({(CO2_C_RATIO).toFixed(2)}) × AGB({data.agb}) × BEF({BEF}) × {data.hectares}ha × {data.crownCover}
+        </p>
       </div>
 
       <div className="flex gap-3">
@@ -781,16 +549,13 @@ function SummaryStep({
 // ─── Main Component ───────────────────────────────────────────────────────────
 
 const DEFAULT_FORM: FormData = {
-  projectName: "",
-  projectType: "",
-  location: "",
-  area: 0,
-  startYear: 0,
-  duration: 0,
-  annualSequestration: 0,
+  agb: 0,
+  hectares: 0,
+  crownCover: 0,
 };
 
 export default function BaselinePage() {
+  const [role, setRole] = useState<RoleType | null>(null);
   const [step, setStep] = useState(1);
   const [form, setForm] = useState<FormData>(DEFAULT_FORM);
   const [direction, setDirection] = useState<"forward" | "back">("forward");
@@ -808,8 +573,13 @@ export default function BaselinePage() {
 
   const goBack = useCallback(() => {
     setDirection("back");
-    setStep((s) => Math.max(s - 1, 1));
-  }, []);
+    if (step === 1 && !showResult) {
+      // Go back to role selection
+      setRole(null);
+    } else {
+      setStep((s) => Math.max(s - 1, 1));
+    }
+  }, [step, showResult]);
 
   const update = useCallback(
     <K extends keyof FormData>(key: K, value: FormData[K]) => {
@@ -821,7 +591,7 @@ export default function BaselinePage() {
   // Keyboard: Escape to go back
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
-      if (e.key === "Escape" && step > 1 && !showResult) goBack();
+      if (e.key === "Escape" && !showResult) goBack();
     };
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
@@ -832,16 +602,26 @@ export default function BaselinePage() {
     setStep(1);
     setShowResult(false);
     setDirection("forward");
+    setRole(null);
   };
 
   if (!mounted) return null;
 
   const isSummaryStep = step === TOTAL_STEPS + 1;
 
+  // Role selection page
+  if (!role) {
+    return (
+      <div className="min-h-screen bg-neutral-900 flex flex-col items-center justify-center px-6">
+        <RoleSelection onSelect={(r) => setRole(r)} />
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-neutral-900 flex flex-col">
       {/* Progress */}
-      {!showResult && <ProgressBar step={isSummaryStep ? TOTAL_STEPS : step} />}
+      {!showResult && <ProgressBar step={isSummaryStep ? TOTAL_STEPS : step} total={TOTAL_STEPS} />}
 
       {/* Header */}
       <div className="px-6 pt-8 pb-4">
@@ -849,7 +629,7 @@ export default function BaselinePage() {
           <span className="text-neutral-500 text-sm font-medium">
             Estimate Project Baseline
           </span>
-          {step > 1 && !showResult && (
+          {!showResult && (
             <button
               onClick={goBack}
               className="text-neutral-500 hover:text-neutral-300 text-sm transition-colors duration-200 flex items-center gap-1 cursor-pointer"
@@ -875,52 +655,23 @@ export default function BaselinePage() {
             <>
               <StepWrapper visible={step === 1} direction={direction}>
                 <Step1
-                  value={form.projectName}
-                  onChange={(v) => update("projectName", v)}
+                  value={form.agb}
+                  onChange={(v) => update("agb", v)}
                   onNext={goNext}
                 />
               </StepWrapper>
               <StepWrapper visible={step === 2} direction={direction}>
                 <Step2
-                  value={form.projectType}
-                  onChange={(v) => update("projectType", v)}
+                  value={form.hectares}
+                  onChange={(v) => update("hectares", v)}
                   onNext={goNext}
                 />
               </StepWrapper>
               <StepWrapper visible={step === 3} direction={direction}>
                 <Step3
-                  value={form.location}
-                  onChange={(v) => update("location", v)}
+                  value={form.crownCover}
+                  onChange={(v) => update("crownCover", v)}
                   onNext={goNext}
-                />
-              </StepWrapper>
-              <StepWrapper visible={step === 4} direction={direction}>
-                <Step4
-                  value={form.area}
-                  onChange={(v) => update("area", v)}
-                  onNext={goNext}
-                />
-              </StepWrapper>
-              <StepWrapper visible={step === 5} direction={direction}>
-                <Step5
-                  value={form.startYear}
-                  onChange={(v) => update("startYear", v)}
-                  onNext={goNext}
-                />
-              </StepWrapper>
-              <StepWrapper visible={step === 6} direction={direction}>
-                <Step6
-                  value={form.duration}
-                  onChange={(v) => update("duration", v)}
-                  onNext={goNext}
-                />
-              </StepWrapper>
-              <StepWrapper visible={step === 7} direction={direction}>
-                <Step7
-                  value={form.annualSequestration}
-                  onChange={(v) => update("annualSequestration", v)}
-                  onNext={goNext}
-                  projectType={form.projectType}
                 />
               </StepWrapper>
             </>
