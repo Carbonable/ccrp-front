@@ -1,3 +1,7 @@
+'use client';
+
+import { use } from 'react';
+import { useTranslations } from 'next-intl';
 import { BackButton } from '@/components/common/Button';
 import Title from '@/components/common/Title';
 import BusinessUnitInfo from '@/components/dashboard/business-unit-allocation/BusinessUnitInfo';
@@ -7,31 +11,37 @@ import DecarbonationOverview from '@/components/dashboard/business-unit-allocati
 import ProjectsMetrics from '@/components/dashboard/business-unit-allocation/ProjectsMetrics';
 import ProjectsImpact from '@/components/dashboard/business-unit-allocation/Impact';
 
-export default function BusinessUnitsDetails({ params }: Readonly<{ params: { id: string } }>) {
+export default function BusinessUnitsDetails({ params }: Readonly<{ params: Promise<{ id: string }> }>) {
+  const { id } = use(params);
+  const t = useTranslations('allocation');
+  const tp = useTranslations('projectMetrics');
+  const ti = useTranslations('impact');
+  const tc = useTranslations('common');
+
   return (
     <>
       <div className="ml-1 mt-4">
-        <BackButton href="/dashboard/business-units-allocation">Back to list</BackButton>
+        <BackButton href="/dashboard/business-units-allocation">{tc('backToList')}</BackButton>
         <div className="mt-12">
-          <BusinessUnitInfo id={params.id} />
+          <BusinessUnitInfo id={id} />
         </div>
         <div className="mt-16">
-          <GlobalData businessUnitId={params.id} />
+          <GlobalData businessUnitId={id} />
         </div>
         <div className="mt-16">
-          <Title title="Projects Allocation" />
-          <ProjectFundingAllocation businessUnitId={params.id} />
+          <Title title={t('projectsAllocation')} />
+          <ProjectFundingAllocation businessUnitId={id} />
         </div>
         <div className="mt-16">
-          <DecarbonationOverview businessUnitId={params.id} />
+          <DecarbonationOverview businessUnitId={id} />
         </div>
         <div className="mt-16">
-          <Title title="Project metrics" />
-          <ProjectsMetrics businessUnitId={params.id} />
+          <Title title={tp('title')} />
+          <ProjectsMetrics businessUnitId={id} />
         </div>
         <div className="mb-12 mt-16">
-          <Title title="Impact metrics" />
-          <ProjectsImpact businessUnitId={params.id} />
+          <Title title={ti('title')} />
+          <ProjectsImpact businessUnitId={id} />
         </div>
       </div>
     </>

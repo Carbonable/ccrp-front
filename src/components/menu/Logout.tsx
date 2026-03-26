@@ -3,6 +3,7 @@
 import { UserButton } from '@clerk/nextjs';
 import { dark } from '@clerk/themes';
 import NotificationBell from '@/components/notifications/NotificationBell';
+import LanguageSwitcher from '@/components/common/LanguageSwitcher';
 import { BuildingOfficeIcon } from '@heroicons/react/24/outline';
 import { useRouter } from 'next/navigation';
 
@@ -11,7 +12,7 @@ export default function Logout() {
 
   return (
     <div className="flex w-full flex-col gap-3">
-      {/* Avatar + Notification bell — same row */}
+      {/* Avatar + Language switcher + Notification bell — same row */}
       <div className="flex items-center justify-between px-1">
         <UserButton
           signInUrl="/sign-in"
@@ -37,6 +38,7 @@ export default function Logout() {
             <UserButton.Action label="signOut" />
           </UserButton.MenuItems>
         </UserButton>
+        <LanguageSwitcher />
         <NotificationBell />
       </div>
     </div>

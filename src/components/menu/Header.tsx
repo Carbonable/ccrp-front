@@ -1,6 +1,7 @@
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
 import Image from 'next/image';
 import NotificationBell from '@/components/notifications/NotificationBell';
+import LanguageSwitcher from '@/components/common/LanguageSwitcher';
 
 export default function Header({
   openMenu,
@@ -33,7 +34,8 @@ export default function Header({
             className="ml-8"
           />
         </div>
-        <div className="mr-1">
+        <div className="mr-1 flex items-center gap-2">
+          <LanguageSwitcher />
           <NotificationBell />
         </div>
       </div>

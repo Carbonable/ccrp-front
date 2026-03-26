@@ -1,4 +1,6 @@
 'use client';
+
+import { useTranslations } from 'next-intl';
 import { ErrorReloadTable, NoDataTable } from '@/components/common/ErrorReload';
 import PaginationComponent from '@/components/common/Pagination';
 import Title from '@/components/common/Title';
@@ -10,6 +12,7 @@ import { useQuery } from '@apollo/client';
 import { useEffect, useState } from 'react';
 
 export default function FinancialAnalysisTable({ businessUnitId }: { businessUnitId: string }) {
+  const t = useTranslations('tables');
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState<number>(1);
   const { loading, error, data, refetch } = useQuery(FINANCIAL_ANALYSIS, {
@@ -57,7 +60,7 @@ export default function FinancialAnalysisTable({ businessUnitId }: { businessUni
 
   return (
     <div className="mt-12 w-full">
-      <Title title="Financial analysis" />
+      <Title title={t('financialAnalysis')} />
       <div className="font-inter mt-4 w-full overflow-x-auto border border-neutral-600 text-sm">
         <table className="min-w-full table-auto text-left">
           <thead className="h-10 whitespace-nowrap bg-neutral-500 text-neutral-100">

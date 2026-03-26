@@ -1,4 +1,6 @@
 'use client';
+
+import { useTranslations } from 'next-intl';
 import { BUSINESS_UNITS } from '@/graphql/queries/business-units';
 import Block from './Block';
 import { useQuery } from '@apollo/client';
@@ -6,6 +8,7 @@ import { BusinessUnit } from '@/graphql/__generated__/graphql';
 import ErrorReload from '@/components/common/ErrorReload';
 
 export default function DecarbonizationMap() {
+  const t = useTranslations('allocation');
   const { loading, error, data, refetch } = useQuery(BUSINESS_UNITS);
 
 
@@ -26,7 +29,7 @@ export default function DecarbonizationMap() {
     );
 
   if (businessUnits.length === 0)
-    return <BusinessUnitWrapper>No business unit found</BusinessUnitWrapper>;
+    return <BusinessUnitWrapper>{t('noBuFound')}</BusinessUnitWrapper>;
 
   return (
     <BusinessUnitWrapper>

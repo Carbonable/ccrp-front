@@ -1,3 +1,6 @@
+'use client';
+
+import { useTranslations } from 'next-intl';
 import { CARBONABLE_COMPANY_ID } from '@/utils/constant';
 import ErrorReload from '../ErrorReload';
 import { ImpactTitle } from '../Title';
@@ -18,16 +21,19 @@ export default function ImpactComponent({
   refetch: any;
   link?: string;
 }) {
+  const t = useTranslations('impact');
+  const tc = useTranslations('common');
+  const ta = useTranslations('allocation');
   const cssBlock = 'border border-neutral-500 rounded-xl px-6 py-4 bg-neutral-700';
 
   const metrics: ImpactMetrics = data?.getImpactMetrics;
 
   if (loading) {
-    return <div className="mt-12 w-full">Loading ...</div>;
+    return <div className="mt-12 w-full">{tc('loading')}</div>;
   }
 
   if (error && error.message.includes('42P01')) {
-    return <div className="mt-12 w-full">No allocations yet</div>;
+    return <div className="mt-12 w-full">{ta('noAllocations')}</div>;
   }
 
   if (error) {
@@ -41,7 +47,7 @@ export default function ImpactComponent({
   return (
     <div className="mt-12 grid w-full grid-flow-col grid-cols-4 grid-rows-3 gap-4 md:grid-rows-3">
       <div className={`col-span-4 md:col-span-1 md:row-span-3 ${cssBlock}`}>
-        <ImpactTitle title="Impacted SDGs" value={`# ${metrics.sdgs.length}`} />
+        <ImpactTitle title={t('impactedSdgs')} value={`# ${metrics.sdgs.length}`} />
         <div className="mt-8 grid grid-cols-5 gap-6 md:grid-cols-3">
           {metrics.sdgs.map((sdg: Sdg, idx: number) => {
             return (
@@ -64,13 +70,13 @@ export default function ImpactComponent({
       </div>
       <div className="col-span-4 grid gap-4 md:col-span-3 md:grid-cols-3">
         <div className={`col-span-1 ${cssBlock}`}>
-          <ImpactTitle title="Removed Tons" value={metrics.removed_tons} />
+          <ImpactTitle title={t('removedTons')} value={metrics.removed_tons} />
         </div>
         <div className={`col-span-1 ${cssBlock}`}>
-          <ImpactTitle title="Restaured hectares" value={metrics.protected_forest} />
+          <ImpactTitle title={t('restauredHectares')} value={metrics.protected_forest} />
         </div>
         <div className={`col-span-1 ${cssBlock}`}>
-          <ImpactTitle title="Protected Species" value={metrics.protected_species} />
+          <ImpactTitle title={t('protectedSpecies')} value={metrics.protected_species} />
         </div>
       </div>
       <div
@@ -87,7 +93,7 @@ export default function ImpactComponent({
             full impact report
           </div>
           <div className="mt-8 lg:mt-12">
-            <LinkSecondary href={link ? link : ''}>Go to impact Report</LinkSecondary>
+            <LinkSecondary href={link ? link : ''}>{t('goToImpactReport')}</LinkSecondary>
           </div>
         </div>
       </div>

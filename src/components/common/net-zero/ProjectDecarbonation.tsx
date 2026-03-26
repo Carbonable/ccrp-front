@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import ErrorReload from '../../common/ErrorReload';
 import {
   Bar,
@@ -34,6 +35,7 @@ export default function ProjectDecarbonationComponent({
   data,
   refetch,
 }: ProjectDecarbonationProps) {
+  const t = useTranslations('tables');
   const [bar1Name] = useState('Ex Post');
   const [bar2Name] = useState('Ex Ante');
 
@@ -133,7 +135,7 @@ export default function ProjectDecarbonationComponent({
 
   return (
     <div className={`mt-8 h-full w-full px-0`}>
-      <Title title="Net Zero planning" />
+      <Title title={t('netZeroPlanning')} />
       <ResponsiveContainer width="100%" height="100%" aspect={2.2}>
         <ComposedChart
           width={300}

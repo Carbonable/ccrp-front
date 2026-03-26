@@ -1,3 +1,6 @@
+'use client';
+
+import { useTranslations } from 'next-intl';
 import { GlobalKPI } from '@/components/KPI';
 import { GlobalData } from '@/graphql/__generated__/graphql';
 
@@ -9,6 +12,8 @@ interface GlobalKPIProps {
 }
 
 export default function GlobalDataComponent({ loading, error, data, refetch }: GlobalKPIProps) {
+  const t = useTranslations('dashboard');
+
   if (error) {
     console.error(error);
   }
@@ -22,28 +27,28 @@ export default function GlobalDataComponent({ loading, error, data, refetch }: G
   return (
     <div className="mt-4 grid grid-cols-2 gap-2 md:grid-cols-4">
       <GlobalKPI
-        title="Target (current year)"
+        title={t('targetCurrentYear')}
         kpi={globalData?.target}
         loading={loading}
         error={error}
         refetchData={refetchData}
       />
       <GlobalKPI
-        title="Actual (current year)"
+        title={t('actualCurrentYear')}
         kpi={globalData?.actual}
         loading={loading}
         error={error}
         refetchData={refetchData}
       />
       <GlobalKPI
-        title="Delta (current year)"
+        title={t('deltaCurrentYear')}
         kpi={globalData?.debt}
         loading={loading}
         error={error}
         refetchData={refetchData}
       />
       <GlobalKPI
-        title="Delta (total)"
+        title={t('deltaTotal')}
         kpi={globalData?.cumulative_debt}
         loading={loading}
         error={error}
