@@ -3,12 +3,9 @@
 import { Project } from '@/graphql/__generated__/graphql';
 import { GET_PROJECTS } from '@/graphql/queries/projects';
 import { useQuery } from '@apollo/client';
-import { useTranslations } from 'next-intl';
 
 export default function ProjectsList() {
   const { loading, error, data } = useQuery(GET_PROJECTS);
-  const t = useTranslations('portfolio');
-  const tc = useTranslations('common');
 
   if (error) {
     console.error(error);
@@ -20,7 +17,7 @@ export default function ProjectsList() {
     return (
       <div className="flex flex-wrap items-center justify-between">
         <div className="w-full text-lg font-extrabold uppercase text-neutral-100 md:w-fit">
-          {tc('loading')}
+          Loading...
         </div>
       </div>
     );
@@ -30,7 +27,7 @@ export default function ProjectsList() {
     return (
       <div className="flex flex-wrap items-center justify-between">
         <div className="w-full text-lg font-extrabold uppercase text-neutral-100 md:w-fit">
-          {tc('error', { error: error.message })}
+          Error: {error.message}
         </div>
       </div>
     );
@@ -61,19 +58,17 @@ export default function ProjectsList() {
 }
 
 function NumberOfProjects({ number }: { number: number }) {
-  const t = useTranslations('portfolio');
-
   if (number === 0) {
     return (
       <div className="w-full text-lg font-extrabold uppercase text-neutral-100 md:w-fit">
-        {t('noProjects')}
+        No projects in the portfolio
       </div>
     );
   }
 
   return (
     <div className="w-full text-lg font-extrabold uppercase text-neutral-100 md:w-fit">
-      {t('assets', { count: number })}
+      {number} assets
     </div>
   );
 }

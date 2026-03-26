@@ -1,15 +1,10 @@
-'use client';
-
-import { useTranslations } from 'next-intl';
-
 export default function Title({ title, isBeta }: { title: string; isBeta?: boolean }) {
-  const t = useTranslations('common');
   return (
     <div className="mb-8 mt-12 flex items-center border-b border-neutral-500 pb-2 text-xl font-bold text-neutral-100">
       {title}
       {isBeta && (
         <span className="ml-3 rounded-md bg-beta-button px-3 py-1 text-xs font-light">
-          {t('betaVersion')}
+          Beta version
         </span>
       )}
     </div>

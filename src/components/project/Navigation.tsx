@@ -4,8 +4,8 @@ import React from 'react';
 import { Tabs, Tab } from '@nextui-org/react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
-import { useTranslations } from 'next-intl';
 
+/** Projects with dMRV data — match against Sanity slugs */
 const DMRV_MATCHES = ['banegas-farm', 'las-delicias', 'manjarisoa'];
 
 function hasDmrvData(slug: string): boolean {
@@ -15,7 +15,6 @@ function hasDmrvData(slug: string): boolean {
 const ProjectNavigationTabs = ({ slug }: { slug: string }) => {
   const pathname = usePathname();
   const showDmrv = hasDmrvData(slug);
-  const t = useTranslations('project');
 
   return (
     <Tabs
@@ -26,20 +25,20 @@ const ProjectNavigationTabs = ({ slug }: { slug: string }) => {
     >
       <Tab
         key={`/projects/${slug}`}
-        title={<Link href={`/projects/${slug}`} prefetch>{t('overview')}</Link>}
+        title={<Link href={`/projects/${slug}`} prefetch>Overview</Link>}
       />
       <Tab
         key={`/projects/${slug}/carbon-management`}
-        title={<Link href={`/projects/${slug}/carbon-management`} prefetch>{t('carbonManagement')}</Link>}
+        title={<Link href={`/projects/${slug}/carbon-management`} prefetch>Carbon Management</Link>}
       />
       <Tab
         key={`/projects/${slug}/impact`}
-        title={<Link href={`/projects/${slug}/impact`} prefetch>{t('impact')}</Link>}
+        title={<Link href={`/projects/${slug}/impact`} prefetch>Impact</Link>}
       />
       {showDmrv && (
         <Tab
           key={`/projects/${slug}/dmrv`}
-          title={<Link href={`/projects/${slug}/dmrv`} prefetch>{t('dmrv')}</Link>}
+          title={<Link href={`/projects/${slug}/dmrv`} prefetch>dMRV</Link>}
         />
       )}
     </Tabs>
