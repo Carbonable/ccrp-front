@@ -9,6 +9,7 @@ import { RESULT_PER_PAGE } from '@/utils/constant';
 import { useEffect, useState } from 'react';
 import { roundIfFloat } from '@/utils/numbers';
 import ExportButton from '@/components/common/ExportButton';
+import { useTranslations } from 'next-intl';
 
 export default function ProjectDecarbonationTableComponent({
   loading,
@@ -28,6 +29,7 @@ export default function ProjectDecarbonationTableComponent({
   buView: boolean;
 }) {
   const [totalPages, setTotalPages] = useState<number>(1);
+  const t = useTranslations('tables');
 
   if (error) {
     console.error(error);
@@ -49,18 +51,18 @@ export default function ProjectDecarbonationTableComponent({
   };
 
   const exportColumns = [
-    { header: 'Time Period', key: 'time_period' },
-    { header: 'Emission (t)', key: 'emissions' },
-    { header: 'Ex-Post Forward (t)', key: 'ex_post_issued' },
-    { header: 'Ex-Post Spot (t)', key: 'ex_post_purchased' },
-    { header: 'Total Ex-Post (t)', key: 'total_ex_post' },
-    { header: 'Ex-Post Retired (t)', key: 'ex_post_retired' },
-    { header: 'Total Ex-Ante (t)', key: 'total_ex_ante' },
-    { header: 'Neutrality Target (%)', key: 'target' },
-    { header: 'Actual Rate (%)', key: 'actual_rate' },
-    { header: 'Delta (%)', key: 'delta' },
-    { header: 'Debt (t)', key: 'debt' },
-    ...(!buView ? [{ header: 'Ex-Post Stock (t)', key: 'ex_post_stock' }, { header: 'Ex-Ante Stock (t)', key: 'ex_ante_stock' }] : []),
+    { header: t('timePeriod'), key: 'time_period' },
+    { header: t('emission'), key: 'emissions' },
+    { header: t('exPostForward'), key: 'ex_post_issued' },
+    { header: t('exPostSpot'), key: 'ex_post_purchased' },
+    { header: t('totalExPost'), key: 'total_ex_post' },
+    { header: t('exPostRetired'), key: 'ex_post_retired' },
+    { header: t('totalExAnte'), key: 'total_ex_ante' },
+    { header: t('neutralityTarget'), key: 'target' },
+    { header: t('actualRate'), key: 'actual_rate' },
+    { header: t('delta'), key: 'delta' },
+    { header: t('debt'), key: 'debt' },
+    ...(!buView ? [{ header: t('exPostStock'), key: 'ex_post_stock' }, { header: t('exAnteStock'), key: 'ex_ante_stock' }] : []),
   ];
   const exportData: Record<string, unknown>[] = (annual || []).map((d) => ({
     time_period: d.time_period,
@@ -81,26 +83,26 @@ export default function ProjectDecarbonationTableComponent({
   return (
     <div className="mt-12 w-full">
       <div className="flex items-center justify-between">
-        <Title title="Stock - Annual" />
+        <Title title={t('stockAnnual')} />
         <ExportButton data={exportData} columns={exportColumns} tableName="stock-annual" />
       </div>
       <div className="font-inter mt-4 w-full overflow-x-auto border border-neutral-600 text-sm">
         <table className="min-w-full table-auto text-left">
           <thead className="h-10 whitespace-nowrap bg-neutral-500 text-neutral-100">
             <tr>
-              <th className="sticky left-0 z-10 bg-neutral-500 px-4">Time Period</th>
-              <th className="px-4">Emission (t)</th>
-              <th className="px-4">Ex-Post Forward (t)</th>
-              <th className="px-4">Ex-Post Spot (t)</th>
-              <th className="px-4">Total Ex-Post (t)</th>
-              <th className="px-4">Ex-Post Retired (t)</th>
-              <th className="px-4">Total Ex-Ante (t)</th>
-              <th className="px-4">Neutrality Target (%)</th>
-              <th className="px-4">Actual Rate (%)</th>
-              <th className="px-4">Delta (%)</th>
-              <th className="px-4">Debt (t)</th>
-              {!buView && <th className="px-4">Ex-Post Stock (t)</th>}
-              {!buView && <th className="px-4">Ex-ante Stock (t)</th>}
+              <th className="sticky left-0 z-10 bg-neutral-500 px-4">{t('timePeriod')}</th>
+              <th className="px-4">{t('emission')}</th>
+              <th className="px-4">{t('exPostForward')}</th>
+              <th className="px-4">{t('exPostSpot')}</th>
+              <th className="px-4">{t('totalExPost')}</th>
+              <th className="px-4">{t('exPostRetired')}</th>
+              <th className="px-4">{t('totalExAnte')}</th>
+              <th className="px-4">{t('neutralityTarget')}</th>
+              <th className="px-4">{t('actualRate')}</th>
+              <th className="px-4">{t('delta')}</th>
+              <th className="px-4">{t('debt')}</th>
+              {!buView && <th className="px-4">{t('exPostStock')}</th>}
+              {!buView && <th className="px-4">{t('exAnteStock')}</th>}
             </tr>
           </thead>
           <tbody>
@@ -121,7 +123,7 @@ export default function ProjectDecarbonationTableComponent({
   );
 }
 
-function ProjectedDecarbonationLoaded({ annual, buView }: { annual: AnnualData[],buView: boolean }) {
+function ProjectedDecarbonationLoaded({ annual, buView }: { annual: AnnualData[], buView: boolean }) {
   if (annual.length === 0) {
     return <NoDataTable />;
   }

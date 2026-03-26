@@ -1,13 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from 'next-sanity';
 
-const client = createClient({
-  projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID!,
-  dataset: process.env.NEXT_PUBLIC_SANITY_DATASET!,
-  apiVersion: process.env.NEXT_PUBLIC_SANITY_API_VERSION || '2024-07-11',
-  token: process.env.SANITY_API_TOKEN,
-  useCdn: true,
-});
+function getClient() {
+  return createClient({
+    projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID!,
+    dataset: process.env.NEXT_PUBLIC_SANITY_DATASET!,
+    apiVersion: process.env.NEXT_PUBLIC_SANITY_API_VERSION || '2024-07-11',
+    token: process.env.SANITY_API_TOKEN,
+    useCdn: true,
+  });
+}
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
@@ -19,6 +21,7 @@ export async function GET(request: NextRequest) {
   }
 
   try {
+    const client = getClient();
     const parsedParams = params ? JSON.parse(params) : {};
     const result = await client.fetch(query, parsedParams);
     return NextResponse.json(result);

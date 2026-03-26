@@ -1,3 +1,7 @@
+'use client';
+
+import { useTranslations } from 'next-intl';
+
 interface KPIProps {
   title: string;
   kpi: any;
@@ -7,6 +11,7 @@ interface KPIProps {
 }
 
 export function GlobalKPI({ title, kpi, loading, error, refetchData }: KPIProps) {
+  const t = useTranslations('common');
   const cssClass =
     'relative w-full border border-neutral-700 bg-allocation-card bg-blend-overlay bg-cover py-2 px-4 md:py-4 md:px-8 rounded-xl';
   if (loading)
@@ -25,7 +30,7 @@ export function GlobalKPI({ title, kpi, loading, error, refetchData }: KPIProps)
           className="mt-2 cursor-pointer rounded-xl border border-neutral-600 bg-opacityLight-5 px-4 py-2 text-xl font-bold text-neutral-100 hover:brightness-105"
           onClick={refetchData}
         >
-          Reload
+          {t('reload')}
         </div>
       </div>
     );
@@ -51,6 +56,7 @@ export function KPI({
   error?: any;
   refetchData?: any;
 }) {
+  const t = useTranslations('common');
   const cssClass =
     'relative w-full border border-opacityLight-10 py-1 px-2 md:py-2 md:px-4 rounded-lg';
   if (loading)
@@ -69,7 +75,7 @@ export function KPI({
           className="mt-2 cursor-pointer rounded-xl border border-neutral-600 bg-opacityLight-5 px-4 py-2 text-xl text-neutral-100 hover:brightness-105"
           onClick={refetchData}
         >
-          Reload
+          {t('reload')}
         </div>
       </div>
     );

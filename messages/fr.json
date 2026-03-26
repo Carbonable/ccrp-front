@@ -1,0 +1,270 @@
+{
+  "common": {
+    "loading": "Chargement...",
+    "loadingData": "Chargement des données...",
+    "loadingCharts": "Chargement des graphiques...",
+    "loadingProject": "Chargement du projet...",
+    "loadingOrganizationData": "Chargement des données de l'organisation…",
+    "errorLoadingOrganizationData": "Erreur de chargement des données : {error}",
+    "error": "Erreur : {error}",
+    "noData": "Aucune donnée",
+    "reload": "Recharger",
+    "back": "Retour",
+    "backToList": "Retour à la liste",
+    "returnHome": "Retour à l'accueil",
+    "readMore": "En savoir plus",
+    "export": "Exporter les données",
+    "comingSoon": "BIENTÔT DISPONIBLE",
+    "betaVersion": "Version bêta",
+    "iUnderstand": "Je comprends",
+    "selectProject": "Sélectionner un projet",
+    "organizationDataSent": "✓ Données de l'organisation envoyées au calculateur",
+    "notFound": "404 - Page introuvable",
+    "notFoundMessage": "La page que vous recherchez n'existe pas.",
+    "overviewNotAvailable": "L'aperçu n'est pas disponible"
+  },
+
+  "menu": {
+    "dashboard": "Tableau de bord",
+    "portfolio": "Portefeuille",
+    "impact": "Impact",
+    "planifier": "Planifier",
+    "baseline": "Référence",
+    "admin": "Admin",
+    "ccpm": "CCPM",
+    "logout": "Se déconnecter"
+  },
+
+  "dashboard": {
+    "title": "Tableau de bord",
+    "netZeroOverview": "Vue d'ensemble Net Zero",
+    "businessUnitsAllocation": "Allocation des unités d'affaires",
+    "reporting": "Rapports",
+    "targetCurrentYear": "Objectif (année en cours)",
+    "actualCurrentYear": "Réalisé (année en cours)",
+    "deltaCurrentYear": "Écart (année en cours)",
+    "deltaTotal": "Écart (total)"
+  },
+
+  "portfolio": {
+    "title": "Portefeuille",
+    "investedAmount": "Montant investi",
+    "numberOfProjects": "Nombre de projets",
+    "assets": "{count} actifs",
+    "noProjects": "Aucun projet dans le portefeuille"
+  },
+
+  "project": {
+    "overview": "Vue d'ensemble",
+    "carbonManagement": "Gestion carbone",
+    "impact": "Impact",
+    "dmrv": "dMRV",
+    "dmrvSatelliteMonitoring": "Suivi satellite dMRV",
+    "imagesGallery": "Galerie d'images",
+    "projectMap": "carte du projet",
+    "tracking": "Suivi",
+    "noTracking": "Aucun suivi disponible pour ce projet.",
+    "projectTracking": "Suivi du projet"
+  },
+
+  "projectInfo": {
+    "amount": "Montant ($)",
+    "source": "Source",
+    "rating": "Notation",
+    "allocatedUnits": "Unités allouées",
+    "availableExPost": "Ex-post disponibles",
+    "availableExAnte": "Ex-ante disponibles",
+    "tbd": "À définir"
+  },
+
+  "projectMetrics": {
+    "title": "Métriques du projet",
+    "totalCarbonUnit": "Unités carbone totales (t)",
+    "exPostToDate": "Ex-post à ce jour (t)",
+    "exAnteToDate": "Ex-ante à ce jour (t)",
+    "totalAllocatedToDate": "Total alloué à ce jour (t)",
+    "totalAvailableToDate": "Total disponible à ce jour (t)",
+    "totalPotential": "Potentiel total (t)",
+    "projectCompletion": "Avancement du projet (%)"
+  },
+
+  "tables": {
+    "stockAnnual": "Stock - Annuel",
+    "stockCumulative": "Stock - Cumulatif",
+    "financialAnalysis": "Analyse financière",
+    "ordersAnnual": "Commandes - Annuel",
+    "netZeroPlanning": "Planification Net Zero",
+    "cumulative": "Cumulatif",
+
+    "timePeriod": "Période",
+    "emission": "Émission (t)",
+    "exPostForward": "Ex-Post Forward (t)",
+    "exPostSpot": "Ex-Post Spot (t)",
+    "totalExPost": "Total Ex-Post (t)",
+    "exPostRetired": "Ex-Post retirés (t)",
+    "totalExAnte": "Total Ex-Ante (t)",
+    "neutralityTarget": "Objectif de neutralité (%)",
+    "actualRate": "Taux réel (%)",
+    "delta": "Écart (%)",
+    "debt": "Dette (t)",
+    "exPostStock": "Stock Ex-Post (t)",
+    "exAnteStock": "Stock Ex-Ante (t)",
+
+    "cumulativeEmissions": "Émissions cumulées (t)",
+    "cumulativeForward": "Forward cumulés (t)",
+    "cumulativeSpot": "Spot cumulés (t)",
+    "cumulativeRetired": "Retirés cumulés (t)",
+    "cumulativeEmissionDebt": "Dette d'émission cumulée (t)",
+
+    "avgSpotPrice": "Prix Spot moyen ($/t)",
+    "avgForwardPrice": "Prix Forward moyen ($/t)",
+    "avgPrice": "Prix moyen ($/t)",
+    "totalSpotAmount": "Montant Spot total ($)",
+    "totalForwardAmount": "Montant Forward total ($)",
+    "totalAmount": "Montant total ($)",
+    "allTimeAvgPurchasedPrice": "Prix moyen achat historique ($/t)",
+    "allTimeAvgIssuedPrice": "Prix moyen émission historique ($/t)",
+    "allTimeAvgPrice": "Prix moyen historique ($/t)",
+    "cumulativeTotalAmount": "Montant total cumulé ($)",
+
+    "forYear": "Année",
+    "vintage": "Millésime",
+    "quantity": "Quantité",
+    "deficit": "Déficit",
+    "createdAt": "Créé le",
+    "status": "Statut",
+
+    "projectName": "Nom du projet",
+    "type": "Type",
+    "generated": "Générés (t)",
+    "forward": "Forward (t)",
+    "retired": "Retirés (t)",
+    "pricePerTon": "Prix/t ($)",
+    "totalAmountPercent": "Montant total (%)",
+    "startDate": "Date de début"
+  },
+
+  "allocation": {
+    "title": "Allocation des actifs carbone",
+    "addAllocation": "Ajouter une allocation",
+    "noAllocations": "Aucune allocation pour le moment",
+    "projectsAllocation": "Allocation des projets",
+    "contributionsCurrentYear": "Contributions (année en cours)",
+    "allocated": "Alloué (t)",
+    "allocationRate": "Taux d'allocation (%)",
+    "allocationAmount": "Montant d'allocation ($)",
+    "buAllocation": "Allocation BU (%)",
+    "share": "Part (%)",
+    "target": "Objectif (%)",
+    "businessUnit": "Unité d'affaires",
+    "noBuFound": "Aucune unité d'affaires trouvée"
+  },
+
+  "impact": {
+    "title": "Métriques d'impact",
+    "impactedSdgs": "ODD impactés",
+    "removedTons": "Tonnes retirées",
+    "restauredHectares": "Hectares restaurés",
+    "protectedSpecies": "Espèces protégées",
+    "goToImpactReport": "Voir le rapport d'impact"
+  },
+
+  "charts": {
+    "projectsColors": "Couleurs des projets",
+    "projectsCountries": "Pays des projets",
+    "projectsStandards": "Standards des projets",
+    "projectsTypes": "Types de projets",
+    "projectsMetrics": "Métriques des projets"
+  },
+
+  "notifications": {
+    "title": "Notifications",
+    "preferences": "Préférences de notification",
+    "noNotifications": "Aucune notification",
+    "email": "Notifications par email",
+    "inApp": "Notifications in-app",
+    "mobile": "Notifications mobiles"
+  },
+
+  "admin": {
+    "title": "Admin",
+    "userManagement": "Gestion des utilisateurs",
+    "dataUpload": "Import de données",
+    "resetDatabase": "Réinitialiser la base de données",
+    "resetDatabaseWarning": "Cette action réinitialisera l'intégralité de la base de données. Cette action est irréversible."
+  },
+
+  "buAllocation": {
+    "decarbonation": "Décarbonation",
+    "globalData": "Données globales",
+    "impact": "Impact",
+    "projectFundingAllocation": "Allocation du financement des projets"
+  },
+
+  "baseline": {
+    "estimateProjectBaseline": "Estimer la référence du projet",
+    "stepOf": "Étape {step} sur {total}",
+    "continue": "Continuer",
+    "almostThere": "Presque terminé",
+    "reviewYourProject": "Vérifiez votre projet",
+    "confirmDetails": "Confirmez les détails avant de calculer la référence.",
+    "calculateBaseline": "Calculer la référence ✦",
+    "baselineCalculated": "Référence calculée",
+    "projectBaseline": "Référence du projet",
+    "totalEstimatedSequestration": "Séquestration totale estimée",
+    "overYears": "Sur {duration} ans · {annual} tCO₂/an",
+    "cumulativeSequestration": "Séquestration cumulée (tCO₂)",
+    "downloadReport": "Télécharger le rapport",
+    "startOver": "Recommencer",
+    "pressEnter": "Appuyez sur",
+    "toContinue": "pour continuer",
+    "toGoBack": "pour revenir",
+
+    "step1Title": "Comment s'appelle votre projet ?",
+    "step1Desc": "Donnez un nom clair et descriptif à votre projet carbone.",
+    "step1Placeholder": "ex. Initiative de reforestation en Amazonie",
+    "step2Title": "Quel type de projet est-ce ?",
+    "step2Desc": "Sélectionnez la méthodologie de retrait carbone.",
+    "step3Title": "Où se situe le projet ?",
+    "step3Desc": "Sélectionnez le pays ou la région d'implantation.",
+    "step4Title": "Quelle est la surface du projet ?",
+    "step4Desc": "Entrez la surface totale en hectares.",
+    "hectares": "hectares",
+    "step5Title": "Quand commence le projet ?",
+    "step5Desc": "Sélectionnez l'année de début pour le calcul de référence.",
+    "step6Title": "Durée du projet ?",
+    "step6Desc": "Combien d'années le projet va-t-il durer ? (5–30 ans)",
+    "years": "ans",
+    "step7Title": "Séquestration annuelle attendue ?",
+    "step7Desc": "Tonnes de CO₂ retirées par hectare par an (tCO₂/ha/an).",
+    "typicalRange": "Fourchette typique pour {type} : {min}–{max} tCO₂/ha/an",
+    "low": "bas",
+    "median": "médian",
+    "high": "haut",
+
+    "projectName": "Nom du projet",
+    "projectType": "Type de projet",
+    "location": "Localisation",
+    "area": "Surface",
+    "startYear": "Année de début",
+    "duration": "Durée",
+    "annualSequestration": "Séquestration annuelle",
+
+    "restoration": "Restauration",
+    "restorationDesc": "Restauration d'écosystèmes dégradés",
+    "conservation": "Conservation",
+    "conservationDesc": "Protection des stocks de carbone existants",
+    "reforestation": "Reforestation",
+    "reforestationDesc": "Plantation d'arbres dans des zones déboisées",
+    "dac": "CAD",
+    "dacDesc": "Capture directe de l'air",
+    "biochar": "Biochar",
+    "biocharDesc": "Charbon riche en carbone issu de biomasse"
+  },
+
+  "language": {
+    "en": "English",
+    "fr": "Français",
+    "switchLanguage": "Langue"
+  }
+}

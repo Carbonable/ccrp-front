@@ -2,6 +2,7 @@
 
 import { useQuery } from '@apollo/client';
 import { useEffect, useState } from 'react';
+import { useTranslations } from 'next-intl';
 import PaginationComponent from '../../common/Pagination';
 import { FINANCIAL_ANALYSIS } from '@/graphql/queries/net-zero';
 import { CARBONABLE_COMPANY_ID, RESULT_PER_PAGE } from '@/utils/constant';
