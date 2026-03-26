@@ -1,29 +1,30 @@
 'use client';
 
 import { useLocale } from 'next-intl';
-import { usePathname as useNextPathname } from 'next/navigation';
-import { useRouter } from '@/i18n/navigation';
 import { routing, type Locale } from '@/i18n/routing';
 
 export default function LanguageSwitcher() {
   const locale = useLocale();
-  const router = useRouter();
-  const rawPathname = useNextPathname();
 
   function switchLocale(newLocale: Locale) {
-    // Strip any existing locale prefix to avoid /fr/fr/dashboard
-    let pathname = rawPathname;
+    if (newLocale === locale) return;
+
+    // Get current path and strip any locale prefix
+    const currentPath = window.location.pathname;
+    let stripped = currentPath;
     for (const loc of routing.locales) {
-      if (pathname.startsWith(`/${loc}/`)) {
-        pathname = pathname.slice(loc.length + 1);
+      if (stripped.startsWith(`/${loc}/`)) {
+        stripped = stripped.slice(loc.length + 1);
         break;
       }
-      if (pathname === `/${loc}`) {
-        pathname = '/';
+      if (stripped === `/${loc}`) {
+        stripped = '/';
         break;
       }
     }
-    router.replace(pathname, { locale: newLocale });
+
+    // Navigate directly — simple and can't double-prefix
+    window.location.href = `/${newLocale}${stripped}`;
   }
 
   return (
@@ -32,6 +33,7 @@ export default function LanguageSwitcher() {
         <button
           key={l}
           onClick={() => switchLocale(l)}
+          disabled={l === locale}
           className={`cursor-pointer px-2 py-1 text-xs font-medium rounded transition-colors ${
             locale === l
               ? 'bg-green-500/20 text-green-400 border border-green-500/30'
