@@ -26,7 +26,7 @@ export default function CalculatorPage() {
 
   const sendDataToIframe = () => {
     if (!iframeRef.current?.contentWindow || !data?.netZeroPlanning) return;
-    const rows: NetZeroPlanningRow[] = (data.netZeroPlanning ?? [])
+    const rows: NetZeroPlanningRow[] = [...(data.netZeroPlanning ?? [])]
       .sort((a: NetZeroPlanningRow, b: NetZeroPlanningRow) => a.vintage - b.vintage);
 
     iframeRef.current.contentWindow.postMessage(
