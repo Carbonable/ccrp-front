@@ -32,10 +32,12 @@ export default function CalculatorPage() {
     iframeRef.current.contentWindow.postMessage(
       {
         type: 'net-zero-planning-data',
-        payload: rows.map((r) => ({
-          year: r.vintage,
-          gap: Math.max(0, Math.round(r.emission * r.target / 100) - r.retired),
-        })),
+        payload: rows
+          .filter((r) => r.vintage >= 2025 && r.vintage <= 2050)
+          .map((r) => ({
+            year: r.vintage,
+            gap: Math.max(0, Math.round(r.emission * r.target / 100) - r.retired),
+          })),
       },
       '*',
     );
