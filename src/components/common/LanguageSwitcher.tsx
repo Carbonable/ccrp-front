@@ -1,30 +1,18 @@
 'use client';
 
 import { useLocale } from 'next-intl';
+import { usePathname, useRouter } from '@/i18n/navigation';
 import { routing, type Locale } from '@/i18n/routing';
 
 export default function LanguageSwitcher() {
   const locale = useLocale();
+  const router = useRouter();
+  const pathname = usePathname();
 
   function switchLocale(newLocale: Locale) {
     if (newLocale === locale) return;
 
-    // Get current path and strip any locale prefix
-    const currentPath = window.location.pathname;
-    let stripped = currentPath;
-    for (const loc of routing.locales) {
-      if (stripped.startsWith(`/${loc}/`)) {
-        stripped = stripped.slice(loc.length + 1);
-        break;
-      }
-      if (stripped === `/${loc}`) {
-        stripped = '/';
-        break;
-      }
-    }
-
-    // Navigate directly — simple and can't double-prefix
-    window.location.href = `/${newLocale}${stripped}`;
+    router.replace(pathname, { locale: newLocale });
   }
 
   return (
@@ -34,10 +22,10 @@ export default function LanguageSwitcher() {
           key={l}
           onClick={() => switchLocale(l)}
           disabled={l === locale}
-          className={`cursor-pointer px-2 py-1 text-xs font-medium rounded transition-colors ${
+          className={`cursor-pointer rounded px-2 py-1 text-xs font-medium transition-colors ${
             locale === l
-              ? 'bg-green-500/20 text-green-400 border border-green-500/30'
-              : 'text-neutral-400 hover:text-neutral-200 border border-transparent'
+              ? 'border border-green-500/30 bg-green-500/20 text-green-400'
+              : 'border border-transparent text-neutral-400 hover:text-neutral-200'
           }`}
         >
           {l.toUpperCase()}

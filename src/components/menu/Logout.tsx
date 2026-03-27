@@ -5,17 +5,18 @@ import { dark } from '@clerk/themes';
 import NotificationBell from '@/components/notifications/NotificationBell';
 import LanguageSwitcher from '@/components/common/LanguageSwitcher';
 import { BuildingOfficeIcon } from '@heroicons/react/24/outline';
-import { useRouter } from 'next/navigation';
+import { useRouter } from '@/i18n/navigation';
+import { useLocale } from 'next-intl';
 
 export default function Logout() {
   const router = useRouter();
+  const locale = useLocale();
 
   return (
     <div className="flex w-full flex-col gap-3">
-      {/* Avatar + Language switcher + Notification bell — same row */}
       <div className="flex items-center justify-between px-1">
         <UserButton
-          signInUrl="/sign-in"
+          signInUrl={`/${locale}/sign-in`}
           appearance={{
             baseTheme: dark,
             elements: {

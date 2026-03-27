@@ -2,11 +2,12 @@
 
 import React from 'react';
 import { Tabs, Tab } from '@nextui-org/react';
-import { usePathname } from 'next/navigation';
-import Link from 'next/link';
+import { Link, usePathname } from '@/i18n/navigation';
+import { useTranslations } from 'next-intl';
 
 const PortfolioNavigationTabs = () => {
   const pathname = usePathname();
+  const t = useTranslations('project');
 
   return (
     <Tabs
@@ -19,7 +20,7 @@ const PortfolioNavigationTabs = () => {
         key="/portfolio"
         title={
           <Link href="/portfolio" prefetch>
-            Overview
+            {t('overview')}
           </Link>
         }
       />
@@ -27,7 +28,7 @@ const PortfolioNavigationTabs = () => {
         key="/portfolio/carbon-management"
         title={
           <Link href="/portfolio/carbon-management" prefetch>
-            Carbon Management
+            {t('carbonManagement')}
           </Link>
         }
       />

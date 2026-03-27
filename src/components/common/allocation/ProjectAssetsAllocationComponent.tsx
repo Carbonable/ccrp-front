@@ -1,4 +1,5 @@
 'use client';
+
 import { PageInfo, ProjectCarbonAssetAllocationData } from '@/graphql/__generated__/graphql';
 import { ErrorReloadTable, NoDataTable } from '../ErrorReload';
 import SquaredInitials from '../SquaredInitials';
@@ -7,8 +8,7 @@ import { RESULT_PER_PAGE } from '@/utils/constant';
 import { SecondaryButton } from '../Button';
 import PaginationComponent from '../Pagination';
 import { useEffect, useState } from 'react';
-import Link from 'next/link';
-
+import { Link } from '@/i18n/navigation';
 
 export default function ProjectAssetsAllocationComponent({
   data,
@@ -103,9 +103,10 @@ function ProjectFundingAllocationLoaded({
                 <div className="p-2">
                   <SquaredInitials text={allocation.business_unit.name} color="random" />
                 </div>
-                <div className="ml-2 font-bold"><Link href={`/dashboard/business-units-allocation/${allocation.business_unit.id}`} >
-                {allocation.business_unit.name}
-                </Link>
+                <div className="ml-2 font-bold">
+                  <Link href={`/dashboard/business-units-allocation/${allocation.business_unit.id}`}>
+                    {allocation.business_unit.name}
+                  </Link>
                 </div>
               </div>
             </td>

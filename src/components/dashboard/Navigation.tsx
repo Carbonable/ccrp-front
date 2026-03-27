@@ -2,12 +2,13 @@
 
 import { useEffect, useState } from 'react';
 import { Tabs, Tab } from '@nextui-org/react';
-import { usePathname } from 'next/navigation';
-import Link from 'next/link';
+import { Link, usePathname } from '@/i18n/navigation';
+import { useTranslations } from 'next-intl';
 
 const DashboardNavigationTabs = () => {
   const [selectedKey, setSelectedKey] = useState<string>('/dashboard');
   const pathname = usePathname();
+  const t = useTranslations('dashboard');
 
   useEffect(() => {
     setSelectedKey(pathname);
@@ -27,8 +28,8 @@ const DashboardNavigationTabs = () => {
       <Tab
         key="/dashboard"
         title={
-          <Link href="/" prefetch>
-            Net Zero Overview
+          <Link href="/dashboard" prefetch>
+            {t('netZeroOverview')}
           </Link>
         }
       />
@@ -36,7 +37,7 @@ const DashboardNavigationTabs = () => {
         key="/dashboard/business-units-allocation"
         title={
           <Link href="/dashboard/business-units-allocation" prefetch>
-            Business Units Allocation
+            {t('businessUnitsAllocation')}
           </Link>
         }
       />
@@ -44,7 +45,7 @@ const DashboardNavigationTabs = () => {
         key="/dashboard/reporting"
         title={
           <Link href="/dashboard/reporting" prefetch>
-            Reporting
+            {t('reporting')}
           </Link>
         }
       />

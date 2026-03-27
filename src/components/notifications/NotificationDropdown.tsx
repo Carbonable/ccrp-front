@@ -2,7 +2,7 @@
 
 import { useRef, useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
-import Link from 'next/link';
+import { Link } from '@/i18n/navigation';
 import { BellIcon, XMarkIcon, CheckIcon } from '@heroicons/react/24/outline';
 import { useNotifications } from '@/context/NotificationContext';
 import { NotificationType } from '@/data/notifications';
@@ -44,21 +44,17 @@ export default function NotificationDropdown({ open, onClose, anchorRef }: Props
   const [position, setPosition] = useState({ top: 0, left: 0 });
   const [mounted, setMounted] = useState(false);
 
-  // Ensure portal target exists (SSR safe)
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  // Position the dropdown relative to the bell icon
   useEffect(() => {
     if (!open || !anchorRef.current) return;
 
     const updatePosition = () => {
       const rect = anchorRef.current!.getBoundingClientRect();
-      const dropdownWidth = 380;
       const dropdownMaxHeight = 520;
 
-      // Position above the bell, aligned to left edge of sidebar
       setPosition({
         top: Math.max(8, rect.top - dropdownMaxHeight - 8),
         left: Math.max(8, rect.left),
@@ -74,7 +70,6 @@ export default function NotificationDropdown({ open, onClose, anchorRef }: Props
     };
   }, [open, anchorRef]);
 
-  // Click outside to close
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
       if (
@@ -97,10 +92,9 @@ export default function NotificationDropdown({ open, onClose, anchorRef }: Props
   const dropdown = (
     <div
       ref={ref}
-      className="fixed z-[99999] w-[380px] max-w-[calc(100vw-2rem)] rounded-xl border border-neutral-700 bg-neutral-900 shadow-2xl flex flex-col"
+      className="fixed z-[99999] flex w-[380px] max-w-[calc(100vw-2rem)] flex-col rounded-xl border border-neutral-700 bg-neutral-900 shadow-2xl"
       style={{ top: position.top, left: position.left, maxHeight: '520px' }}
     >
-      {/* Header */}
       <div className="flex items-center justify-between border-b border-neutral-700 px-4 py-3">
         <div className="flex items-center gap-2">
           <BellIcon className="h-5 w-5 text-greenish-500" />
@@ -115,7 +109,7 @@ export default function NotificationDropdown({ open, onClose, anchorRef }: Props
           {unreadCount > 0 && (
             <button
               onClick={markAllAsRead}
-              className="flex items-center gap-1 rounded-md px-2 py-1 text-xs text-neutral-400 hover:bg-neutral-800 hover:text-greenish-400 transition-colors"
+              className="flex items-center gap-1 rounded-md px-2 py-1 text-xs text-neutral-400 transition-colors hover:bg-neutral-800 hover:text-greenish-400"
             >
               <CheckIcon className="h-3.5 w-3.5" />
               Mark all read
@@ -123,18 +117,17 @@ export default function NotificationDropdown({ open, onClose, anchorRef }: Props
           )}
           <button
             onClick={onClose}
-            className="rounded-md p-1 text-neutral-400 hover:bg-neutral-800 hover:text-neutral-100 transition-colors"
+            className="rounded-md p-1 text-neutral-400 transition-colors hover:bg-neutral-800 hover:text-neutral-100"
           >
             <XMarkIcon className="h-4 w-4" />
           </button>
         </div>
       </div>
 
-      {/* List */}
       <div className="flex-1 overflow-y-auto">
         {notifications.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-12 text-neutral-500">
-            <BellIcon className="h-10 w-10 mb-2 opacity-40" />
+            <BellIcon className="mb-2 h-10 w-10 opacity-40" />
             <p className="text-sm">No notifications</p>
           </div>
         ) : (
@@ -148,11 +141,10 @@ export default function NotificationDropdown({ open, onClose, anchorRef }: Props
                   markAsRead(notif.id);
                   onClose();
                 }}
-                className={`flex gap-3 px-4 py-3 border-b border-neutral-800 hover:bg-neutral-800/60 transition-colors group cursor-pointer ${
+                className={`group flex cursor-pointer gap-3 border-b border-neutral-800 px-4 py-3 transition-colors hover:bg-neutral-800/60 ${
                   !notif.read ? 'bg-neutral-800/30' : ''
                 }`}
               >
-                {/* Unread dot */}
                 <div className="mt-1.5 flex-shrink-0">
                   <div
                     className={`h-2 w-2 rounded-full ${
@@ -161,8 +153,7 @@ export default function NotificationDropdown({ open, onClose, anchorRef }: Props
                   />
                 </div>
 
-                {/* Content */}
-                <div className="flex-1 min-w-0">
+                <div className="min-w-0 flex-1">
                   <div className="flex items-start justify-between gap-2">
                     <p
                       className={`text-sm leading-snug ${
@@ -171,11 +162,11 @@ export default function NotificationDropdown({ open, onClose, anchorRef }: Props
                     >
                       {notif.title}
                     </p>
-                    <span className="flex-shrink-0 text-xs text-neutral-500 mt-0.5">
+                    <span className="mt-0.5 flex-shrink-0 text-xs text-neutral-500">
                       {formatDate(notif.date)}
                     </span>
                   </div>
-                  <p className="mt-0.5 text-xs text-neutral-400 leading-relaxed line-clamp-2">
+                  <p className="mt-0.5 line-clamp-2 text-xs leading-relaxed text-neutral-400">
                     {notif.description}
                   </p>
                   <div className="mt-1.5">
@@ -192,12 +183,11 @@ export default function NotificationDropdown({ open, onClose, anchorRef }: Props
         )}
       </div>
 
-      {/* Footer */}
       <div className="border-t border-neutral-700 px-4 py-2 text-center">
         <Link
           href="/settings/notifications"
           onClick={onClose}
-          className="text-xs text-neutral-500 hover:text-greenish-400 transition-colors"
+          className="text-xs text-neutral-500 transition-colors hover:text-greenish-400"
         >
           Manage notification preferences →
         </Link>

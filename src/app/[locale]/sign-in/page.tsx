@@ -1,10 +1,14 @@
 import { SignIn } from '@clerk/nextjs';
 
-export default function SignInPage() {
+export default function SignInPage({
+  params: { locale },
+}: {
+  params: { locale: string };
+}) {
   return (
     <div className="flex min-h-[60vh] items-center justify-center">
       <SignIn
-        forceRedirectUrl="/dashboard"
+        forceRedirectUrl={`/${locale}/dashboard`}
         appearance={{
           elements: {
             rootBox: 'mx-auto',

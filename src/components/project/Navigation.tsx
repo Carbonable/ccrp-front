@@ -2,8 +2,7 @@
 
 import React from 'react';
 import { Tabs, Tab } from '@nextui-org/react';
-import { usePathname } from 'next/navigation';
-import Link from 'next/link';
+import { Link, usePathname } from '@/i18n/navigation';
 import { useTranslations } from 'next-intl';
 
 const DMRV_MATCHES = ['banegas-farm', 'las-delicias', 'manjarisoa'];

@@ -1,9 +1,5 @@
-import ProjectsImpact from '@/components/reporting/ProjectsImpact';
+import { redirect } from 'next/navigation';
 
 export default function ReportingPage() {
-  return (
-    <div>
-      <ProjectsImpact />
-    </div>
-  );
+  redirect('/en/dashboard/reporting');
 }
