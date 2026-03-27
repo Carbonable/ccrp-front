@@ -23,7 +23,6 @@
     "notFoundMessage": "La page que vous recherchez n'existe pas.",
     "overviewNotAvailable": "L'aperçu n'est pas disponible"
   },
-
   "menu": {
     "dashboard": "Tableau de bord",
     "portfolio": "Portefeuille",
@@ -34,7 +33,6 @@
     "ccpm": "CCPM",
     "logout": "Se déconnecter"
   },
-
   "dashboard": {
     "title": "Tableau de bord",
     "netZeroOverview": "Vue d'ensemble Net Zero",
@@ -45,7 +43,6 @@
     "deltaCurrentYear": "Écart (année en cours)",
     "deltaTotal": "Écart (total)"
   },
-
   "portfolio": {
     "title": "Portefeuille",
     "investedAmount": "Montant investi",
@@ -53,7 +50,6 @@
     "assets": "{count} actifs",
     "noProjects": "Aucun projet dans le portefeuille"
   },
-
   "project": {
     "overview": "Vue d'ensemble",
     "carbonManagement": "Gestion carbone",
@@ -66,7 +62,6 @@
     "noTracking": "Aucun suivi disponible pour ce projet.",
     "projectTracking": "Suivi du projet"
   },
-
   "projectInfo": {
     "amount": "Montant ($)",
     "source": "Source",
@@ -76,7 +71,6 @@
     "availableExAnte": "Ex-ante disponibles",
     "tbd": "À définir"
   },
-
   "projectMetrics": {
     "title": "Métriques du projet",
     "totalCarbonUnit": "Unités carbone totales (t)",
@@ -87,7 +81,6 @@
     "totalPotential": "Potentiel total (t)",
     "projectCompletion": "Avancement du projet (%)"
   },
-
   "tables": {
     "stockAnnual": "Stock - Annuel",
     "stockCumulative": "Stock - Cumulatif",
@@ -95,7 +88,6 @@
     "ordersAnnual": "Commandes - Annuel",
     "netZeroPlanning": "Planification Net Zero",
     "cumulative": "Cumulatif",
-
     "timePeriod": "Période",
     "emission": "Émission (t)",
     "exPostForward": "Ex-Post Forward (t)",
@@ -109,13 +101,11 @@
     "debt": "Dette (t)",
     "exPostStock": "Stock Ex-Post (t)",
     "exAnteStock": "Stock Ex-Ante (t)",
-
     "cumulativeEmissions": "Émissions cumulées (t)",
     "cumulativeForward": "Forward cumulés (t)",
     "cumulativeSpot": "Spot cumulés (t)",
     "cumulativeRetired": "Retirés cumulés (t)",
     "cumulativeEmissionDebt": "Dette d'émission cumulée (t)",
-
     "avgSpotPrice": "Prix Spot moyen ($/t)",
     "avgForwardPrice": "Prix Forward moyen ($/t)",
     "avgPrice": "Prix moyen ($/t)",
@@ -126,14 +116,12 @@
     "allTimeAvgIssuedPrice": "Prix moyen émission historique ($/t)",
     "allTimeAvgPrice": "Prix moyen historique ($/t)",
     "cumulativeTotalAmount": "Montant total cumulé ($)",
-
     "forYear": "Année",
     "vintage": "Millésime",
     "quantity": "Quantité",
     "deficit": "Déficit",
     "createdAt": "Créé le",
     "status": "Statut",
-
     "projectName": "Nom du projet",
     "type": "Type",
     "generated": "Générés (t)",
@@ -143,7 +131,6 @@
     "totalAmountPercent": "Montant total (%)",
     "startDate": "Date de début"
   },
-
   "allocation": {
     "title": "Allocation des actifs carbone",
     "addAllocation": "Ajouter une allocation",
@@ -159,7 +146,6 @@
     "businessUnit": "Unité d'affaires",
     "noBuFound": "Aucune unité d'affaires trouvée"
   },
-
   "impact": {
     "title": "Métriques d'impact",
     "impactedSdgs": "ODD impactés",
@@ -168,7 +154,6 @@
     "protectedSpecies": "Espèces protégées",
     "goToImpactReport": "Voir le rapport d'impact"
   },
-
   "charts": {
     "projectsColors": "Couleurs des projets",
     "projectsCountries": "Pays des projets",
@@ -176,7 +161,6 @@
     "projectsTypes": "Types de projets",
     "projectsMetrics": "Métriques des projets"
   },
-
   "notifications": {
     "title": "Notifications",
     "preferences": "Préférences de notification",
@@ -198,7 +182,6 @@
     "inApp": "Notifications in-app",
     "mobile": "Notifications mobiles"
   },
-
   "admin": {
     "title": "Admin",
     "userManagement": "Gestion des utilisateurs",
@@ -206,14 +189,12 @@
     "resetDatabase": "Réinitialiser la base de données",
     "resetDatabaseWarning": "Cette action réinitialisera l'intégralité de la base de données. Cette action est irréversible."
   },
-
   "buAllocation": {
     "decarbonation": "Décarbonation",
     "globalData": "Données globales",
     "impact": "Impact",
     "projectFundingAllocation": "Allocation du financement des projets"
   },
-
   "baseline": {
     "estimateProjectBaseline": "Estimer la référence du projet",
     "stepOf": "Étape {step} sur {total}",
@@ -232,7 +213,6 @@
     "pressEnter": "Appuyez sur",
     "toContinue": "pour continuer",
     "toGoBack": "pour revenir",
-
     "step1Title": "Comment s'appelle votre projet ?",
     "step1Desc": "Donnez un nom clair et descriptif à votre projet carbone.",
     "step1Placeholder": "ex. Initiative de reforestation en Amazonie",
@@ -254,7 +234,6 @@
     "low": "bas",
     "median": "médian",
     "high": "haut",
-
     "projectName": "Nom du projet",
     "projectType": "Type de projet",
     "location": "Localisation",
@@ -262,7 +241,6 @@
     "startYear": "Année de début",
     "duration": "Durée",
     "annualSequestration": "Séquestration annuelle",
-
     "restoration": "Restauration",
     "restorationDesc": "Restauration d'écosystèmes dégradés",
     "conservation": "Conservation",
@@ -272,9 +250,135 @@
     "dac": "CAD",
     "dacDesc": "Capture directe de l'air",
     "biochar": "Biochar",
-    "biocharDesc": "Charbon riche en carbone issu de biomasse"
+    "biocharDesc": "Charbon riche en carbone issu de biomasse",
+    "headerTitle": "Calculateur de référence",
+    "back": "Retour",
+    "gotItContinue": "Compris, continuer",
+    "searchCountry": "Rechercher un pays...",
+    "countryAgb": "AGB : {value} tDM/ha",
+    "change": "modifier",
+    "noResults": "Aucun résultat",
+    "valueMustBeMax": "La valeur doit être ≤ {max}",
+    "valueMustBeMin": "La valeur doit être ≥ {min}",
+    "review": "Vérification",
+    "reviewTitle": "Vérifiez vos entrées",
+    "reviewSubtitle": "Confirmez tout avant de calculer.",
+    "baselineSection": "Référence",
+    "projectSection": "Projet",
+    "coefficientsSection": "Coefficients",
+    "estimatedNetCo2": "CO₂ net estimé",
+    "resultTitle": "Séquestration nette de CO₂",
+    "resultSubtitle": "IPCC Tier-1 · scénario référence vs projet",
+    "metricPositive": "Séquestration nette estimée de CO₂",
+    "metricNegative": "Perte nette estimée de CO₂",
+    "baselineBefore": "Référence (avant)",
+    "projectAfter": "Projet (après)",
+    "cTreeBaseline": "C_TREE référence",
+    "cShrubBaseline": "C_SHRUB référence",
+    "cTreeProject": "C_TREE projet",
+    "cShrubProject": "C_SHRUB projet",
+    "totalBaseline": "Total référence",
+    "totalProject": "Total projet",
+    "formulaLabel": "Formule",
+    "carbonFraction": "CF (fraction carbone)",
+    "co2Ratio": "Ratio CO₂/C (44/12)",
+    "agb": "AGB — {country}",
+    "country": "Pays",
+    "projectArea": "Surface du projet",
+    "treeCrownCover": "Couverture du couvert arboré",
+    "shrubCrownCover": "Couverture du couvert arbustif",
+    "shrubArea": "Surface arbustive",
+    "treeRootShoot": "Ratio racines/tiges des arbres",
+    "shrubRootShoot": "Ratio racines/tiges des arbustes",
+    "shrubBiomassRatio": "BDRSF (ratio de biomasse arbustive)",
+    "treeCrownBaselineToProject": "Couvert arboré — référence → projet",
+    "shrubCrownBaselineToProject": "Couvert arbustif — référence → projet",
+    "shrubAreaBaselineToProject": "Surface arbustive — référence → projet",
+    "enterToContinue": "pour continuer",
+    "escToGoBack": "pour revenir",
+    "unitRatio": "ratio",
+    "quickPicks": {
+      "sparse": "faible",
+      "open": "ouvert",
+      "moderate": "modéré",
+      "dense": "dense",
+      "good": "bon",
+      "veryDense": "très dense",
+      "tropical": "tropical",
+      "ipccDefault": "défaut IPCC",
+      "temperate": "tempéré",
+      "default": "défaut"
+    },
+    "steps": {
+      "country": {
+        "sectionLabel": "Données de référence",
+        "title": "Dans quel pays se situe votre projet ?",
+        "subtitle": "Cela détermine la biomasse aérienne (AGB) de votre région à partir des données IPCC."
+      },
+      "hectares": {
+        "sectionLabel": "Données de référence",
+        "title": "Nombre d’hectares de la zone du projet",
+        "subtitle": "Surface totale du projet en hectares."
+      },
+      "baselineIntro": {
+        "sectionLabel": "Référence — avant restauration",
+        "title": "Estimons le stock de carbone avant votre projet de restauration",
+        "subtitle": "Si vous n’avez pas la donnée, nous mettrons la valeur à 0.",
+        "infoText": "Les prochaines questions permettent de calculer le stock de carbone de la zone avant restauration (scénario de référence). Cela définit ce qui se passerait sans intervention."
+      },
+      "treeBaseline": {
+        "sectionLabel": "Référence — avant restauration",
+        "title": "Couverture arborée dans le scénario de référence",
+        "subtitle": "Proportion du sol ombragée par le couvert arboré vue du dessus."
+      },
+      "shrubBaseline": {
+        "sectionLabel": "Référence — avant restauration",
+        "title": "Couverture arbustive dans le scénario de référence",
+        "subtitle": "Proportion du sol ombragée par le couvert arbustif vue du dessus."
+      },
+      "shrubAreaBaseline": {
+        "sectionLabel": "Référence — avant restauration",
+        "title": "Surface occupée par la biomasse arbustive dans le scénario de référence",
+        "subtitle": "Hectares couverts par les arbustes dans la zone du projet."
+      },
+      "projectIntro": {
+        "sectionLabel": "Projet — après restauration",
+        "title": "Estimons maintenant le stock de carbone après votre projet de restauration",
+        "subtitle": "Ces valeurs représentent l’état attendu après la mise en œuvre du projet.",
+        "infoText": "Cela calcule la séquestration carbone attendue de vos activités de restauration. La différence entre le projet et la référence correspond à votre bénéfice net en CO₂."
+      },
+      "treeProject": {
+        "sectionLabel": "Projet — après restauration",
+        "title": "Couverture arborée attendue après restauration",
+        "subtitle": "Proportion cible du sol ombragée par le couvert arboré."
+      },
+      "shrubProject": {
+        "sectionLabel": "Projet — après restauration",
+        "title": "Couverture arbustive attendue après restauration",
+        "subtitle": "Proportion cible du sol ombragée par le couvert arbustif."
+      },
+      "shrubAreaProject": {
+        "sectionLabel": "Projet — après restauration",
+        "title": "Surface attendue occupée par la biomasse arbustive",
+        "subtitle": "Hectares qui devraient être couverts par les arbustes après restauration."
+      },
+      "treeRootShoot": {
+        "sectionLabel": "Coefficients avancés",
+        "title": "Ratio racines/tiges des arbres",
+        "subtitle": "La valeur IPCC par défaut est 0,25. Ajustez-la si vous avez des données spécifiques au site."
+      },
+      "shrubRootShoot": {
+        "sectionLabel": "Coefficients avancés",
+        "title": "Ratio racines/tiges des arbustes",
+        "subtitle": "La valeur IPCC par défaut est 0,40. Ajustez-la si vous avez des données spécifiques au site."
+      },
+      "shrubBiomass": {
+        "sectionLabel": "Coefficients avancés",
+        "title": "Ratio de densité de biomasse arbustive (BDRSF)",
+        "subtitle": "La valeur par défaut est 0,10. Ce ratio ajuste la biomasse arbustive par rapport à la forêt."
+      }
+    }
   },
-
   "language": {
     "en": "English",
     "fr": "Français",

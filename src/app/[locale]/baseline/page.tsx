@@ -1,9 +1,8 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback, useMemo } from "react";
+import { useLocale, useTranslations } from "next-intl";
 import biomassDataRaw from "./biomassData.json";
-
-// ─── Types ────────────────────────────────────────────────────────────────────
 
 interface BiomassData {
   [key: string]: number | null;
@@ -11,18 +10,18 @@ interface BiomassData {
 
 const biomassData = biomassDataRaw as BiomassData;
 
+type TranslationValues = Record<string, string | number>;
+type TranslateFn = (key: string, values?: TranslationValues) => string;
+
 interface FormData {
-  // Baseline section
   country: string;
   hectares: number;
   treeCrownCoverBaseline: number;
   shrubCrownCoverBaseline: number;
   shrubAreaBaseline: number;
-  // Project section
   treeCrownCoverProject: number;
   shrubCrownCoverProject: number;
   shrubAreaProject: number;
-  // Advanced coefficients
   treeRootShootRatio: number;
   shrubRootShootRatio: number;
   shrubBiomassRatio: number;
@@ -42,228 +41,213 @@ interface StepConfig {
   step?: number;
   quickPicks?: { value: number; label: string }[];
   infoText?: string;
-  default?: number;
 }
 
-// ─── Steps Configuration ──────────────────────────────────────────────────────
+const CF_TREE = 0.47;
+const CF_SHRUB = 0.47;
+const CO2_C_RATIO = 44 / 12;
 
-const STEPS: StepConfig[] = [
-  {
-    id: 1,
-    section: "baseline",
-    sectionLabel: "Baseline Data",
-    field: "country",
-    title: "In which country is your project located?",
-    subtitle: "This determines the above-ground biomass (AGB) for your region using IPCC data.",
-    type: "country",
-  },
-  {
-    id: 2,
-    section: "baseline",
-    sectionLabel: "Baseline Data",
-    field: "hectares",
-    title: "Number of hectares of the project area",
-    subtitle: "Total project area in hectares.",
-    type: "number",
-    unit: "ha",
-    min: 0,
-    step: 1,
-  },
-  {
-    id: 3,
-    section: "baseline",
-    sectionLabel: "Baseline — Before Restoration",
-    field: "treeCrownCoverBaseline" as keyof FormData,
-    title: "Let's estimate the carbon stock before your restoration project",
-    subtitle: "If you don't have data, we'll set values to 0.",
-    type: "info",
-    infoText: "The next questions will help calculate the carbon stock of the area before restoration (baseline scenario). This establishes what would happen without intervention.",
-  },
-  {
-    id: 4,
-    section: "baseline",
-    sectionLabel: "Baseline — Before Restoration",
-    field: "treeCrownCoverBaseline",
-    title: "Tree crown cover at the baseline",
-    subtitle: "Proportion of ground shaded by tree canopy viewed from above.",
-    type: "ratio",
-    unit: "ratio",
-    min: 0,
-    max: 1,
-    step: 0.01,
-    quickPicks: [
-      { value: 0.1, label: "10% — sparse" },
-      { value: 0.3, label: "30% — open" },
-      { value: 0.5, label: "50% — moderate" },
-      { value: 0.7, label: "70% — dense" },
-    ],
-  },
-  {
-    id: 5,
-    section: "baseline",
-    sectionLabel: "Baseline — Before Restoration",
-    field: "shrubCrownCoverBaseline",
-    title: "Shrub crown cover at the baseline",
-    subtitle: "Proportion of ground shaded by shrub canopy viewed from above.",
-    type: "ratio",
-    unit: "ratio",
-    min: 0,
-    max: 1,
-    step: 0.01,
-    quickPicks: [
-      { value: 0.05, label: "5%" },
-      { value: 0.1, label: "10%" },
-      { value: 0.2, label: "20%" },
-      { value: 0.3, label: "30%" },
-    ],
-  },
-  {
-    id: 6,
-    section: "baseline",
-    sectionLabel: "Baseline — Before Restoration",
-    field: "shrubAreaBaseline",
-    title: "Area occupied by shrub biomass at the baseline",
-    subtitle: "Hectares covered by shrubs in the project area.",
-    type: "number",
-    unit: "ha",
-    min: 0,
-    step: 0.1,
-  },
-  {
-    id: 7,
-    section: "project",
-    sectionLabel: "Project — After Restoration",
-    field: "treeCrownCoverProject" as keyof FormData,
-    title: "Now let's estimate the carbon stock after your restoration project",
-    subtitle: "These values represent the expected state after project implementation.",
-    type: "info",
-    infoText: "This calculates the expected carbon sequestration from your restoration activities. The difference between project and baseline is your net CO₂ benefit.",
-  },
-  {
-    id: 8,
-    section: "project",
-    sectionLabel: "Project — After Restoration",
-    field: "treeCrownCoverProject",
-    title: "Expected tree crown cover after restoration",
-    subtitle: "Target proportion of ground shaded by tree canopy.",
-    type: "ratio",
-    unit: "ratio",
-    min: 0,
-    max: 1,
-    step: 0.01,
-    quickPicks: [
-      { value: 0.5, label: "50% — moderate" },
-      { value: 0.7, label: "70% — good" },
-      { value: 0.8, label: "80% — dense" },
-      { value: 0.9, label: "90% — very dense" },
-    ],
-  },
-  {
-    id: 9,
-    section: "project",
-    sectionLabel: "Project — After Restoration",
-    field: "shrubCrownCoverProject",
-    title: "Expected shrub crown cover after restoration",
-    subtitle: "Target proportion of ground shaded by shrub canopy.",
-    type: "ratio",
-    unit: "ratio",
-    min: 0,
-    max: 1,
-    step: 0.01,
-    quickPicks: [
-      { value: 0.1, label: "10%" },
-      { value: 0.2, label: "20%" },
-      { value: 0.3, label: "30%" },
-      { value: 0.5, label: "50%" },
-    ],
-  },
-  {
-    id: 10,
-    section: "project",
-    sectionLabel: "Project — After Restoration",
-    field: "shrubAreaProject",
-    title: "Expected area occupied by shrub biomass",
-    subtitle: "Hectares expected to be covered by shrubs after restoration.",
-    type: "number",
-    unit: "ha",
-    min: 0,
-    step: 0.1,
-  },
-  {
-    id: 11,
-    section: "advanced",
-    sectionLabel: "Advanced Coefficients",
-    field: "treeRootShootRatio",
-    title: "Tree root-to-shoot ratio",
-    subtitle: "Default IPCC value is 0.25. Adjust if you have site-specific data.",
-    type: "number",
-    unit: "",
-    min: 0,
-    max: 2,
-    step: 0.01,
-    default: 0.25,
-    quickPicks: [
-      { value: 0.2, label: "0.20 — tropical" },
-      { value: 0.25, label: "0.25 — IPCC default" },
-      { value: 0.3, label: "0.30 — temperate" },
-    ],
-  },
-  {
-    id: 12,
-    section: "advanced",
-    sectionLabel: "Advanced Coefficients",
-    field: "shrubRootShootRatio",
-    title: "Shrub root-to-shoot ratio",
-    subtitle: "Default IPCC value is 0.40. Adjust if you have site-specific data.",
-    type: "number",
-    unit: "",
-    min: 0,
-    max: 2,
-    step: 0.01,
-    default: 0.40,
-    quickPicks: [
-      { value: 0.3, label: "0.30" },
-      { value: 0.4, label: "0.40 — IPCC default" },
-      { value: 0.5, label: "0.50" },
-    ],
-  },
-  {
-    id: 13,
-    section: "advanced",
-    sectionLabel: "Advanced Coefficients",
-    field: "shrubBiomassRatio",
-    title: "Shrub biomass density ratio (BDRSF)",
-    subtitle: "Default value is 0.10. This ratio adjusts shrub biomass relative to forest.",
-    type: "number",
-    unit: "",
-    min: 0,
-    max: 1,
-    step: 0.01,
-    default: 0.10,
-    quickPicks: [
-      { value: 0.05, label: "0.05 — sparse" },
-      { value: 0.1, label: "0.10 — default" },
-      { value: 0.15, label: "0.15 — dense" },
-    ],
-  },
-];
+function getSteps(t: TranslateFn): StepConfig[] {
+  return [
+    {
+      id: 1,
+      section: "baseline",
+      sectionLabel: t("steps.country.sectionLabel"),
+      field: "country",
+      title: t("steps.country.title"),
+      subtitle: t("steps.country.subtitle"),
+      type: "country",
+    },
+    {
+      id: 2,
+      section: "baseline",
+      sectionLabel: t("steps.hectares.sectionLabel"),
+      field: "hectares",
+      title: t("steps.hectares.title"),
+      subtitle: t("steps.hectares.subtitle"),
+      type: "number",
+      unit: "ha",
+      min: 0,
+      step: 1,
+    },
+    {
+      id: 3,
+      section: "baseline",
+      sectionLabel: t("steps.baselineIntro.sectionLabel"),
+      field: "treeCrownCoverBaseline",
+      title: t("steps.baselineIntro.title"),
+      subtitle: t("steps.baselineIntro.subtitle"),
+      type: "info",
+      infoText: t("steps.baselineIntro.infoText"),
+    },
+    {
+      id: 4,
+      section: "baseline",
+      sectionLabel: t("steps.treeBaseline.sectionLabel"),
+      field: "treeCrownCoverBaseline",
+      title: t("steps.treeBaseline.title"),
+      subtitle: t("steps.treeBaseline.subtitle"),
+      type: "ratio",
+      unit: t("unitRatio"),
+      min: 0,
+      max: 1,
+      step: 0.01,
+      quickPicks: [
+        { value: 0.1, label: `10% — ${t("quickPicks.sparse")}` },
+        { value: 0.3, label: `30% — ${t("quickPicks.open")}` },
+        { value: 0.5, label: `50% — ${t("quickPicks.moderate")}` },
+        { value: 0.7, label: `70% — ${t("quickPicks.dense")}` },
+      ],
+    },
+    {
+      id: 5,
+      section: "baseline",
+      sectionLabel: t("steps.shrubBaseline.sectionLabel"),
+      field: "shrubCrownCoverBaseline",
+      title: t("steps.shrubBaseline.title"),
+      subtitle: t("steps.shrubBaseline.subtitle"),
+      type: "ratio",
+      unit: t("unitRatio"),
+      min: 0,
+      max: 1,
+      step: 0.01,
+      quickPicks: [
+        { value: 0.05, label: "5%" },
+        { value: 0.1, label: "10%" },
+        { value: 0.2, label: "20%" },
+        { value: 0.3, label: "30%" },
+      ],
+    },
+    {
+      id: 6,
+      section: "baseline",
+      sectionLabel: t("steps.shrubAreaBaseline.sectionLabel"),
+      field: "shrubAreaBaseline",
+      title: t("steps.shrubAreaBaseline.title"),
+      subtitle: t("steps.shrubAreaBaseline.subtitle"),
+      type: "number",
+      unit: "ha",
+      min: 0,
+      step: 0.1,
+    },
+    {
+      id: 7,
+      section: "project",
+      sectionLabel: t("steps.projectIntro.sectionLabel"),
+      field: "treeCrownCoverProject",
+      title: t("steps.projectIntro.title"),
+      subtitle: t("steps.projectIntro.subtitle"),
+      type: "info",
+      infoText: t("steps.projectIntro.infoText"),
+    },
+    {
+      id: 8,
+      section: "project",
+      sectionLabel: t("steps.treeProject.sectionLabel"),
+      field: "treeCrownCoverProject",
+      title: t("steps.treeProject.title"),
+      subtitle: t("steps.treeProject.subtitle"),
+      type: "ratio",
+      unit: t("unitRatio"),
+      min: 0,
+      max: 1,
+      step: 0.01,
+      quickPicks: [
+        { value: 0.5, label: `50% — ${t("quickPicks.moderate")}` },
+        { value: 0.7, label: `70% — ${t("quickPicks.good")}` },
+        { value: 0.8, label: `80% — ${t("quickPicks.dense")}` },
+        { value: 0.9, label: `90% — ${t("quickPicks.veryDense")}` },
+      ],
+    },
+    {
+      id: 9,
+      section: "project",
+      sectionLabel: t("steps.shrubProject.sectionLabel"),
+      field: "shrubCrownCoverProject",
+      title: t("steps.shrubProject.title"),
+      subtitle: t("steps.shrubProject.subtitle"),
+      type: "ratio",
+      unit: t("unitRatio"),
+      min: 0,
+      max: 1,
+      step: 0.01,
+      quickPicks: [
+        { value: 0.1, label: "10%" },
+        { value: 0.2, label: "20%" },
+        { value: 0.3, label: "30%" },
+        { value: 0.5, label: "50%" },
+      ],
+    },
+    {
+      id: 10,
+      section: "project",
+      sectionLabel: t("steps.shrubAreaProject.sectionLabel"),
+      field: "shrubAreaProject",
+      title: t("steps.shrubAreaProject.title"),
+      subtitle: t("steps.shrubAreaProject.subtitle"),
+      type: "number",
+      unit: "ha",
+      min: 0,
+      step: 0.1,
+    },
+    {
+      id: 11,
+      section: "advanced",
+      sectionLabel: t("steps.treeRootShoot.sectionLabel"),
+      field: "treeRootShootRatio",
+      title: t("steps.treeRootShoot.title"),
+      subtitle: t("steps.treeRootShoot.subtitle"),
+      type: "number",
+      unit: "",
+      min: 0,
+      max: 2,
+      step: 0.01,
+      quickPicks: [
+        { value: 0.2, label: `0.20 — ${t("quickPicks.tropical")}` },
+        { value: 0.25, label: `0.25 — ${t("quickPicks.ipccDefault")}` },
+        { value: 0.3, label: `0.30 — ${t("quickPicks.temperate")}` },
+      ],
+    },
+    {
+      id: 12,
+      section: "advanced",
+      sectionLabel: t("steps.shrubRootShoot.sectionLabel"),
+      field: "shrubRootShootRatio",
+      title: t("steps.shrubRootShoot.title"),
+      subtitle: t("steps.shrubRootShoot.subtitle"),
+      type: "number",
+      unit: "",
+      min: 0,
+      max: 2,
+      step: 0.01,
+      quickPicks: [
+        { value: 0.3, label: "0.30" },
+        { value: 0.4, label: `0.40 — ${t("quickPicks.ipccDefault")}` },
+        { value: 0.5, label: "0.50" },
+      ],
+    },
+    {
+      id: 13,
+      section: "advanced",
+      sectionLabel: t("steps.shrubBiomass.sectionLabel"),
+      field: "shrubBiomassRatio",
+      title: t("steps.shrubBiomass.title"),
+      subtitle: t("steps.shrubBiomass.subtitle"),
+      type: "number",
+      unit: "",
+      min: 0,
+      max: 1,
+      step: 0.01,
+      quickPicks: [
+        { value: 0.05, label: `0.05 — ${t("quickPicks.sparse")}` },
+        { value: 0.1, label: `0.10 — ${t("quickPicks.default")}` },
+        { value: 0.15, label: `0.15 — ${t("quickPicks.dense")}` },
+      ],
+    },
+  ];
+}
 
-const INPUT_STEPS = STEPS.filter((s) => s.type !== "info");
-const TOTAL_INPUT_STEPS = INPUT_STEPS.length;
-
-// ─── Constants (IPCC Tier 1) ──────────────────────────────────────────────────
-
-const CF_TREE = 0.47; // Carbon fraction for tree biomass
-const CF_SHRUB = 0.47; // Carbon fraction for shrub biomass
-const CO2_C_RATIO = 44 / 12; // Molecular ratio CO₂/C
-
-function calculateBaseline(data: FormData): {
-  ctreeBaseline: number;
-  cshrubBaseline: number;
-  ctreeProject: number;
-  cshrubProject: number;
-  netCO2: number;
-} {
+function calculateBaseline(data: FormData) {
   const bFOREST = biomassData[data.country] ?? 0;
 
   const ctreeBaseline =
@@ -305,12 +289,10 @@ function calculateBaseline(data: FormData): {
   return { ctreeBaseline, cshrubBaseline, ctreeProject, cshrubProject, netCO2 };
 }
 
-// ─── Progress Bar ─────────────────────────────────────────────────────────────
-
 function ProgressBar({ step, total }: { step: number; total: number }) {
   const pct = Math.round((step / total) * 100);
   return (
-    <div className="fixed top-0 left-0 right-0 z-50 h-1 bg-neutral-800">
+    <div className="fixed left-0 right-0 top-0 z-50 h-1 bg-neutral-800">
       <div
         className="h-full bg-greenish-500 transition-all duration-500 ease-out"
         style={{ width: `${pct}%` }}
@@ -319,45 +301,34 @@ function ProgressBar({ step, total }: { step: number; total: number }) {
   );
 }
 
-// ─── Section Badge ────────────────────────────────────────────────────────────
-
 function SectionBadge({ section, label }: { section: string; label: string }) {
   const colors: Record<string, string> = {
-    baseline: "bg-greenish-900/60 text-greenish-400 border-greenish-700/30",
-    project: "bg-primary/10 text-primary border-primary/20",
-    advanced: "bg-neutral-700/50 text-neutral-300 border-neutral-600/30",
+    baseline: "border-greenish-700/30 bg-greenish-900/60 text-greenish-400",
+    project: "border-primary/20 bg-primary/10 text-primary",
+    advanced: "border-neutral-600/30 bg-neutral-700/50 text-neutral-300",
   };
+
   return (
     <span
-      className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-medium tracking-wide uppercase ${colors[section] || colors.baseline}`}
+      className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-medium uppercase tracking-wide ${colors[section] || colors.baseline}`}
     >
-      {section === "baseline" && (
-        <span className="h-1.5 w-1.5 rounded-full bg-greenish-500" />
-      )}
-      {section === "project" && (
-        <span className="h-1.5 w-1.5 rounded-full bg-primary" />
-      )}
-      {section === "advanced" && (
-        <span className="h-1.5 w-1.5 rounded-full bg-neutral-400" />
-      )}
+      {section === "baseline" && <span className="h-1.5 w-1.5 rounded-full bg-greenish-500" />}
+      {section === "project" && <span className="h-1.5 w-1.5 rounded-full bg-primary" />}
+      {section === "advanced" && <span className="h-1.5 w-1.5 rounded-full bg-neutral-400" />}
       {label}
     </span>
   );
 }
 
-// ─── Step Counter ─────────────────────────────────────────────────────────────
-
 function StepCounter({ current, total }: { current: number; total: number }) {
   return (
-    <p className="text-sm font-medium text-neutral-500 mb-4 tabular-nums">
+    <p className="mb-4 text-sm font-medium tabular-nums text-neutral-500">
       <span className="text-greenish-500">{current}</span>
       <span className="mx-1">/</span>
       {total}
     </p>
   );
 }
-
-// ─── Step Wrapper ─────────────────────────────────────────────────────────────
 
 function StepWrapper({
   children,
@@ -387,41 +358,37 @@ function StepWrapper({
   );
 }
 
-// ─── Continue Button ──────────────────────────────────────────────────────────
-
 function ActionButton({
   onClick,
   disabled,
-  label = "Continue",
+  label,
   variant = "primary",
 }: {
   onClick: () => void;
   disabled?: boolean;
-  label?: string;
+  label: string;
   variant?: "primary" | "secondary";
 }) {
   if (variant === "secondary") {
     return (
       <button
         onClick={onClick}
-        className="px-6 py-3 rounded-xl font-semibold border border-neutral-600 text-neutral-300 hover:border-neutral-400 hover:text-white transition-all duration-200 cursor-pointer"
+        className="cursor-pointer rounded-xl border border-neutral-600 px-6 py-3 font-semibold text-neutral-300 transition-all duration-200 hover:border-neutral-400 hover:text-white"
       >
         {label}
       </button>
     );
   }
+
   return (
     <button
       onClick={onClick}
       disabled={disabled}
-      className={`
-        px-8 py-3 rounded-xl font-semibold text-base transition-all duration-200 flex items-center gap-2
-        ${
-          disabled
-            ? "bg-neutral-700 text-neutral-500 cursor-not-allowed"
-            : "bg-greenish-500 hover:bg-greenish-400 text-neutral-900 cursor-pointer shadow-lg shadow-greenish-500/20 hover:shadow-greenish-400/30 hover:scale-[1.02] active:scale-95"
-        }
-      `}
+      className={`flex items-center gap-2 rounded-xl px-8 py-3 text-base font-semibold transition-all duration-200 ${
+        disabled
+          ? "cursor-not-allowed bg-neutral-700 text-neutral-500"
+          : "cursor-pointer bg-greenish-500 text-neutral-900 shadow-lg shadow-greenish-500/20 hover:scale-[1.02] hover:bg-greenish-400 hover:shadow-greenish-400/30 active:scale-95"
+      }`}
     >
       {label}
       {!disabled && <span className="text-xs opacity-60">↵</span>}
@@ -429,21 +396,20 @@ function ActionButton({
   );
 }
 
-// ─── Country Search Select ────────────────────────────────────────────────────
-
 function CountrySelect({
   value,
   onChange,
   onConfirm,
+  t,
 }: {
   value: string;
   onChange: (v: string) => void;
   onConfirm: () => void;
+  t: TranslateFn;
 }) {
   const [search, setSearch] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
-  const listRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     inputRef.current?.focus();
@@ -470,7 +436,7 @@ function CountrySelect({
 
   return (
     <div className="relative">
-      <div className="flex items-center gap-3 mb-2">
+      <div className="mb-2 flex items-center gap-3">
         <input
           ref={inputRef}
           type="text"
@@ -487,42 +453,43 @@ function CountrySelect({
               handleSelect(filtered[0].name);
             }
           }}
-          placeholder="Search country..."
-          className="bg-transparent border-0 border-b-2 border-neutral-600 focus:border-greenish-500 outline-none text-white text-2xl md:text-3xl font-bold w-full pb-2 placeholder-neutral-700 transition-colors duration-200"
+          placeholder={t("searchCountry")}
+          className="w-full border-0 border-b-2 border-neutral-600 bg-transparent pb-2 text-2xl font-bold text-white outline-none transition-colors duration-200 placeholder-neutral-700 focus:border-greenish-500 md:text-3xl"
         />
       </div>
 
       {value && (
-        <div className="flex items-center gap-2 mt-3 mb-4">
-          <span className="inline-flex items-center gap-2 bg-greenish-900/40 border border-greenish-700/30 rounded-full px-4 py-1.5">
-            <span className="text-greenish-400 text-sm font-medium">{value}</span>
-            <span className="text-neutral-500 text-xs">AGB: {biomassData[value]} tDM/ha</span>
+        <div className="mb-4 mt-3 flex items-center gap-2">
+          <span className="inline-flex items-center gap-2 rounded-full border border-greenish-700/30 bg-greenish-900/40 px-4 py-1.5">
+            <span className="text-sm font-medium text-greenish-400">{value}</span>
+            <span className="text-xs text-neutral-500">{t("countryAgb", { value: biomassData[value] ?? 0 })}</span>
           </span>
           <button
-            onClick={() => { onChange(""); setIsOpen(true); inputRef.current?.focus(); }}
-            className="text-neutral-500 hover:text-neutral-300 text-sm cursor-pointer"
+            onClick={() => {
+              onChange("");
+              setIsOpen(true);
+              inputRef.current?.focus();
+            }}
+            className="cursor-pointer text-sm text-neutral-500 hover:text-neutral-300"
           >
-            change
+            {t("change")}
           </button>
         </div>
       )}
 
       {isOpen && !value && (
-        <div
-          ref={listRef}
-          className="absolute z-40 w-full max-h-64 overflow-y-auto mt-1 bg-neutral-800 border border-neutral-700 rounded-xl shadow-xl"
-        >
+        <div className="absolute z-40 mt-1 max-h-64 w-full overflow-y-auto rounded-xl border border-neutral-700 bg-neutral-800 shadow-xl">
           {filtered.length === 0 ? (
-            <div className="px-4 py-3 text-neutral-500 text-sm">No results</div>
+            <div className="px-4 py-3 text-sm text-neutral-500">{t("noResults")}</div>
           ) : (
             filtered.map((c) => (
               <button
                 key={c.name}
                 onClick={() => handleSelect(c.name)}
-                className="w-full text-left px-4 py-2.5 hover:bg-neutral-700/60 flex justify-between items-center transition-colors duration-100 cursor-pointer"
+                className="flex w-full cursor-pointer items-center justify-between px-4 py-2.5 text-left transition-colors duration-100 hover:bg-neutral-700/60"
               >
-                <span className="text-white text-sm">{c.name}</span>
-                <span className="text-neutral-500 text-xs tabular-nums">{c.agb} tDM/ha</span>
+                <span className="text-sm text-white">{c.name}</span>
+                <span className="text-xs tabular-nums text-neutral-500">{c.agb} tDM/ha</span>
               </button>
             ))
           )}
@@ -531,8 +498,6 @@ function CountrySelect({
     </div>
   );
 }
-
-// ─── Number Input ─────────────────────────────────────────────────────────────
 
 function NumberInput({
   value,
@@ -543,6 +508,8 @@ function NumberInput({
   min,
   max,
   quickPicks,
+  t,
+  locale,
 }: {
   value: number;
   onChange: (v: number) => void;
@@ -552,6 +519,8 @@ function NumberInput({
   min?: number;
   max?: number;
   quickPicks?: { value: number; label: string }[];
+  t: TranslateFn;
+  locale: string;
 }) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [error, setError] = useState("");
@@ -562,11 +531,11 @@ function NumberInput({
 
   const validate = (v: number): boolean => {
     if (max !== undefined && v > max) {
-      setError(`Value must be ≤ ${max}`);
+      setError(t("valueMustBeMax", { max }));
       return false;
     }
     if (min !== undefined && v < min) {
-      setError(`Value must be ≥ ${min}`);
+      setError(t("valueMustBeMin", { min }));
       return false;
     }
     setError("");
@@ -584,7 +553,7 @@ function NumberInput({
 
   return (
     <div>
-      <div className="flex items-baseline gap-3 mb-4">
+      <div className="mb-4 flex items-baseline gap-3">
         <input
           ref={inputRef}
           type="number"
@@ -595,38 +564,30 @@ function NumberInput({
           onChange={(e) => handleChange(Number(e.target.value))}
           onKeyDown={(e) => e.key === "Enter" && handleConfirm()}
           placeholder="0"
-          className="bg-transparent border-0 border-b-2 border-neutral-600 focus:border-greenish-500 outline-none text-white text-4xl md:text-5xl font-bold w-40 pb-2 placeholder-neutral-700 transition-colors duration-200 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+          className="w-40 border-0 border-b-2 border-neutral-600 bg-transparent pb-2 text-4xl font-bold text-white outline-none transition-colors duration-200 placeholder-neutral-700 [appearance:textfield] focus:border-greenish-500 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none md:text-5xl"
         />
-        {unit && <span className="text-neutral-400 text-lg">{unit}</span>}
+        {unit && <span className="text-lg text-neutral-400">{unit}</span>}
       </div>
 
-      {/* Derived info */}
       {unit === "ha" && value > 0 && (
-        <p className="text-neutral-600 text-sm mb-3">
-          ≈{" "}
-          <span className="text-greenish-400 font-medium">
-            {(value * 10000).toLocaleString()} m²
-          </span>
+        <p className="mb-3 text-sm text-neutral-600">
+          ≈ <span className="font-medium text-greenish-400">{(value * 10000).toLocaleString(locale)} m²</span>
           {" · "}
-          <span className="text-greenish-400 font-medium">
-            {(value / 100).toFixed(2)} km²
-          </span>
+          <span className="font-medium text-greenish-400">{(value / 100).toLocaleString(locale, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} km²</span>
         </p>
       )}
 
-      {/* Quick picks */}
       {quickPicks && quickPicks.length > 0 && (
-        <div className="flex gap-2 flex-wrap mb-4">
+        <div className="mb-4 flex flex-wrap gap-2">
           {quickPicks.map((qp) => (
             <button
               key={qp.value}
               onClick={() => handleChange(qp.value)}
-              className={`px-4 py-1.5 rounded-full border text-sm font-medium transition-all duration-200 cursor-pointer
-                ${
-                  value === qp.value
-                    ? "border-greenish-500 bg-greenish-500/20 text-greenish-400"
-                    : "border-neutral-600 text-neutral-400 hover:border-neutral-400"
-                }`}
+              className={`cursor-pointer rounded-full border px-4 py-1.5 text-sm font-medium transition-all duration-200 ${
+                value === qp.value
+                  ? "border-greenish-500 bg-greenish-500/20 text-greenish-400"
+                  : "border-neutral-600 text-neutral-400 hover:border-neutral-400"
+              }`}
             >
               {qp.label}
             </button>
@@ -634,12 +595,10 @@ function NumberInput({
         </div>
       )}
 
-      {error && <p className="text-red-400 text-sm mb-2">{error}</p>}
+      {error && <p className="mb-2 text-sm text-red-400">{error}</p>}
     </div>
   );
 }
-
-// ─── Info Step ─────────────────────────────────────────────────────────────────
 
 function InfoStep({
   title,
@@ -660,15 +619,13 @@ function InfoStep({
 
   return (
     <div>
-      <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">{title}</h2>
-      <div className="bg-neutral-800/40 border border-neutral-700/50 rounded-2xl p-6 mb-6">
-        <p className="text-neutral-300 text-base leading-relaxed">{infoText}</p>
+      <h2 className="mb-4 text-3xl font-bold text-white md:text-4xl">{title}</h2>
+      <div className="mb-6 rounded-2xl border border-neutral-700/50 bg-neutral-800/40 p-6">
+        <p className="text-base leading-relaxed text-neutral-300">{infoText}</p>
       </div>
     </div>
   );
 }
-
-// ─── Summary Row ──────────────────────────────────────────────────────────────
 
 function SummaryRow({
   label,
@@ -680,225 +637,174 @@ function SummaryRow({
   highlight?: boolean;
 }) {
   return (
-    <div className="flex justify-between items-center py-3 border-b border-neutral-800 last:border-0">
-      <span className="text-neutral-400 text-sm">{label}</span>
-      <span className={`font-semibold ${highlight ? "text-greenish-400" : "text-white"}`}>
-        {value}
-      </span>
+    <div className="flex items-center justify-between border-b border-neutral-800 py-3 last:border-0">
+      <span className="text-sm text-neutral-400">{label}</span>
+      <span className={`font-semibold ${highlight ? "text-greenish-400" : "text-white"}`}>{value}</span>
     </div>
   );
 }
 
-// ─── Result View ──────────────────────────────────────────────────────────────
-
 function ResultView({
   data,
   onReset,
+  t,
+  locale,
 }: {
   data: FormData;
   onReset: () => void;
+  t: TranslateFn;
+  locale: string;
 }) {
   const result = calculateBaseline(data);
   const bFOREST = biomassData[data.country] ?? 0;
-
-  const fmt = (n: number) =>
-    n.toLocaleString("en-US", { maximumFractionDigits: 2 });
-
+  const fmt = (n: number) => n.toLocaleString(locale, { maximumFractionDigits: 2 });
   const isPositive = result.netCO2 > 0;
 
   return (
     <div className="animate-fade-in">
-      {/* Status badge */}
-      <div className="inline-flex items-center gap-2 bg-greenish-500/10 border border-greenish-500/30 rounded-full px-4 py-1.5 mb-6">
-        <span className="w-2 h-2 rounded-full bg-greenish-500 animate-pulse" />
-        <span className="text-greenish-400 text-sm font-medium">
-          Baseline calculated
-        </span>
+      <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-greenish-500/30 bg-greenish-500/10 px-4 py-1.5">
+        <span className="h-2 w-2 animate-pulse rounded-full bg-greenish-500" />
+        <span className="text-sm font-medium text-greenish-400">{t("baselineCalculated")}</span>
       </div>
 
-      <h2 className="text-3xl md:text-4xl font-bold text-white mb-2">
-        Net CO₂ Sequestration
-      </h2>
-      <p className="text-neutral-400 mb-8">
-        IPCC Tier-1 · Baseline vs Project scenario
-      </p>
+      <h2 className="mb-2 text-3xl font-bold text-white md:text-4xl">{t("resultTitle")}</h2>
+      <p className="mb-8 text-neutral-400">{t("resultSubtitle")}</p>
 
-      {/* Key metric */}
-      <div className={`bg-gradient-to-br ${isPositive ? "from-greenish-500/10" : "from-red-500/10"} to-neutral-900 border ${isPositive ? "border-greenish-500/20" : "border-red-500/20"} rounded-2xl p-6 mb-6`}>
-        <p className="text-neutral-400 text-sm mb-1">
-          Net Estimated CO₂ {isPositive ? "Sequestration" : "Loss"}
-        </p>
+      <div className={`mb-6 rounded-2xl border bg-gradient-to-br p-6 ${isPositive ? "border-greenish-500/20 from-greenish-500/10" : "border-red-500/20 from-red-500/10"} to-neutral-900`}>
+        <p className="mb-1 text-sm text-neutral-400">{isPositive ? t("metricPositive") : t("metricNegative")}</p>
         <div className="flex items-baseline gap-2">
-          <span className="text-5xl md:text-6xl font-bold text-white">
+          <span className="text-5xl font-bold text-white md:text-6xl">
             {result.netCO2 >= 1_000_000
-              ? `${(result.netCO2 / 1_000_000).toFixed(2)}M`
+              ? `${(result.netCO2 / 1_000_000).toLocaleString(locale, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}M`
               : result.netCO2 >= 1000
-                ? `${(result.netCO2 / 1000).toFixed(1)}k`
+                ? `${(result.netCO2 / 1000).toLocaleString(locale, { minimumFractionDigits: 1, maximumFractionDigits: 1 })}k`
                 : fmt(result.netCO2)}
           </span>
-          <span className={`font-semibold ${isPositive ? "text-greenish-400" : "text-red-400"}`}>
-            tCO₂
-          </span>
+          <span className={`font-semibold ${isPositive ? "text-greenish-400" : "text-red-400"}`}>tCO₂</span>
         </div>
       </div>
 
-      {/* Breakdown: 4 components */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-        <div className="bg-neutral-800/40 rounded-2xl p-5">
-          <p className="text-neutral-500 text-xs uppercase tracking-wider mb-3">Baseline (before)</p>
-          <SummaryRow label="C_TREE baseline" value={`${fmt(result.ctreeBaseline)} tCO₂`} />
-          <SummaryRow label="C_SHRUB baseline" value={`${fmt(result.cshrubBaseline)} tCO₂`} />
-          <div className="pt-3 border-t border-neutral-700 mt-1">
-            <SummaryRow
-              label="Total baseline"
-              value={`${fmt(result.ctreeBaseline + result.cshrubBaseline)} tCO₂`}
-            />
+      <div className="mb-6 grid grid-cols-1 gap-4 md:grid-cols-2">
+        <div className="rounded-2xl bg-neutral-800/40 p-5">
+          <p className="mb-3 text-xs uppercase tracking-wider text-neutral-500">{t("baselineBefore")}</p>
+          <SummaryRow label={t("cTreeBaseline")} value={`${fmt(result.ctreeBaseline)} tCO₂`} />
+          <SummaryRow label={t("cShrubBaseline")} value={`${fmt(result.cshrubBaseline)} tCO₂`} />
+          <div className="mt-1 border-t border-neutral-700 pt-3">
+            <SummaryRow label={t("totalBaseline")} value={`${fmt(result.ctreeBaseline + result.cshrubBaseline)} tCO₂`} />
           </div>
         </div>
-        <div className="bg-neutral-800/40 rounded-2xl p-5">
-          <p className="text-neutral-500 text-xs uppercase tracking-wider mb-3">Project (after)</p>
-          <SummaryRow label="C_TREE project" value={`${fmt(result.ctreeProject)} tCO₂`} highlight />
-          <SummaryRow label="C_SHRUB project" value={`${fmt(result.cshrubProject)} tCO₂`} highlight />
-          <div className="pt-3 border-t border-neutral-700 mt-1">
-            <SummaryRow
-              label="Total project"
-              value={`${fmt(result.ctreeProject + result.cshrubProject)} tCO₂`}
-              highlight
-            />
+        <div className="rounded-2xl bg-neutral-800/40 p-5">
+          <p className="mb-3 text-xs uppercase tracking-wider text-neutral-500">{t("projectAfter")}</p>
+          <SummaryRow label={t("cTreeProject")} value={`${fmt(result.ctreeProject)} tCO₂`} highlight />
+          <SummaryRow label={t("cShrubProject")} value={`${fmt(result.cshrubProject)} tCO₂`} highlight />
+          <div className="mt-1 border-t border-neutral-700 pt-3">
+            <SummaryRow label={t("totalProject")} value={`${fmt(result.ctreeProject + result.cshrubProject)} tCO₂`} highlight />
           </div>
         </div>
       </div>
 
-      {/* Formula */}
-      <div className="bg-neutral-800/30 rounded-2xl p-5 mb-6">
-        <p className="text-neutral-400 text-sm mb-4">
-          Formula: (C_TREE_project + C_SHRUB_project) − (C_TREE_baseline + C_SHRUB_baseline)
-        </p>
-        <div className="font-mono text-sm text-neutral-300 space-y-1">
-          <p>
-            C_TREE = (44/12) × CF × AGB × (1 + R:S) × Crown × Area
-          </p>
-          <p>
-            C_SHRUB = (44/12) × CF × (1 + R:S) × ShrubArea × BDRSF × AGB × ShrubCrown
-          </p>
+      <div className="mb-6 rounded-2xl bg-neutral-800/30 p-5">
+        <p className="mb-4 text-sm text-neutral-400">{t("formulaLabel")}: (C_TREE_project + C_SHRUB_project) − (C_TREE_baseline + C_SHRUB_baseline)</p>
+        <div className="space-y-1 font-mono text-sm text-neutral-300">
+          <p>C_TREE = (44/12) × CF × AGB × (1 + R:S) × Crown × Area</p>
+          <p>C_SHRUB = (44/12) × CF × (1 + R:S) × ShrubArea × BDRSF × AGB × ShrubCrown</p>
         </div>
       </div>
 
-      {/* Coefficients */}
-      <div className="bg-neutral-800/30 rounded-2xl px-5 mb-6">
-        <SummaryRow label="CF (Carbon Fraction)" value={CF_TREE} />
-        <SummaryRow label="CO₂/C ratio (44/12)" value={(CO2_C_RATIO).toFixed(4)} />
-        <SummaryRow label={`AGB — ${data.country}`} value={`${bFOREST} tDM/ha`} />
-        <SummaryRow label="Tree root-shoot ratio" value={data.treeRootShootRatio} />
-        <SummaryRow label="Shrub root-shoot ratio" value={data.shrubRootShootRatio} />
-        <SummaryRow label="BDRSF (shrub biomass ratio)" value={data.shrubBiomassRatio} />
+      <div className="mb-6 rounded-2xl bg-neutral-800/30 px-5">
+        <SummaryRow label={t("carbonFraction")} value={CF_TREE} />
+        <SummaryRow label={t("co2Ratio")} value={CO2_C_RATIO.toFixed(4)} />
+        <SummaryRow label={t("agb", { country: data.country })} value={`${bFOREST} tDM/ha`} />
+        <SummaryRow label={t("treeRootShoot")} value={data.treeRootShootRatio} />
+        <SummaryRow label={t("shrubRootShoot")} value={data.shrubRootShootRatio} />
+        <SummaryRow label={t("shrubBiomassRatio")} value={data.shrubBiomassRatio} />
       </div>
 
-      {/* Inputs summary */}
-      <div className="bg-neutral-800/30 rounded-2xl px-5 mb-8">
-        <SummaryRow label="Project area" value={`${data.hectares.toLocaleString()} ha`} />
-        <SummaryRow
-          label="Tree crown — baseline → project"
-          value={`${data.treeCrownCoverBaseline} → ${data.treeCrownCoverProject}`}
-        />
-        <SummaryRow
-          label="Shrub crown — baseline → project"
-          value={`${data.shrubCrownCoverBaseline} → ${data.shrubCrownCoverProject}`}
-        />
-        <SummaryRow
-          label="Shrub area — baseline → project"
-          value={`${data.shrubAreaBaseline} ha → ${data.shrubAreaProject} ha`}
-        />
+      <div className="mb-8 rounded-2xl bg-neutral-800/30 px-5">
+        <SummaryRow label={t("projectArea")} value={`${data.hectares.toLocaleString(locale)} ha`} />
+        <SummaryRow label={t("treeCrownBaselineToProject")} value={`${data.treeCrownCoverBaseline} → ${data.treeCrownCoverProject}`} />
+        <SummaryRow label={t("shrubCrownBaselineToProject")} value={`${data.shrubCrownCoverBaseline} → ${data.shrubCrownCoverProject}`} />
+        <SummaryRow label={t("shrubAreaBaselineToProject")} value={`${data.shrubAreaBaseline.toLocaleString(locale)} ha → ${data.shrubAreaProject.toLocaleString(locale)} ha`} />
       </div>
 
-      {/* Actions */}
-      <div className="flex gap-3 flex-wrap">
+      <div className="flex flex-wrap gap-3">
         <button
           onClick={onReset}
-          className="px-8 py-3 rounded-xl font-semibold border border-neutral-700 text-neutral-300 hover:border-neutral-500 hover:text-white transition-all duration-200 cursor-pointer"
+          className="cursor-pointer rounded-xl border border-neutral-700 px-8 py-3 font-semibold text-neutral-300 transition-all duration-200 hover:border-neutral-500 hover:text-white"
         >
-          Start Over
+          {t("startOver")}
         </button>
       </div>
     </div>
   );
 }
 
-// ─── Review Step ──────────────────────────────────────────────────────────────
-
 function ReviewStep({
   data,
   onCalculate,
   onBack,
+  t,
+  locale,
 }: {
   data: FormData;
   onCalculate: () => void;
   onBack: () => void;
+  t: TranslateFn;
+  locale: string;
 }) {
   const preview = calculateBaseline(data);
-  const fmt = (n: number) =>
-    n.toLocaleString("en-US", { maximumFractionDigits: 2 });
+  const fmt = (n: number) => n.toLocaleString(locale, { maximumFractionDigits: 2 });
 
   return (
     <div>
-      <SectionBadge section="advanced" label="Review" />
-      <h2 className="text-3xl md:text-4xl font-bold text-white mb-2 mt-4">
-        Review your inputs
-      </h2>
-      <p className="text-neutral-400 mb-8">
-        Confirm everything before calculating.
-      </p>
+      <SectionBadge section="advanced" label={t("review")} />
+      <h2 className="mb-2 mt-4 text-3xl font-bold text-white md:text-4xl">{t("reviewTitle")}</h2>
+      <p className="mb-8 text-neutral-400">{t("reviewSubtitle")}</p>
 
-      {/* Baseline inputs */}
-      <div className="bg-neutral-800/30 rounded-2xl px-5 mb-4">
+      <div className="mb-4 rounded-2xl bg-neutral-800/30 px-5">
         <div className="py-2">
-          <p className="text-neutral-500 text-xs uppercase tracking-wider">Baseline</p>
+          <p className="text-xs uppercase tracking-wider text-neutral-500">{t("baselineSection")}</p>
         </div>
-        <SummaryRow label="Country" value={data.country} />
-        <SummaryRow label="Project area" value={`${data.hectares.toLocaleString()} ha`} />
-        <SummaryRow label="Tree crown cover" value={`${data.treeCrownCoverBaseline} (${Math.round(data.treeCrownCoverBaseline * 100)}%)`} />
-        <SummaryRow label="Shrub crown cover" value={`${data.shrubCrownCoverBaseline} (${Math.round(data.shrubCrownCoverBaseline * 100)}%)`} />
-        <SummaryRow label="Shrub area" value={`${data.shrubAreaBaseline} ha`} />
+        <SummaryRow label={t("country")} value={data.country} />
+        <SummaryRow label={t("projectArea")} value={`${data.hectares.toLocaleString(locale)} ha`} />
+        <SummaryRow label={t("treeCrownCover")} value={`${data.treeCrownCoverBaseline} (${Math.round(data.treeCrownCoverBaseline * 100)}%)`} />
+        <SummaryRow label={t("shrubCrownCover")} value={`${data.shrubCrownCoverBaseline} (${Math.round(data.shrubCrownCoverBaseline * 100)}%)`} />
+        <SummaryRow label={t("shrubArea")} value={`${data.shrubAreaBaseline.toLocaleString(locale)} ha`} />
       </div>
 
-      {/* Project inputs */}
-      <div className="bg-neutral-800/30 rounded-2xl px-5 mb-4">
+      <div className="mb-4 rounded-2xl bg-neutral-800/30 px-5">
         <div className="py-2">
-          <p className="text-neutral-500 text-xs uppercase tracking-wider">Project</p>
+          <p className="text-xs uppercase tracking-wider text-neutral-500">{t("projectSection")}</p>
         </div>
-        <SummaryRow label="Tree crown cover" value={`${data.treeCrownCoverProject} (${Math.round(data.treeCrownCoverProject * 100)}%)`} />
-        <SummaryRow label="Shrub crown cover" value={`${data.shrubCrownCoverProject} (${Math.round(data.shrubCrownCoverProject * 100)}%)`} />
-        <SummaryRow label="Shrub area" value={`${data.shrubAreaProject} ha`} />
+        <SummaryRow label={t("treeCrownCover")} value={`${data.treeCrownCoverProject} (${Math.round(data.treeCrownCoverProject * 100)}%)`} />
+        <SummaryRow label={t("shrubCrownCover")} value={`${data.shrubCrownCoverProject} (${Math.round(data.shrubCrownCoverProject * 100)}%)`} />
+        <SummaryRow label={t("shrubArea")} value={`${data.shrubAreaProject.toLocaleString(locale)} ha`} />
       </div>
 
-      {/* Coefficients */}
-      <div className="bg-neutral-800/30 rounded-2xl px-5 mb-6">
+      <div className="mb-6 rounded-2xl bg-neutral-800/30 px-5">
         <div className="py-2">
-          <p className="text-neutral-500 text-xs uppercase tracking-wider">Coefficients</p>
+          <p className="text-xs uppercase tracking-wider text-neutral-500">{t("coefficientsSection")}</p>
         </div>
-        <SummaryRow label="Tree root-shoot" value={data.treeRootShootRatio} />
-        <SummaryRow label="Shrub root-shoot" value={data.shrubRootShootRatio} />
-        <SummaryRow label="BDRSF" value={data.shrubBiomassRatio} />
+        <SummaryRow label={t("treeRootShoot")} value={data.treeRootShootRatio} />
+        <SummaryRow label={t("shrubRootShoot")} value={data.shrubRootShootRatio} />
+        <SummaryRow label={t("shrubBiomassRatio")} value={data.shrubBiomassRatio} />
       </div>
 
-      {/* Preview */}
-      <div className="bg-neutral-800/50 rounded-2xl p-5 mb-8">
-        <p className="text-neutral-500 text-sm mb-1">Estimated net CO₂</p>
+      <div className="mb-8 rounded-2xl bg-neutral-800/50 p-5">
+        <p className="mb-1 text-sm text-neutral-500">{t("estimatedNetCo2")}</p>
         <p className="text-3xl font-bold text-greenish-400">{fmt(preview.netCO2)} tCO₂</p>
-        <p className="text-neutral-600 text-xs mt-2">
-          Project ({fmt(preview.ctreeProject + preview.cshrubProject)}) − Baseline ({fmt(preview.ctreeBaseline + preview.cshrubBaseline)})
+        <p className="mt-2 text-xs text-neutral-600">
+          {t("projectSection")} ({fmt(preview.ctreeProject + preview.cshrubProject)}) − {t("baselineSection")} ({fmt(preview.ctreeBaseline + preview.cshrubBaseline)})
         </p>
       </div>
 
       <div className="flex gap-3">
-        <ActionButton onClick={onCalculate} label="Calculate Baseline ✦" />
-        <ActionButton onClick={onBack} label="← Back" variant="secondary" />
+        <ActionButton onClick={onCalculate} label={t("calculateBaseline")} />
+        <ActionButton onClick={onBack} label={`← ${t("back")}`} variant="secondary" />
       </div>
     </div>
   );
 }
-
-// ─── Main Component ───────────────────────────────────────────────────────────
 
 const DEFAULT_FORM: FormData = {
   country: "",
@@ -910,11 +816,17 @@ const DEFAULT_FORM: FormData = {
   shrubCrownCoverProject: 0,
   shrubAreaProject: 0,
   treeRootShootRatio: 0.25,
-  shrubRootShootRatio: 0.40,
-  shrubBiomassRatio: 0.10,
+  shrubRootShootRatio: 0.4,
+  shrubBiomassRatio: 0.1,
 };
 
 export default function BaselinePage() {
+  const t = useTranslations("baseline");
+  const locale = useLocale();
+  const steps = useMemo(() => getSteps(t), [t]);
+  const inputSteps = useMemo(() => steps.filter((s) => s.type !== "info"), [steps]);
+  const totalInputSteps = inputSteps.length;
+
   const [stepIndex, setStepIndex] = useState(0);
   const [form, setForm] = useState<FormData>(DEFAULT_FORM);
   const [direction, setDirection] = useState<"forward" | "back">("forward");
@@ -926,23 +838,23 @@ export default function BaselinePage() {
     setMounted(true);
   }, []);
 
-  const currentStep = STEPS[stepIndex];
+  const currentStep = steps[stepIndex];
   const inputStepNumber = useMemo(() => {
     let count = 0;
     for (let i = 0; i <= stepIndex; i++) {
-      if (STEPS[i].type !== "info") count++;
+      if (steps[i]?.type !== "info") count++;
     }
     return count;
-  }, [stepIndex]);
+  }, [stepIndex, steps]);
 
   const goNext = useCallback(() => {
-    if (stepIndex < STEPS.length - 1) {
+    if (stepIndex < steps.length - 1) {
       setDirection("forward");
       setStepIndex((s) => s + 1);
     } else {
       setShowReview(true);
     }
-  }, [stepIndex]);
+  }, [stepIndex, steps.length]);
 
   const goBack = useCallback(() => {
     if (showReview) {
@@ -953,16 +865,12 @@ export default function BaselinePage() {
       setDirection("back");
       setStepIndex((s) => s - 1);
     }
-  }, [stepIndex, showReview]);
+  }, [showReview, stepIndex]);
 
-  const update = useCallback(
-    <K extends keyof FormData>(key: K, value: FormData[K]) => {
-      setForm((f) => ({ ...f, [key]: value }));
-    },
-    [],
-  );
+  const update = useCallback(<K extends keyof FormData>(key: K, value: FormData[K]) => {
+    setForm((f) => ({ ...f, [key]: value }));
+  }, []);
 
-  // Escape to go back
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if (e.key === "Escape" && !showResult) goBack();
@@ -982,87 +890,60 @@ export default function BaselinePage() {
   if (!mounted) return null;
 
   return (
-    <div className="min-h-screen bg-neutral-900 flex flex-col">
-      {/* Progress */}
-      {!showResult && !showReview && (
-        <ProgressBar step={inputStepNumber} total={TOTAL_INPUT_STEPS} />
-      )}
-      {showReview && <ProgressBar step={TOTAL_INPUT_STEPS} total={TOTAL_INPUT_STEPS} />}
+    <div className="flex min-h-screen flex-col bg-neutral-900">
+      {!showResult && !showReview && <ProgressBar step={inputStepNumber} total={totalInputSteps} />}
+      {showReview && <ProgressBar step={totalInputSteps} total={totalInputSteps} />}
 
-      {/* Header */}
-      <div className="px-6 pt-8 pb-4">
-        <div className="max-w-2xl mx-auto flex items-center justify-between">
-          <span className="text-neutral-500 text-sm font-medium">
-            Baseline Calculator
-          </span>
+      <div className="px-6 pb-4 pt-8">
+        <div className="mx-auto flex max-w-2xl items-center justify-between">
+          <span className="text-sm font-medium text-neutral-500">{t("headerTitle")}</span>
           {!showResult && (
             <button
               onClick={goBack}
-              className="text-neutral-500 hover:text-neutral-300 text-sm transition-colors duration-200 flex items-center gap-1 cursor-pointer"
+              className="flex cursor-pointer items-center gap-1 text-sm text-neutral-500 transition-colors duration-200 hover:text-neutral-300"
             >
-              ← Back
+              ← {t("back")}
             </button>
           )}
         </div>
       </div>
 
-      {/* Main content */}
-      <div className="flex-1 flex items-center justify-center px-6 py-8">
+      <div className="flex flex-1 items-center justify-center px-6 py-8">
         <div className="w-full max-w-2xl">
           {showResult ? (
-            <ResultView data={form} onReset={handleReset} />
+            <ResultView data={form} onReset={handleReset} t={t} locale={locale} />
           ) : showReview ? (
-            <ReviewStep
-              data={form}
-              onCalculate={() => setShowResult(true)}
-              onBack={goBack}
-            />
+            <ReviewStep data={form} onCalculate={() => setShowResult(true)} onBack={goBack} t={t} locale={locale} />
           ) : (
-            STEPS.map((step, i) => (
+            steps.map((step, i) => (
               <StepWrapper key={step.id} visible={stepIndex === i} direction={direction}>
                 <div className="mb-4">
                   <SectionBadge section={step.section} label={step.sectionLabel} />
                   {step.type !== "info" && (
                     <div className="mt-3">
-                      <StepCounter current={inputStepNumber} total={TOTAL_INPUT_STEPS} />
+                      <StepCounter current={inputStepNumber} total={totalInputSteps} />
                     </div>
                   )}
                 </div>
 
                 {step.type === "info" ? (
                   <>
-                    <InfoStep
-                      title={step.title}
-                      infoText={step.infoText!}
-                      onNext={goNext}
-                    />
-                    <ActionButton onClick={goNext} label="Got it, continue" />
+                    <InfoStep title={step.title} infoText={step.infoText!} onNext={goNext} />
+                    <ActionButton onClick={goNext} label={t("gotItContinue")} />
                   </>
                 ) : step.type === "country" ? (
                   <>
-                    <h2 className="text-3xl md:text-4xl font-bold text-white mb-2">
-                      {step.title}
-                    </h2>
-                    <p className="text-neutral-400 mb-8">{step.subtitle}</p>
-                    <CountrySelect
-                      value={form.country}
-                      onChange={(v) => update("country", v)}
-                      onConfirm={goNext}
-                    />
+                    <h2 className="mb-2 text-3xl font-bold text-white md:text-4xl">{step.title}</h2>
+                    <p className="mb-8 text-neutral-400">{step.subtitle}</p>
+                    <CountrySelect value={form.country} onChange={(v) => update("country", v)} onConfirm={goNext} t={t} />
                     <div className="mt-6">
-                      <ActionButton
-                        onClick={goNext}
-                        disabled={!form.country}
-                        label="Continue"
-                      />
+                      <ActionButton onClick={goNext} disabled={!form.country} label={t("continue")} />
                     </div>
                   </>
                 ) : (
                   <>
-                    <h2 className="text-3xl md:text-4xl font-bold text-white mb-2">
-                      {step.title}
-                    </h2>
-                    <p className="text-neutral-400 mb-8">{step.subtitle}</p>
+                    <h2 className="mb-2 text-3xl font-bold text-white md:text-4xl">{step.title}</h2>
+                    <p className="mb-8 text-neutral-400">{step.subtitle}</p>
                     <NumberInput
                       value={form[step.field] as number}
                       onChange={(v) => update(step.field, v)}
@@ -1072,9 +953,11 @@ export default function BaselinePage() {
                       min={step.min}
                       max={step.max}
                       quickPicks={step.quickPicks}
+                      t={t}
+                      locale={locale}
                     />
                     <div className="mt-6">
-                      <ActionButton onClick={goNext} label={stepIndex === STEPS.length - 1 ? "Review" : "Continue"} />
+                      <ActionButton onClick={goNext} label={stepIndex === steps.length - 1 ? t("review") : t("continue")} />
                     </div>
                   </>
                 )}
@@ -1084,18 +967,13 @@ export default function BaselinePage() {
         </div>
       </div>
 
-      {/* Keyboard hint */}
       {!showResult && !showReview && currentStep?.type !== "info" && (
         <div className="px-6 py-4 text-center">
-          <p className="text-neutral-700 text-xs">
-            <kbd className="bg-neutral-800 text-neutral-500 px-1.5 py-0.5 rounded text-xs">
-              Enter
-            </kbd>{" "}
-            to continue ·{" "}
-            <kbd className="bg-neutral-800 text-neutral-500 px-1.5 py-0.5 rounded text-xs">
-              Esc
-            </kbd>{" "}
-            to go back
+          <p className="text-xs text-neutral-700">
+            <kbd className="rounded bg-neutral-800 px-1.5 py-0.5 text-xs text-neutral-500">Enter</kbd>{" "}
+            {t("enterToContinue")} ·{" "}
+            <kbd className="rounded bg-neutral-800 px-1.5 py-0.5 text-xs text-neutral-500">Esc</kbd>{" "}
+            {t("escToGoBack")}
           </p>
         </div>
       )}
