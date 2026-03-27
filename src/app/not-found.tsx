@@ -1,19 +1,22 @@
 import Link from 'next/link';
-import Title from '@/components/common/Title'; // Assuming you're using a Title component for consistency
-import { GreenButton } from '@/components/common/Button';
 
 export default function NotFound() {
   return (
-    <div className="2xl:max-w-8xl max-w-full p-4 lg:mx-auto lg:max-w-6xl lg:p-8 xl:max-w-7xl">
-      <Title title="404 - Not Found" />
-      <div className="mt-6">
-        <p className="text-lg">Sorry, the page you were looking for could not be found.</p>
-        <p className="mt-4">
-          <GreenButton>
-            <Link href="/">Return Home</Link>
-          </GreenButton>
-        </p>
-      </div>
+    <div className="mx-auto max-w-3xl p-8 text-neutral-100">
+      <h1 className="mb-6 mt-12 border-b border-neutral-500 pb-2 text-xl font-bold">
+        404 - Not Found
+      </h1>
+      <p className="text-lg text-neutral-300">
+        Sorry, the page you were looking for could not be found.
+      </p>
+      <p className="mt-6">
+        <Link
+          href="/en/dashboard"
+          className="inline-flex rounded-lg border border-neutral-500 bg-greenish-500 px-4 py-2 text-sm uppercase tracking-wide text-neutral-950 hover:brightness-110"
+        >
+          Return Home
+        </Link>
+      </p>
     </div>
   );
 }
