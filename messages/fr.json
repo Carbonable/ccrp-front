@@ -206,7 +206,32 @@
     "userManagement": "Gestion des utilisateurs",
     "dataUpload": "Import de données",
     "resetDatabase": "Réinitialiser la base de données",
-    "resetDatabaseWarning": "Cette action réinitialisera l'intégralité de la base de données. Cette action est irréversible."
+    "resetDatabaseWarning": "Cette action réinitialisera l'intégralité de la base de données. Cette action est irréversible.",
+    "uploadsDescription": "Templates d’onboarding orientés client pour la démo CCRP. Seuls les 3 flux d’import réalistes sont exposés : Projects, Business Units et Emission Estimates.",
+    "acceptedFormats": "Formats acceptés",
+    "downloadTemplate": "Télécharger le template",
+    "downloadTemplateTitle": "Télécharger le template {title}",
+    "pleaseSelectFile": "Merci de sélectionner un fichier",
+    "uploading": "Import en cours...",
+    "selectedFile": "Fichier sélectionné",
+    "errorUploading": "Erreur pendant l’import de {title}",
+    "uploads": {
+      "projects": {
+        "title": "Projects",
+        "description": "Importer les métadonnées projet avec un template orienté client, aligné avec le tableur d’onboarding réaliste.",
+        "uploadCta": "Importer Projects"
+      },
+      "business-units": {
+        "title": "Business Units",
+        "description": "Importer les business units suivies dans le dashboard et les flows de reporting.",
+        "uploadCta": "Importer Business Units"
+      },
+      "emission-estimates": {
+        "title": "Emission Estimates",
+        "description": "Importer un calendrier annuel d’estimations d’émissions par business unit pour alimenter la demande de référence et la planification net-zero.",
+        "uploadCta": "Importer Emission Estimates"
+      }
+    }
   },
   "buAllocation": {
     "decarbonation": "Décarbonation",

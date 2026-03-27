@@ -206,7 +206,32 @@
     "userManagement": "User Management",
     "dataUpload": "Data upload",
     "resetDatabase": "Reset Database",
-    "resetDatabaseWarning": "This action will reset the entire database. This is irreversible."
+    "resetDatabaseWarning": "This action will reset the entire database. This is irreversible.",
+    "uploadsDescription": "Client-facing onboarding templates for the CCRP demo. Only the 3 realistic import flows are exposed: Projects, Business Units and Emission Estimates.",
+    "acceptedFormats": "Accepted formats",
+    "downloadTemplate": "Download template",
+    "downloadTemplateTitle": "Download {title} template",
+    "pleaseSelectFile": "Please select a file first",
+    "uploading": "Uploading...",
+    "selectedFile": "Selected",
+    "errorUploading": "Error uploading {title}",
+    "uploads": {
+      "projects": {
+        "title": "Projects",
+        "description": "Import project metadata with a client-facing template aligned with the realistic onboarding spreadsheet.",
+        "uploadCta": "Upload Projects"
+      },
+      "business-units": {
+        "title": "Business Units",
+        "description": "Import the business units that will be tracked across the dashboard and reporting flows.",
+        "uploadCta": "Upload Business Units"
+      },
+      "emission-estimates": {
+        "title": "Emission Estimates",
+        "description": "Import a yearly emissions calendar per business unit to feed baseline demand and net-zero planning.",
+        "uploadCta": "Upload Emission Estimates"
+      }
+    }
   },
   "buAllocation": {
     "decarbonation": "Decarbonation",

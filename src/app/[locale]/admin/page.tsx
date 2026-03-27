@@ -1,18 +1,17 @@
 import UploadCSV from '@/components/admin/UploadCSV';
 import DangerButton from '@/components/admin/BigRedButton';
 import { adminUploadTemplates } from '@/types/admin';
+import { getTranslations } from 'next-intl/server';
 
-export default function AdminPage() {
+export default async function AdminPage() {
   const env = process.env.NODE_ENV;
+  const t = await getTranslations('admin');
 
   return (
     <div className="container mx-auto p-4">
       <div className="mb-8 max-w-3xl">
-        <h1 className="mb-2 text-3xl font-bold">Data upload</h1>
-        <p className="text-neutral-400">
-          Client-facing onboarding templates for the CCRP demo. Only the 3 realistic import flows are exposed:
-          Projects, Business Units and Emission Estimates.
-        </p>
+        <h1 className="mb-2 text-3xl font-bold">{t('dataUpload')}</h1>
+        <p className="text-neutral-400">{t('uploadsDescription')}</p>
       </div>
 
       {adminUploadTemplates.map((template) => (

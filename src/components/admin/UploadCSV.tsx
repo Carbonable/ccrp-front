@@ -6,6 +6,7 @@ import { downloadTemplate } from '@/utils/templates';
 import { ChangeEvent, useState } from 'react';
 import { GreenButton } from '../common/Button';
 import { useRefetchAll } from '@/context/General';
+import { useTranslations } from 'next-intl';
 
 interface FileUploadSectionProps {
   template: AdminUploadTemplate;
@@ -39,6 +40,11 @@ export default function UploadCSV({ template }: FileUploadSectionProps) {
   const [file, setFile] = useState<File | null>(null);
   const [uploadResult, setUploadResult] = useState<UploadResult | null>(null);
   const { triggerRefetch } = useRefetchAll();
+  const t = useTranslations('admin');
+
+  const title = t(`uploads.${template.key}.title`);
+  const description = t(`uploads.${template.key}.description`);
+  const uploadCta = t(`uploads.${template.key}.uploadCta`);
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
@@ -51,12 +57,12 @@ export default function UploadCSV({ template }: FileUploadSectionProps) {
     if (!file) {
       setUploadResult({
         success: false,
-        message: 'Please select a file first',
+        message: t('pleaseSelectFile'),
       });
       return;
     }
 
-    setUploadResult({ success: true, message: 'Uploading...' });
+    setUploadResult({ success: true, message: t('uploading') });
     const formData = new FormData();
     formData.append('file', file);
     formData.append('type', template.uploadType);
@@ -71,7 +77,7 @@ export default function UploadCSV({ template }: FileUploadSectionProps) {
     } catch (error) {
       setUploadResult({
         success: false,
-        message: `Error uploading ${template.title}: ${
+        message: `${t('errorUploading', { title })}: ${
           error instanceof Error ? error.message : String(error)
         }`,
       });
@@ -86,17 +92,19 @@ export default function UploadCSV({ template }: FileUploadSectionProps) {
     <div className="mb-6 rounded-2xl border border-opacityLight-10 bg-opacityLight-5 p-5">
       <div className="mb-4 flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
         <div>
-          <h2 className="text-lg font-semibold text-neutral-100">{template.title}</h2>
-          <p className="mt-1 max-w-2xl text-sm text-neutral-400">{template.description}</p>
-          <p className="mt-2 text-xs text-neutral-500">Accepted formats: {template.acceptedFormats}</p>
+          <h2 className="text-lg font-semibold text-neutral-100">{title}</h2>
+          <p className="mt-1 max-w-2xl text-sm text-neutral-400">{description}</p>
+          <p className="mt-2 text-xs text-neutral-500">
+            {t('acceptedFormats')}: {template.acceptedFormats}
+          </p>
         </div>
         <button
           onClick={handleDownloadTemplate}
           className="flex items-center gap-1 self-start rounded border border-opacityLight-10 bg-neutral-800 px-3 py-2 text-xs text-neutral-300 transition-colors hover:border-neutral-400 hover:bg-opacityLight-10 hover:text-neutral-100"
-          title={`Download ${template.title} template`}
+          title={t('downloadTemplateTitle', { title })}
         >
           <DownloadIcon />
-          Download template
+          {t('downloadTemplate')}
         </button>
       </div>
 
@@ -111,10 +119,14 @@ export default function UploadCSV({ template }: FileUploadSectionProps) {
               : ''
           }`}
         />
-        <GreenButton onClick={handleUpload}>{template.uploadCta}</GreenButton>
+        <GreenButton onClick={handleUpload}>{uploadCta}</GreenButton>
       </div>
 
-      {file && <p className="mt-3 text-xs text-neutral-500">Selected: {file.name}</p>}
+      {file && (
+        <p className="mt-3 text-xs text-neutral-500">
+          {t('selectedFile')}: {file.name}
+        </p>
+      )}
 
       {uploadResult && (
         <p className={`mt-3 text-sm ${uploadResult.success ? 'text-green-500' : 'text-red-500'}`}>
