@@ -5,6 +5,7 @@ import { GET_STOCKS } from '@/graphql/queries/stock';
 import { CARBONABLE_COMPANY_ID, RESULT_PER_PAGE } from '@/utils/constant';
 import { useQuery } from '@apollo/client';
 import { useEffect, useState } from 'react';
+import { useTranslations } from 'next-intl';
 import Title from '../../common/Title';
 import { ErrorReloadTable, NoDataTable } from '../../common/ErrorReload';
 import TableLoading from '@/components/table/TableLoading';
@@ -17,6 +18,7 @@ import ExportButton from '@/components/common/ExportButton';
 export default function OrdersAnnualTable() {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState<number>(1);
+  const t = useTranslations('tables');
 
   const { loading, error, data, refetch } = useQuery(GET_ORDERS, {
     variables: {
@@ -62,12 +64,12 @@ export default function OrdersAnnualTable() {
   }, [currentPage]);
 
   const exportColumns = [
-    { header: 'For Year', key: 'order_for_year' },
-    { header: 'Vintage', key: 'vintage' },
-    { header: 'Quantity', key: 'quantity' },
-    { header: 'Deficit', key: 'deficit' },
-    { header: 'Created At', key: 'created_at' },
-    { header: 'Status', key: 'status' },
+    { header: t('forYear'), key: 'order_for_year' },
+    { header: t('vintage'), key: 'vintage' },
+    { header: t('quantity'), key: 'quantity' },
+    { header: t('deficit'), key: 'deficit' },
+    { header: t('createdAt'), key: 'created_at' },
+    { header: t('status'), key: 'status' },
   ];
   const exportData: Record<string, unknown>[] = (orders || []).map((d: OrderData) => ({
     order_for_year: d.order_for_year,
@@ -81,19 +83,19 @@ export default function OrdersAnnualTable() {
   return (
     <div className="mt-12 w-full">
       <div className="flex items-center justify-between">
-        <Title title="Orders - Annual" />
+        <Title title={t('ordersAnnual')} />
         <ExportButton data={exportData} columns={exportColumns} tableName="orders-annual" />
       </div>
       <div className="font-inter mt-4 w-full overflow-x-auto border border-neutral-600 text-sm">
         <table className="min-w-full table-auto text-left">
           <thead className="h-10 whitespace-nowrap bg-neutral-500 text-neutral-100">
             <tr>
-              <th className="sticky left-0 z-10 bg-neutral-500 px-4">For Year</th>
-              <th className="sticky left-0 z-10 bg-neutral-500 px-4">Vintage</th>
-              <th className="px-4">Quantity</th>
-              <th className="px-4">Deficit</th>
-              <th className="px-4">Created at</th>
-              <th className="px-4">Status</th>
+              <th className="sticky left-0 z-10 bg-neutral-500 px-4">{t('forYear')}</th>
+              <th className="sticky left-0 z-10 bg-neutral-500 px-4">{t('vintage')}</th>
+              <th className="px-4">{t('quantity')}</th>
+              <th className="px-4">{t('deficit')}</th>
+              <th className="px-4">{t('createdAt')}</th>
+              <th className="px-4">{t('status')}</th>
             </tr>
           </thead>
           <tbody>

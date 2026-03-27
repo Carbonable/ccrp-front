@@ -159,7 +159,26 @@
     "projectsCountries": "Projects Countries",
     "projectsStandards": "Projects Standards",
     "projectsTypes": "Projects Types",
-    "projectsMetrics": "Projects metrics"
+    "projectsMetrics": "Projects metrics",
+    "netZeroLegend": {
+      "emissions": "Emissions",
+      "exPost": "Ex Post",
+      "exAnte": "Ex Ante",
+      "retired": "Retired",
+      "target": "Target",
+      "actual": "Actual"
+    },
+    "axes": {
+      "tons": "Tons",
+      "targetPercent": "Target (%)"
+    },
+    "tooltip": {
+      "carbonEmission": "Carbon emission",
+      "co2Contribution": "CO₂ contribution",
+      "retired": "Retired",
+      "target": "Target",
+      "actual": "Actual"
+    }
   },
   "notifications": {
     "title": "Notifications",

@@ -47,7 +47,7 @@ export default function ExportButton({ data, columns, tableName }: ExportButtonP
         title={t('export')}
       >
         <ArrowDownTrayIcon className="h-3.5 w-3.5" />
-        Export
+        {t('export')}
         <ChevronDownIcon className="h-3 w-3" />
       </button>
 

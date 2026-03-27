@@ -15,6 +15,7 @@ import ExportButton from '@/components/common/ExportButton';
 export default function FinancialAnalysisTable() {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState<number>(1);
+  const t = useTranslations('tables');
 
   const { loading, error, data, refetch } = useQuery(FINANCIAL_ANALYSIS, {
     variables: {
@@ -60,17 +61,17 @@ export default function FinancialAnalysisTable() {
   }, [currentPage]);
 
   const exportColumns = [
-    { header: 'Time Period', key: 'year' },
-    { header: 'Average Spot price ($/t)', key: 'avg_purchased_price' },
-    { header: 'Average Forward price ($/t)', key: 'avg_issued_price' },
-    { header: 'Average price ($/t)', key: 'avg_price' },
-    { header: 'Total Spot amount ($)', key: 'total_purchased_amount' },
-    { header: 'Total Forward amount ($)', key: 'total_issued_amount' },
-    { header: 'Total amount ($)', key: 'total_amount' },
-    { header: 'All time avg purchased price ($/t)', key: 'all_time_avg_purchased_price' },
-    { header: 'All time avg issued price ($/t)', key: 'all_time_avg_issued_price' },
-    { header: 'All time avg price ($/t)', key: 'all_time_avg_price' },
-    { header: 'Cumulative Total Amount ($)', key: 'cumulative_total_amount' },
+    { header: t('timePeriod'), key: 'year' },
+    { header: t('avgSpotPrice'), key: 'avg_purchased_price' },
+    { header: t('avgForwardPrice'), key: 'avg_issued_price' },
+    { header: t('avgPrice'), key: 'avg_price' },
+    { header: t('totalSpotAmount'), key: 'total_purchased_amount' },
+    { header: t('totalForwardAmount'), key: 'total_issued_amount' },
+    { header: t('totalAmount'), key: 'total_amount' },
+    { header: t('allTimeAvgPurchasedPrice'), key: 'all_time_avg_purchased_price' },
+    { header: t('allTimeAvgIssuedPrice'), key: 'all_time_avg_issued_price' },
+    { header: t('allTimeAvgPrice'), key: 'all_time_avg_price' },
+    { header: t('cumulativeTotalAmount'), key: 'cumulative_total_amount' },
   ];
   const exportData: Record<string, unknown>[] = (financialAnalysis || []).map((d: FinancialAnalysisData) => ({
     year: d.year,
@@ -89,24 +90,24 @@ export default function FinancialAnalysisTable() {
   return (
     <div className="mt-12 w-full">
       <div className="flex items-center justify-between">
-        <Title title="Financial analysis" />
+        <Title title={t('financialAnalysis')} />
         <ExportButton data={exportData} columns={exportColumns} tableName="financial-analysis" />
       </div>
       <div className="font-inter mt-4 w-full overflow-x-auto border border-neutral-600 text-sm">
         <table className="min-w-full table-auto text-left">
           <thead className="h-10 whitespace-nowrap bg-neutral-500 text-neutral-100">
             <tr>
-              <th className="sticky left-0 z-10 bg-neutral-500 px-4">Time Period</th>
-              <th className="px-4">Average Spot price ($/t)</th>
-              <th className="px-4">Average Forward price ($/t)</th>
-              <th className="px-4">Average price ($/t)</th>
-              <th className="px-4">Total Spot amount ($)</th>
-              <th className="px-4">Total Forward amount ($)</th>
-              <th className="px-4">Total amount ($)</th>
-              <th className="px-4">All time avg purchased price ($/t)</th>
-              <th className="px-4">All time avg issued price ($/t)</th>
-              <th className="px-4">All time avg price ($/t)</th>
-              <th className="px-4">Cumulative Total Amount ($)</th>
+              <th className="sticky left-0 z-10 bg-neutral-500 px-4">{t('timePeriod')}</th>
+              <th className="px-4">{t('avgSpotPrice')}</th>
+              <th className="px-4">{t('avgForwardPrice')}</th>
+              <th className="px-4">{t('avgPrice')}</th>
+              <th className="px-4">{t('totalSpotAmount')}</th>
+              <th className="px-4">{t('totalForwardAmount')}</th>
+              <th className="px-4">{t('totalAmount')}</th>
+              <th className="px-4">{t('allTimeAvgPurchasedPrice')}</th>
+              <th className="px-4">{t('allTimeAvgIssuedPrice')}</th>
+              <th className="px-4">{t('allTimeAvgPrice')}</th>
+              <th className="px-4">{t('cumulativeTotalAmount')}</th>
             </tr>
           </thead>
           <tbody>

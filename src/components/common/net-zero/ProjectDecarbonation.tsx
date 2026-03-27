@@ -15,7 +15,6 @@ import {
   XAxis,
   YAxis,
 } from 'recharts';
-import { useEffect, useState } from 'react';
 import { CustomLegend } from '../../common/CustomGraphLegend';
 import { NetZeroPlanning } from '@/graphql/__generated__/graphql';
 import Title from '../../common/Title';
@@ -35,36 +34,9 @@ export default function ProjectDecarbonationComponent({
   data,
   refetch,
 }: ProjectDecarbonationProps) {
-  const t = useTranslations('tables');
-  const [bar1Name] = useState('Ex Post');
-  const [bar2Name] = useState('Ex Ante');
-
-  const [legendPayload, setLegendPayload] = useState([
-    {
-      name: 'Emissions',
-      color: '#334566',
-    },
-    {
-      name: 'Ex Post',
-      color: '#046B4D',
-    },
-    {
-      name: 'Ex Ante',
-      color: '#06A475',
-    },
-    {
-      name: 'Retired',
-      color: '#0E3725',
-    },
-    {
-      name: 'Target',
-      color: '#D0D1D6',
-    },
-    {
-      name: 'Actual',
-      color: '#877B44',
-    },
-  ]);
+  const tTables = useTranslations('tables');
+  const tCharts = useTranslations('charts');
+  const tCommon = useTranslations('common');
 
   if (error) {
     console.error(error);
@@ -74,39 +46,19 @@ export default function ProjectDecarbonationComponent({
     refetch();
   };
 
-  useEffect(() => {
-    setLegendPayload([
-      {
-        name: 'Emissions',
-        color: '#334566',
-      },
-      {
-        name: bar1Name,
-        color: '#046B4D',
-      },
-      {
-        name: bar2Name,
-        color: '#06A475',
-      },
-      {
-        name: 'Retired',
-        color: '#0E3725',
-      },
-      {
-        name: 'Target',
-        color: '#D0D1D6',
-      },
-      {
-        name: 'Actual',
-        color: '#877B44',
-      },
-    ]);
-  }, [bar1Name, bar2Name]);
+  const netZeroPlanning: NetZeroPlanning[] = data?.netZeroPlanning || [];
 
-  const netZeroPlanning: NetZeroPlanning[] = data?.netZeroPlanning;
+  const legendPayload = [
+    { name: tCharts('netZeroLegend.emissions'), color: '#334566' },
+    { name: tCharts('netZeroLegend.exPost'), color: '#046B4D' },
+    { name: tCharts('netZeroLegend.exAnte'), color: '#06A475' },
+    { name: tCharts('netZeroLegend.retired'), color: '#0E3725' },
+    { name: tCharts('netZeroLegend.target'), color: '#D0D1D6' },
+    { name: tCharts('netZeroLegend.actual'), color: '#877B44' },
+  ];
 
   if (loading) {
-    return <div className="mt-12 w-full">Loading charts ...</div>;
+    return <div className="mt-12 w-full">{tCommon('loadingCharts')}</div>;
   }
 
   if (error) {
@@ -117,15 +69,15 @@ export default function ProjectDecarbonationComponent({
     );
   }
 
-  const CustomTooltip = ({ active, payload, label }: any) => {
+  const CustomTooltip = ({ active, payload }: any) => {
     if (active && payload && payload.length) {
       return (
         <div className="font-inter rounded-lg bg-neutral-700 px-8 pb-4 pt-4 text-center text-xs font-extralight text-neutral-100">
-          <p>{`Carbon emission: ${payload[0].value}t`}</p>
-          <p>{`CO² contribution: ${parseInt(payload[1].value + payload[2].value)}t`}</p>
-          <p>{`Retired: ${parseInt(payload[3].value)}t`}</p>
-          <p>{`Target: ${payload[4].value}%`}</p>
-          <p>{`Actual: ${payload[5].value}%`}</p>
+          <p>{`${tCharts('tooltip.carbonEmission')}: ${payload[0].value}t`}</p>
+          <p>{`${tCharts('tooltip.co2Contribution')}: ${parseInt(payload[1].value + payload[2].value)}t`}</p>
+          <p>{`${tCharts('tooltip.retired')}: ${parseInt(payload[3].value)}t`}</p>
+          <p>{`${tCharts('tooltip.target')}: ${payload[4].value}%`}</p>
+          <p>{`${tCharts('tooltip.actual')}: ${payload[5].value}%`}</p>
         </div>
       );
     }
@@ -134,8 +86,8 @@ export default function ProjectDecarbonationComponent({
   };
 
   return (
-    <div className={`mt-8 h-full w-full px-0`}>
-      <Title title={t('netZeroPlanning')} />
+    <div className="mt-8 h-full w-full px-0">
+      <Title title={tTables('netZeroPlanning')} />
       <ResponsiveContainer width="100%" height="100%" aspect={2.2}>
         <ComposedChart
           width={300}
@@ -154,33 +106,40 @@ export default function ProjectDecarbonationComponent({
         >
           <CartesianGrid stroke="#2B2E36" />
           <XAxis dataKey="vintage" />
-          <YAxis yAxisId="left" domain={[0, 'dataMax']} label={{ value: 'Tons', angle: -90, position: 'insideLeft' }} />
+          <YAxis
+            yAxisId="left"
+            domain={[0, 'dataMax']}
+            label={{ value: tCharts('axes.tons'), angle: -90, position: 'insideLeft' }}
+          />
           <YAxis
             yAxisId="right"
             orientation="right"
-            label={{ value: 'Target (%)', angle: 90, position: 'insideRight' }}
+            label={{ value: tCharts('axes.targetPercent'), angle: 90, position: 'insideRight' }}
             domain={[0, 100]}
           />
           <Tooltip content={<CustomTooltip />} />
           {!isFullScreen && <Legend />}
           <Bar
             dataKey="emission"
-            name="Emission"
+            name={tCharts('netZeroLegend.emissions')}
             yAxisId="left"
             fill="#334566"
             radius={[10, 10, 0, 0]}
           />
-          <Bar dataKey="ex_post_count" name={bar1Name} yAxisId="left" stackId="a" fill="#046B4D">
+          <Bar
+            dataKey="ex_post_count"
+            name={tCharts('netZeroLegend.exPost')}
+            yAxisId="left"
+            stackId="a"
+            fill="#046B4D"
+          >
             {netZeroPlanning.map((entry: any, index: number) => {
-              return (
-                // @ts-ignore
-                <Cell key={`cell-${index}`} radius={entry.ex_ante_count === 0 ? 10 : undefined} />
-              );
+              return <Cell key={`cell-${index}`} radius={entry.ex_ante_count === 0 ? 10 : undefined} />;
             })}
           </Bar>
           <Bar
             dataKey="ex_ante_count"
-            name={bar2Name}
+            name={tCharts('netZeroLegend.exAnte')}
             yAxisId="left"
             stackId="a"
             barSize={10}
@@ -189,14 +148,14 @@ export default function ProjectDecarbonationComponent({
           />
           <Bar
             dataKey="retired"
-            name="Retired"
+            name={tCharts('netZeroLegend.retired')}
             yAxisId="left"
             fill="#0E3725"
             radius={[10, 10, 0, 0]}
           />
           <Line
             type="monotone"
-            name="target"
+            name={tCharts('netZeroLegend.target')}
             yAxisId="right"
             dataKey="target"
             stroke="#D0D1D6"
@@ -206,7 +165,7 @@ export default function ProjectDecarbonationComponent({
           />
           <Line
             type="monotone"
-            name="actual"
+            name={tCharts('netZeroLegend.actual')}
             yAxisId="right"
             dataKey="actual"
             stroke="#877B44"

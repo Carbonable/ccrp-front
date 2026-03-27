@@ -5,6 +5,7 @@ import { CUMULATIVE } from '@/graphql/queries/net-zero';
 import { CARBONABLE_COMPANY_ID, RESULT_PER_PAGE } from '@/utils/constant';
 import { useQuery } from '@apollo/client';
 import { useEffect, useState } from 'react';
+import { useTranslations } from 'next-intl';
 import Title from '../../common/Title';
 import TableLoading from '@/components/table/TableLoading';
 import { ErrorReloadTable, NoDataTable } from '../../common/ErrorReload';
@@ -15,6 +16,7 @@ import ExportButton from '@/components/common/ExportButton';
 export default function ProjectDecarbonationTableCumulative() {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState<number>(1);
+  const t = useTranslations('tables');
 
   const { loading, error, data, refetch } = useQuery(CUMULATIVE, {
     variables: {
@@ -60,12 +62,12 @@ export default function ProjectDecarbonationTableCumulative() {
   }, [currentPage]);
 
   const exportColumns = [
-    { header: 'Time Period', key: 'time_period' },
-    { header: 'Cumulative Emissions (t)', key: 'emissions' },
-    { header: 'Cumulative Retired (t)', key: 'ex_post_retired' },
-    { header: 'Cumulative Forward (t)', key: 'ex_post_issued' },
-    { header: 'Cumulative Spot (t)', key: 'ex_post_purchased' },
-    { header: 'Cumulative Emission Debt (t)', key: 'debt' },
+    { header: t('timePeriod'), key: 'time_period' },
+    { header: t('cumulativeEmissions'), key: 'emissions' },
+    { header: t('cumulativeRetired'), key: 'ex_post_retired' },
+    { header: t('cumulativeForward'), key: 'ex_post_issued' },
+    { header: t('cumulativeSpot'), key: 'ex_post_purchased' },
+    { header: t('cumulativeEmissionDebt'), key: 'debt' },
   ];
   const exportData: Record<string, unknown>[] = (cumulative || []).map((d: any) => ({
     time_period: d.time_period,
@@ -79,19 +81,19 @@ export default function ProjectDecarbonationTableCumulative() {
   return (
     <div className="mt-12 w-full">
       <div className="flex items-center justify-between">
-        <Title title="Stock - Cumulative" />
+        <Title title={t('stockCumulative')} />
         <ExportButton data={exportData} columns={exportColumns} tableName="stock-cumulative" />
       </div>
       <div className="font-inter mt-4 w-full overflow-x-auto border border-neutral-600 text-sm">
         <table className="min-w-full table-auto text-left">
           <thead className="h-10 whitespace-nowrap bg-neutral-500 text-neutral-100">
             <tr>
-              <th className="sticky left-0 z-10 bg-neutral-500 px-4">Time Period</th>
-              <th className="px-4">Cumulative Emissions (t)</th>
-              <th className="px-4">Cumulative Retired (t)</th>
-              <th className="px-4">Cumulative Forward (t)</th>
-              <th className="px-4">Cumulative Spot (t)</th>
-              <th className="px-4">Cumulative Emission Debt (t)</th>
+              <th className="sticky left-0 z-10 bg-neutral-500 px-4">{t('timePeriod')}</th>
+              <th className="px-4">{t('cumulativeEmissions')}</th>
+              <th className="px-4">{t('cumulativeRetired')}</th>
+              <th className="px-4">{t('cumulativeForward')}</th>
+              <th className="px-4">{t('cumulativeSpot')}</th>
+              <th className="px-4">{t('cumulativeEmissionDebt')}</th>
             </tr>
           </thead>
           <tbody>
