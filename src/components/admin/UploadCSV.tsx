@@ -1,14 +1,14 @@
 'use client';
 
 import { uploadFile } from '@/actions/admin/csvUpload';
-import { CURVE_POINTS, DEMAND, FileType } from '@/types/admin';
+import { AdminUploadTemplate, EMISSION_ESTIMATES, TemplateKey } from '@/types/admin';
 import { downloadTemplate } from '@/utils/templates';
 import { ChangeEvent, useState } from 'react';
 import { GreenButton } from '../common/Button';
 import { useRefetchAll } from '@/context/General';
 
 interface FileUploadSectionProps {
-  type: FileType;
+  template: AdminUploadTemplate;
 }
 
 interface UploadResult {
@@ -35,7 +35,7 @@ function DownloadIcon() {
   );
 }
 
-export default function UploadCSV({ type }: FileUploadSectionProps) {
+export default function UploadCSV({ template }: FileUploadSectionProps) {
   const [file, setFile] = useState<File | null>(null);
   const [uploadResult, setUploadResult] = useState<UploadResult | null>(null);
   const { triggerRefetch } = useRefetchAll();
@@ -43,6 +43,7 @@ export default function UploadCSV({ type }: FileUploadSectionProps) {
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
       setFile(e.target.files[0]);
+      setUploadResult(null);
     }
   };
 
@@ -58,18 +59,19 @@ export default function UploadCSV({ type }: FileUploadSectionProps) {
     setUploadResult({ success: true, message: 'Uploading...' });
     const formData = new FormData();
     formData.append('file', file);
-    formData.append('type', type);
+    formData.append('type', template.uploadType);
+    formData.append('templateKey', template.key);
 
     try {
       const result = await uploadFile(formData);
       setUploadResult(result);
-      if (type === DEMAND || type === CURVE_POINTS) {
+      if (template.uploadType === EMISSION_ESTIMATES) {
         triggerRefetch();
       }
     } catch (error) {
       setUploadResult({
         success: false,
-        message: `Error uploading ${type} file: ${
+        message: `Error uploading ${template.title}: ${
           error instanceof Error ? error.message : String(error)
         }`,
       });
@@ -77,37 +79,45 @@ export default function UploadCSV({ type }: FileUploadSectionProps) {
   };
 
   const handleDownloadTemplate = () => {
-    downloadTemplate(type);
+    downloadTemplate(template.key as TemplateKey);
   };
 
   return (
-    <div className="mb-6 rounded border border-opacityLight-10 p-4">
-      <div className="mb-2 flex items-center gap-3">
-        <h2 className="font-semibold capitalize">{type}</h2>
+    <div className="mb-6 rounded-2xl border border-opacityLight-10 bg-opacityLight-5 p-5">
+      <div className="mb-4 flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
+        <div>
+          <h2 className="text-lg font-semibold text-neutral-100">{template.title}</h2>
+          <p className="mt-1 max-w-2xl text-sm text-neutral-400">{template.description}</p>
+          <p className="mt-2 text-xs text-neutral-500">Accepted formats: {template.acceptedFormats}</p>
+        </div>
         <button
           onClick={handleDownloadTemplate}
-          className="flex items-center gap-1 rounded border border-opacityLight-10 bg-opacityLight-5 px-2 py-1 text-xs text-neutral-300 transition-colors hover:border-neutral-400 hover:bg-opacityLight-10 hover:text-neutral-100"
-          title={`Download ${type} template`}
+          className="flex items-center gap-1 self-start rounded border border-opacityLight-10 bg-neutral-800 px-3 py-2 text-xs text-neutral-300 transition-colors hover:border-neutral-400 hover:bg-opacityLight-10 hover:text-neutral-100"
+          title={`Download ${template.title} template`}
         >
           <DownloadIcon />
-          Template
+          Download template
         </button>
       </div>
-      <input
-        type="file"
-        accept=".csv"
-        onChange={handleFileChange}
-        className={`w-fit rounded-xl border border-opacityLight-10 bg-opacityLight-5 px-3 py-3 text-left outline-0 focus:border-neutral-300 ${
-          uploadResult !== null && uploadResult.success === false
-            ? 'border-red-500 focus:border-red-500'
-            : ''
-        }`}
-      />
-      <GreenButton onClick={handleUpload} className="ml-2">
-        Upload {type}
-      </GreenButton>
+
+      <div className="flex flex-col gap-3 md:flex-row md:items-center">
+        <input
+          type="file"
+          accept={template.acceptedFormats}
+          onChange={handleFileChange}
+          className={`w-full rounded-xl border border-opacityLight-10 bg-opacityLight-5 px-3 py-3 text-left outline-0 focus:border-neutral-300 md:w-auto ${
+            uploadResult !== null && uploadResult.success === false
+              ? 'border-red-500 focus:border-red-500'
+              : ''
+          }`}
+        />
+        <GreenButton onClick={handleUpload}>{template.uploadCta}</GreenButton>
+      </div>
+
+      {file && <p className="mt-3 text-xs text-neutral-500">Selected: {file.name}</p>}
+
       {uploadResult && (
-        <p className={`mt-2 ${uploadResult.success ? 'text-green-600' : 'text-red-600'}`}>
+        <p className={`mt-3 text-sm ${uploadResult.success ? 'text-green-500' : 'text-red-500'}`}>
           {uploadResult.message}
         </p>
       )}
