@@ -1,7 +1,8 @@
 'use client';
 
-import { createContext, useContext, useState, useCallback, ReactNode } from 'react';
-import { Notification, MOCK_NOTIFICATIONS } from '@/data/notifications';
+import { createContext, useContext, useState, useCallback, ReactNode, useEffect } from 'react';
+import { useLocale } from 'next-intl';
+import { Notification, getMockNotifications } from '@/data/notifications';
 
 interface NotificationContextType {
   notifications: Notification[];
@@ -13,7 +14,20 @@ interface NotificationContextType {
 const NotificationContext = createContext<NotificationContextType | null>(null);
 
 export function NotificationProvider({ children }: { children: ReactNode }) {
-  const [notifications, setNotifications] = useState<Notification[]>(MOCK_NOTIFICATIONS);
+  const locale = useLocale();
+  const [notifications, setNotifications] = useState<Notification[]>(() => getMockNotifications(locale));
+
+  useEffect(() => {
+    setNotifications((prev) => {
+      const translated = getMockNotifications(locale);
+      const readById = new Map(prev.map((notification) => [notification.id, notification.read]));
+
+      return translated.map((notification) => ({
+        ...notification,
+        read: readById.get(notification.id) ?? notification.read,
+      }));
+    });
+  }, [locale]);
 
   const unreadCount = notifications.filter((n) => !n.read).length;
 

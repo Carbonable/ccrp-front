@@ -181,6 +181,19 @@
     "title": "Notifications",
     "preferences": "Préférences de notification",
     "noNotifications": "Aucune notification",
+    "markAllRead": "Tout marquer comme lu",
+    "managePreferences": "Gérer les préférences de notification",
+    "justNow": "À l'instant",
+    "hoursAgo": "il y a {count} h",
+    "yesterday": "Hier",
+    "types": {
+      "project": "Projet",
+      "stock": "Stock",
+      "critical": "Critique",
+      "update": "Mise à jour",
+      "deadline": "Échéance",
+      "review": "Revue"
+    },
     "email": "Notifications par email",
     "inApp": "Notifications in-app",
     "mobile": "Notifications mobiles"

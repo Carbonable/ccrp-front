@@ -181,6 +181,19 @@
     "title": "Notifications",
     "preferences": "Notification preferences",
     "noNotifications": "No notifications",
+    "markAllRead": "Mark all read",
+    "managePreferences": "Manage notification preferences",
+    "justNow": "Just now",
+    "hoursAgo": "{count}h ago",
+    "yesterday": "Yesterday",
+    "types": {
+      "project": "Project",
+      "stock": "Stock",
+      "critical": "Critical",
+      "update": "Update",
+      "deadline": "Deadline",
+      "review": "Review"
+    },
     "email": "Email notifications",
     "inApp": "In-app notifications",
     "mobile": "Mobile notifications"

@@ -6,31 +6,16 @@ import { Link } from '@/i18n/navigation';
 import { BellIcon, XMarkIcon, CheckIcon } from '@heroicons/react/24/outline';
 import { useNotifications } from '@/context/NotificationContext';
 import { NotificationType } from '@/data/notifications';
+import { useLocale, useTranslations } from 'next-intl';
 
-const TYPE_CONFIG: Record<
-  NotificationType,
-  { label: string; className: string }
-> = {
-  project: { label: 'Project', className: 'bg-blue-900/60 text-blue-300 border border-blue-700' },
-  stock: { label: 'Stock', className: 'bg-yellow-900/60 text-yellow-300 border border-yellow-700' },
-  critical: { label: 'Critical', className: 'bg-red-900/60 text-red-300 border border-red-700' },
-  update: { label: 'Update', className: 'bg-green-900/60 text-green-300 border border-green-700' },
-  deadline: { label: 'Deadline', className: 'bg-orange-900/60 text-orange-300 border border-orange-700' },
-  review: { label: 'Review', className: 'bg-purple-900/60 text-purple-300 border border-purple-700' },
+const TYPE_CONFIG: Record<NotificationType, string> = {
+  project: 'bg-blue-900/60 text-blue-300 border border-blue-700',
+  stock: 'bg-yellow-900/60 text-yellow-300 border border-yellow-700',
+  critical: 'bg-red-900/60 text-red-300 border border-red-700',
+  update: 'bg-green-900/60 text-green-300 border border-green-700',
+  deadline: 'bg-orange-900/60 text-orange-300 border border-orange-700',
+  review: 'bg-purple-900/60 text-purple-300 border border-purple-700',
 };
-
-function formatDate(iso: string): string {
-  const date = new Date(iso);
-  const now = new Date();
-  const diffMs = now.getTime() - date.getTime();
-  const diffH = Math.floor(diffMs / (1000 * 60 * 60));
-  const diffD = Math.floor(diffH / 24);
-
-  if (diffH < 1) return 'À l\'instant';
-  if (diffH < 24) return `${diffH}h ago`;
-  if (diffD === 1) return 'Yesterday';
-  return date.toLocaleDateString('en-US', { day: 'numeric', month: 'short' });
-}
 
 interface Props {
   open: boolean;
@@ -43,6 +28,21 @@ export default function NotificationDropdown({ open, onClose, anchorRef }: Props
   const ref = useRef<HTMLDivElement>(null);
   const [position, setPosition] = useState({ top: 0, left: 0 });
   const [mounted, setMounted] = useState(false);
+  const locale = useLocale();
+  const t = useTranslations('notifications');
+
+  function formatDate(iso: string): string {
+    const date = new Date(iso);
+    const now = new Date();
+    const diffMs = now.getTime() - date.getTime();
+    const diffH = Math.floor(diffMs / (1000 * 60 * 60));
+    const diffD = Math.floor(diffH / 24);
+
+    if (diffH < 1) return t('justNow');
+    if (diffH < 24) return t('hoursAgo', { count: diffH });
+    if (diffD === 1) return t('yesterday');
+    return date.toLocaleDateString(locale, { day: 'numeric', month: 'short' });
+  }
 
   useEffect(() => {
     setMounted(true);
@@ -98,7 +98,7 @@ export default function NotificationDropdown({ open, onClose, anchorRef }: Props
       <div className="flex items-center justify-between border-b border-neutral-700 px-4 py-3">
         <div className="flex items-center gap-2">
           <BellIcon className="h-5 w-5 text-greenish-500" />
-          <span className="font-semibold text-neutral-100">Notifications</span>
+          <span className="font-semibold text-neutral-100">{t('title')}</span>
           {unreadCount > 0 && (
             <span className="rounded-full bg-greenish-600 px-2 py-0.5 text-xs font-bold text-white">
               {unreadCount}
@@ -112,7 +112,7 @@ export default function NotificationDropdown({ open, onClose, anchorRef }: Props
               className="flex items-center gap-1 rounded-md px-2 py-1 text-xs text-neutral-400 transition-colors hover:bg-neutral-800 hover:text-greenish-400"
             >
               <CheckIcon className="h-3.5 w-3.5" />
-              Mark all read
+              {t('markAllRead')}
             </button>
           )}
           <button
@@ -128,11 +128,11 @@ export default function NotificationDropdown({ open, onClose, anchorRef }: Props
         {notifications.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-12 text-neutral-500">
             <BellIcon className="mb-2 h-10 w-10 opacity-40" />
-            <p className="text-sm">No notifications</p>
+            <p className="text-sm">{t('noNotifications')}</p>
           </div>
         ) : (
           notifications.map((notif) => {
-            const typeConf = TYPE_CONFIG[notif.type];
+            const typeClassName = TYPE_CONFIG[notif.type];
             return (
               <Link
                 key={notif.id}
@@ -171,9 +171,9 @@ export default function NotificationDropdown({ open, onClose, anchorRef }: Props
                   </p>
                   <div className="mt-1.5">
                     <span
-                      className={`inline-block rounded-full px-2 py-0.5 text-[10px] font-medium ${typeConf.className}`}
+                      className={`inline-block rounded-full px-2 py-0.5 text-[10px] font-medium ${typeClassName}`}
                     >
-                      {typeConf.label}
+                      {t(`types.${notif.type}`)}
                     </span>
                   </div>
                 </div>
@@ -189,7 +189,7 @@ export default function NotificationDropdown({ open, onClose, anchorRef }: Props
           onClick={onClose}
           className="text-xs text-neutral-500 transition-colors hover:text-greenish-400"
         >
-          Manage notification preferences →
+          {t('managePreferences')} →
         </Link>
       </div>
     </div>
