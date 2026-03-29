@@ -6,6 +6,7 @@ import { adminLink, links } from './links';
 import Logout from './Logout';
 import { useAuth } from '../auth/AuthProvider';
 import { useTranslations } from 'next-intl';
+import AgentMenuButton from '@/components/agent/AgentMenuButton';
 
 export default function Menu({
   openMenu,
@@ -41,6 +42,9 @@ export default function Menu({
               </div>
             ),
         )}
+        <div className="my-2">
+          <AgentMenuButton setOpenMenu={setOpenMenu} />
+        </div>
         {isAdmin() && (
           <div key="admin_mobile" className="my-2">
             <NavLinkInside link={adminLink} setOpenMenu={setOpenMenu} />

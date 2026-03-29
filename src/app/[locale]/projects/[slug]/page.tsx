@@ -5,6 +5,7 @@ import ImageGallery from '@/components/project/overview/ImagesGallery';
 import SectionWrapper from '@/components/project/overview/SectionWrapper';
 import { SanityContent } from '@/utils/sanity/types';
 import { useEffect, useState } from 'react';
+import AgentPageContext from '@/components/agent/AgentPageContext';
 
 export default function ProjectPage({ params }: Readonly<{ params: { slug: string } }>) {
   const [content, setContent] = useState<SanityContent | undefined>(undefined);
@@ -32,6 +33,12 @@ export default function ProjectPage({ params }: Readonly<{ params: { slug: strin
 
   return (
     <>
+      <AgentPageContext
+        entities={{
+          projectSlug: params.slug,
+          projectName: content.title || params.slug,
+        }}
+      />
       {content &&
         content.projectOverview &&
         content.projectOverview.sections.length > 0 &&
