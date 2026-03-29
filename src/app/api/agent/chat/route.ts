@@ -84,9 +84,49 @@ function buildTrustedUserContext(
   };
 }
 
-function buildSuggestedActions(message: string, shouldReport: boolean): AgentChatAction[] {
+type UserIntent = 'bug' | 'feature' | 'question' | 'general';
+
+function inferUserIntent(message: string): UserIntent {
+  const value = message.toLowerCase();
+
+  if (
+    /(feature|request|improve|improvement|enhancement|would like|i want|please add|missing|j'aimerais|je voudrais|ça serait bien|ce serait bien|ajouter|améliorer|développer|developper|develop|devleopp)/.test(
+      value,
+    )
+  ) {
+    return 'feature';
+  }
+
+  if (/(bug|error|erreur|broken|fails?|failure|crash|issue|incident|ne marche pas|bloqu|500|400|404)/.test(value)) {
+    return 'bug';
+  }
+
+  if (/(how|comment|pourquoi|why|where|can you|peux-tu|help|aide)/.test(value)) {
+    return 'question';
+  }
+
+  return 'general';
+}
+
+function isAgentInternalError(url: string) {
+  return url.includes('/api/agent/');
+}
+
+function buildSuggestedActions(message: string, shouldReport: boolean, intent: UserIntent): AgentChatAction[] {
+  if (intent === 'feature') {
+    return [
+      { type: 'open_report', label: 'Open feature request', kind: 'feature', prefill: message },
+      { type: 'new_conversation', label: 'Start new conversation' },
+    ];
+  }
+
+  if (intent === 'question' || (!shouldReport && intent === 'general')) {
+    return [{ type: 'new_conversation', label: 'Start new conversation' }];
+  }
+
   if (!shouldReport) {
     return [
+      { type: 'open_report', label: 'Open feature request', kind: 'feature', prefill: message },
       { type: 'new_conversation', label: 'Start new conversation' },
     ];
   }
@@ -114,6 +154,10 @@ export async function POST(request: NextRequest) {
   const trusted = buildTrustedUserContext(user, await auth());
   const runtimeContext = sanitizeRuntimeContext(parsed.data.runtimeContext);
   const latestUserMessage = [...parsed.data.messages].reverse().find((message) => message.role === 'user');
+  const latestMessageText = latestUserMessage?.content || '';
+  const intent = inferUserIntent(latestMessageText);
+  const relevantApiErrors = runtimeContext.recentApiErrors.filter((error) => !isAgentInternalError(error.url));
+  const relevantConsoleErrors = runtimeContext.recentConsoleErrors;
 
   let response: AgentChatResponse | null = null;
 
@@ -130,26 +174,35 @@ export async function POST(request: NextRequest) {
   if (!response) {
     const fallbackDraft = buildFallbackDraft(
       {
-        message: latestUserMessage?.content || '',
+        message: latestMessageText,
         runtimeContext,
         screenshot: null,
+        reportKind: intent === 'feature' ? 'feature' : intent === 'question' ? 'contact' : 'bug',
       },
       trusted,
     );
 
-    const shouldReport = runtimeContext.recentApiErrors.length > 0 || runtimeContext.recentConsoleErrors.length > 0;
+    const shouldReport = intent === 'feature'
+      ? true
+      : intent === 'bug'
+        ? relevantApiErrors.length > 0 || relevantConsoleErrors.length > 0
+        : false;
 
     response = {
-      answer: shouldReport
-        ? `I can already see recent API failures on this page. The fastest next step is to open a report prefilled with the current context. I would title it “${fallbackDraft.title}” with severity ${fallbackDraft.severity}.`
-        : `You are on ${runtimeContext.page.pathname}. Based on the recent actions and your current role (${trusted.roles.join(', ') || trusted.organizationRole || 'unknown'}), I’d validate the last step you clicked before escalating this into a report.`,
+      answer: intent === 'feature'
+        ? `Understood — this sounds like a product improvement request, not a bug report. I can help you open a feature request prefilled with the current page context so the team can review it.`
+        : shouldReport
+          ? `This sounds related to a real product issue. I can help you open a report prefilled with the current context so the team can investigate faster.`
+          : `I’ll treat the page context as supporting information only. Based on your message, I’d first answer the request itself and only escalate to a report if it is clearly needed.`,
       reportRecommended: shouldReport,
-      actions: buildSuggestedActions(latestUserMessage?.content || '', shouldReport),
+      actions: buildSuggestedActions(latestMessageText, shouldReport, intent),
     };
   } else {
+    const shouldReport = intent === 'feature' ? true : Boolean(response.reportRecommended);
+    response.reportRecommended = shouldReport;
     response.actions = response.actions && response.actions.length > 0
       ? response.actions
-      : buildSuggestedActions(latestUserMessage?.content || '', Boolean(response.reportRecommended));
+      : buildSuggestedActions(latestMessageText, shouldReport, intent);
   }
 
   return NextResponse.json(response);
