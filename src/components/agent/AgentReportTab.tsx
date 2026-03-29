@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState, type KeyboardEvent a
 import Image from 'next/image';
 import { useUser } from '@clerk/nextjs';
 import { ArrowPathIcon, BugAntIcon, ChatBubbleOvalLeftEllipsisIcon, LightBulbIcon, PhotoIcon, ViewfinderCircleIcon } from '@heroicons/react/24/outline';
+import { usePathname } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { captureViewportScreenshot } from '@/lib/agent/capture';
 import type { AgentReportKind, AgentScreenshotPayload, AgentSubmitResponse } from '@/lib/agent/types';
@@ -95,8 +96,10 @@ function KindSelector({
 
 export default function AgentReportTab() {
   const t = useTranslations('agent.report');
+  const pathname = usePathname();
+  const isAssistantPage = pathname.endsWith('/assistant');
   const { user } = useUser();
-  const { activeTab, buildRuntimeContext, clearReportSeed, isOpen, reportSeed, selectedEntities } = useAgent();
+  const { buildRuntimeContext, clearReportSeed, reportSeed, selectedEntities } = useAgent();
   const previewRef = useRef<HTMLDivElement | null>(null);
 
   const [kind, setKind] = useState<AgentReportKind>('bug');
@@ -193,12 +196,6 @@ export default function AgentReportTab() {
       setCapturing(false);
     }
   }, [t]);
-
-  useEffect(() => {
-    if (isOpen && activeTab === 'report' && !screenshot) {
-      void captureNow();
-    }
-  }, [activeTab, captureNow, isOpen, screenshot]);
 
   const cropCurrentScreenshot = async (rect: SelectionRect) => {
     if (!screenshot || !previewRef.current) return;
@@ -388,7 +385,7 @@ export default function AgentReportTab() {
             getSubtitle={(reportKind) => t(`kinds.${reportKind}.subtitle`)}
           />
 
-          {kind === 'bug' && (
+          {kind === 'bug' && !isAssistantPage && (
             <div className="rounded-2xl border border-neutral-800 bg-neutral-950/70 p-4">
               <div className="mb-3 flex flex-wrap items-start justify-between gap-3">
                 <div>
