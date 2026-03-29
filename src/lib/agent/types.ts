@@ -92,6 +92,14 @@ export interface AgentChatMessage {
   actions?: AgentChatAction[];
 }
 
+export interface AgentConversationThread {
+  id: string;
+  title: string;
+  createdAt: string;
+  updatedAt: string;
+  messages: AgentChatMessage[];
+}
+
 export interface AgentChatResponse {
   answer: string;
   reportRecommended?: boolean;

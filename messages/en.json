@@ -463,6 +463,15 @@
         "openBug": "Open bug report",
         "openFeature": "Open feature request",
         "openContact": "Contact support"
+      },
+      "history": {
+        "button": "History",
+        "title": "Conversation history",
+        "empty": "No previous conversations yet.",
+        "emptyThread": "No messages yet.",
+        "untitled": "Untitled conversation",
+        "delete": "Delete conversation",
+        "newConversationTitle": "New conversation"
       }
     },
     "report": {
