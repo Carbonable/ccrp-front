@@ -1,14 +1,13 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
+import { useTranslations } from 'next-intl';
 import { clearAgentMessages, createChatMessage, loadAgentMessages, saveAgentMessages } from '@/lib/agent/conversations';
 import type { AgentChatMessage, AgentChatResponse } from '@/lib/agent/types';
 import { useAgent } from '@/components/agent/AgentProvider';
 
-const EMPTY_STATE =
-  'Ask me what you should do on this page, why something is broken, or whether this should become a structured issue report.';
-
 export default function AgentChatTab() {
+  const t = useTranslations('agent.chat');
   const { buildRuntimeContext, setActiveTab } = useAgent();
   const [messages, setMessages] = useState<AgentChatMessage[]>([]);
   const [input, setInput] = useState('');
@@ -27,8 +26,8 @@ export default function AgentChatTab() {
 
   const assistantHint = useMemo(() => {
     if (messages.length > 0) return null;
-    return EMPTY_STATE;
-  }, [messages.length]);
+    return t('empty');
+  }, [messages.length, t]);
 
   const handleSubmit = async () => {
     const trimmed = input.trim();
@@ -62,8 +61,8 @@ export default function AgentChatTab() {
       if (data.reportRecommended) {
         setTimeout(() => setActiveTab('report'), 300);
       }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Unable to reach the agent.');
+    } catch {
+      setError(t('error'));
       setMessages((current) => current.slice(0, -1));
       setInput(trimmed);
     } finally {
@@ -75,8 +74,8 @@ export default function AgentChatTab() {
     <div className="flex h-full flex-col">
       <div className="flex items-center justify-between border-b border-neutral-800 px-4 py-3">
         <div>
-          <div className="text-sm font-semibold text-neutral-100">Ask CCPM Agent</div>
-          <div className="text-xs text-neutral-400">Page-aware help with your current runtime context.</div>
+          <div className="text-sm font-semibold text-neutral-100">{t('title')}</div>
+          <div className="text-xs text-neutral-400">{t('subtitle')}</div>
         </div>
         <button
           type="button"
@@ -86,7 +85,7 @@ export default function AgentChatTab() {
           }}
           className="rounded-lg border border-neutral-800 px-2 py-1 text-xs text-neutral-300 transition hover:border-neutral-600 hover:text-white"
         >
-          Clear
+          {t('clear')}
         </button>
       </div>
 
@@ -117,21 +116,21 @@ export default function AgentChatTab() {
         <textarea
           value={input}
           onChange={(event) => setInput(event.target.value)}
-          placeholder="Ask about this screen, this project, or what the user should do next…"
+          placeholder={t('placeholder')}
           className="min-h-[110px] w-full rounded-2xl border border-neutral-800 bg-neutral-950 px-4 py-3 text-sm text-neutral-100 outline-none transition focus:border-primary"
         />
 
         {error && <div role="alert" className="mt-2 text-xs text-red-400">{error}</div>}
 
         <div className="mt-3 flex items-center justify-between gap-3">
-          <div className="text-xs text-neutral-500">Current page, recent clicks and recent API errors are included.</div>
+          <div className="text-xs text-neutral-500">{t('contextHint')}</div>
           <button
             type="button"
             onClick={handleSubmit}
             disabled={!canSend}
             className="rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-neutral-950 transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-50"
           >
-            {loading ? 'Thinking…' : 'Send'}
+            {loading ? t('thinking') : t('send')}
           </button>
         </div>
       </div>

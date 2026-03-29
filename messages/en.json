@@ -428,5 +428,78 @@
     "en": "English",
     "fr": "Français",
     "switchLanguage": "Language"
+  },
+  "agent": {
+    "panel": {
+      "title": "CCPM Agent",
+      "subtitle": "Page-aware assistant + structured issue reporting.",
+      "ask": "Ask",
+      "report": "Report",
+      "open": "Open assistant",
+      "close": "Close assistant",
+      "shortcutLabel": "Need help?"
+    },
+    "chat": {
+      "title": "Ask CCPM Agent",
+      "subtitle": "Page-aware help with your current runtime context.",
+      "clear": "New conversation",
+      "empty": "Ask what is happening on this page, what to do next, or whether this should become a structured issue report.",
+      "placeholder": "Ask about this screen, this project, or what the user should do next…",
+      "contextHint": "Current page, recent clicks and recent API errors are included.",
+      "send": "Send",
+      "thinking": "Thinking…",
+      "error": "Unable to reach the assistant."
+    },
+    "report": {
+      "title": "Send us a message",
+      "subtitle": "Capture the current view, select a precise area, and send a structured issue in one step.",
+      "send": "Send",
+      "sending": "Sending…",
+      "sendShortcut": "Tip: press Ctrl/⌘ + Enter to send.",
+      "success": "Issue created",
+      "openIssue": "Open issue",
+      "kinds": {
+        "bug": {
+          "label": "Report a bug",
+          "subtitle": "Let us know what's broken"
+        },
+        "feature": {
+          "label": "Feature request",
+          "subtitle": "Tell us how we can improve"
+        },
+        "contact": {
+          "label": "Contact us",
+          "subtitle": "Tell us how we can help"
+        }
+      },
+      "templates": {
+        "bug": "What happened?\nWhat did you expect instead?\nSteps to reproduce:\n1. \n2. \n3. \n\nImpact:",
+        "feature": "What are you trying to achieve?\nWhat is missing today?\nWhat would you like us to add or improve?\nWho would benefit from it?",
+        "contact": "How can we help?\nContext:\nUrgency:\nAnything else we should know?"
+      },
+      "capture": {
+        "title": "Current capture",
+        "subtitle": "Choose the current view or crop a specific area before sending.",
+        "current": "Current view",
+        "select": "Select area",
+        "retake": "Retake",
+        "capturing": "Capturing…",
+        "selectionHint": "Drag on the preview to select the area you want to send.",
+        "alt": "Current CCPM view",
+        "empty": "No screenshot captured yet.",
+        "error": "Unable to capture the current view."
+      },
+      "context": {
+        "recentActions": "Recent actions",
+        "apiErrors": "API errors",
+        "consoleErrors": "Console errors",
+        "detected": "Detected context",
+        "path": "Path",
+        "viewport": "Viewport"
+      },
+      "submit": {
+        "error": "Unable to create the issue right now."
+      }
+    }
   }
 }

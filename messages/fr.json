@@ -428,5 +428,78 @@
     "en": "English",
     "fr": "Français",
     "switchLanguage": "Langue"
+  },
+  "agent": {
+    "panel": {
+      "title": "Agent CCPM",
+      "subtitle": "Assistant contextualisé + signalement structuré.",
+      "ask": "Chat",
+      "report": "Signaler",
+      "open": "Ouvrir l'assistant",
+      "close": "Fermer l'assistant",
+      "shortcutLabel": "Besoin d'aide ?"
+    },
+    "chat": {
+      "title": "Demander à l’agent CCPM",
+      "subtitle": "Aide contextualisée avec le contexte runtime courant.",
+      "clear": "Nouvelle conversation",
+      "empty": "Demande ce qui se passe sur cette page, quoi faire ensuite, ou si cela mérite un signalement structuré.",
+      "placeholder": "Demande quelque chose sur cet écran, ce projet, ou la prochaine action à faire…",
+      "contextHint": "La page courante, les clics récents et les erreurs API récentes sont inclus.",
+      "send": "Envoyer",
+      "thinking": "Réflexion…",
+      "error": "Impossible de joindre l’assistant."
+    },
+    "report": {
+      "title": "Envoyez-nous un message",
+      "subtitle": "Capture la vue courante, sélectionne une zone précise, puis envoie un signalement structuré en une seule étape.",
+      "send": "Envoyer",
+      "sending": "Envoi…",
+      "sendShortcut": "Astuce : Ctrl/⌘ + Entrée pour envoyer.",
+      "success": "Issue créée",
+      "openIssue": "Ouvrir l’issue",
+      "kinds": {
+        "bug": {
+          "label": "Reporter un bug",
+          "subtitle": "Dites-nous ce qui ne marche pas"
+        },
+        "feature": {
+          "label": "Demande de fonctionnalité",
+          "subtitle": "Dites-nous comment améliorer le produit"
+        },
+        "contact": {
+          "label": "Nous contacter",
+          "subtitle": "Dites-nous comment on peut aider"
+        }
+      },
+      "templates": {
+        "bug": "Que s’est-il passé ?\nQu’attendais-tu à la place ?\nÉtapes pour reproduire :\n1. \n2. \n3. \n\nImpact :",
+        "feature": "Quel est ton objectif ?\nQu’est-ce qui manque aujourd’hui ?\nQu’aimerais-tu qu’on ajoute ou améliore ?\nQui en bénéficierait ?",
+        "contact": "Comment peut-on aider ?\nContexte :\nUrgence :\nAutre chose à savoir ?"
+      },
+      "capture": {
+        "title": "Capture actuelle",
+        "subtitle": "Choisis la vue courante ou découpe une zone précise avant l’envoi.",
+        "current": "Vue courante",
+        "select": "Sélectionner une zone",
+        "retake": "Reprendre",
+        "capturing": "Capture…",
+        "selectionHint": "Glisse sur l’aperçu pour sélectionner la zone à envoyer.",
+        "alt": "Vue CCPM actuelle",
+        "empty": "Aucune capture disponible pour le moment.",
+        "error": "Impossible de capturer la vue courante."
+      },
+      "context": {
+        "recentActions": "Actions récentes",
+        "apiErrors": "Erreurs API",
+        "consoleErrors": "Erreurs console",
+        "detected": "Contexte détecté",
+        "path": "Chemin",
+        "viewport": "Viewport"
+      },
+      "submit": {
+        "error": "Impossible de créer l’issue pour le moment."
+      }
+    }
   }
 }
