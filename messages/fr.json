@@ -443,12 +443,27 @@
       "title": "Demander à l’agent CCPM",
       "subtitle": "Aide contextualisée avec le contexte runtime courant.",
       "clear": "Nouvelle conversation",
-      "empty": "Demande ce qui se passe sur cette page, quoi faire ensuite, ou si cela mérite un signalement structuré.",
+      "empty": "Demande ce qui se passe sur cette page, quoi faire ensuite, ou ouvre un signalement avec le contexte courant.",
       "placeholder": "Demande quelque chose sur cet écran, ce projet, ou la prochaine action à faire…",
       "contextHint": "La page courante, les clics récents et les erreurs API récentes sont inclus.",
       "send": "Envoyer",
       "thinking": "Réflexion…",
-      "error": "Impossible de joindre l’assistant."
+      "error": "Impossible de joindre l’assistant.",
+      "context": {
+        "user": "Utilisateur",
+        "device": "Appareil",
+        "lastAction": "Dernière action",
+        "lastApiCall": "Dernier appel API",
+        "lastApiError": "Dernière erreur API",
+        "unknownUser": "Utilisateur inconnu",
+        "none": "Aucune"
+      },
+      "actions": {
+        "newConversation": "Nouvelle conversation",
+        "openBug": "Ouvrir un bug",
+        "openFeature": "Ouvrir une demande de fonctionnalité",
+        "openContact": "Contacter le support"
+      }
     },
     "report": {
       "title": "Envoyez-nous un message",
@@ -495,11 +510,21 @@
         "consoleErrors": "Erreurs console",
         "detected": "Contexte détecté",
         "path": "Chemin",
-        "viewport": "Viewport"
+        "viewport": "Viewport",
+        "user": "Utilisateur",
+        "device": "Appareil",
+        "lastAction": "Dernière action",
+        "lastApiCall": "Dernier appel API",
+        "lastApiError": "Dernière erreur API",
+        "none": "Aucune"
       },
       "submit": {
         "error": "Impossible de créer l’issue pour le moment."
       }
+    },
+    "page": {
+      "eyebrow": "Assistant",
+      "subtitle": "Espace assistant en pleine page pour converser, signaler et faire un triage rapide depuis le contexte courant du produit."
     }
   }
 }

@@ -381,21 +381,6 @@ export async function createBaatonIssue({
 
   const projectId = await resolveBaatonProjectId(baseUrl, apiKey);
 
-  const attachments = screenshot
-    ? [
-        {
-          kind: 'screenshot',
-          name: 'ccpm-report.jpeg',
-          mime_type: screenshot.mimeType,
-          data_url: screenshot.dataUrl,
-          captured_at: screenshot.capturedAt,
-          width: screenshot.width,
-          height: screenshot.height,
-          page_path: runtimeContext.page.pathname,
-        },
-      ]
-    : [];
-
   const description = draft.descriptionMarkdown.trim()
     ? draft.descriptionMarkdown
     : buildTicketDescription({
@@ -416,11 +401,10 @@ export async function createBaatonIssue({
       project_id: projectId,
       title: draft.title,
       description,
-      issue_type: draft.issueType,
+      type: draft.issueType,
       priority: draft.baatonPayloadPreview.priority || mapSeverityToPriority(draft.severity),
       status: draft.baatonPayloadPreview.status || process.env.BAATON_DEFAULT_STATUS || 'backlog',
       tags: uniqueTags(draft.baatonPayloadPreview.tags.length > 0 ? draft.baatonPayloadPreview.tags : draft.tags),
-      attachments,
     }),
   });
 

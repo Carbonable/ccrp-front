@@ -1,4 +1,4 @@
-import type { AgentChatMessage } from '@/lib/agent/types';
+import type { AgentChatAction, AgentChatMessage } from '@/lib/agent/types';
 
 const STORAGE_KEY = 'ccpm-agent-chat-v1';
 
@@ -33,11 +33,13 @@ export function clearAgentMessages() {
 export function createChatMessage(
   role: AgentChatMessage['role'],
   content: string,
+  actions?: AgentChatAction[],
 ): AgentChatMessage {
   return {
     id: `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`,
     role,
     content,
     createdAt: new Date().toISOString(),
+    actions,
   };
 }

@@ -443,12 +443,27 @@
       "title": "Ask CCPM Agent",
       "subtitle": "Page-aware help with your current runtime context.",
       "clear": "New conversation",
-      "empty": "Ask what is happening on this page, what to do next, or whether this should become a structured issue report.",
+      "empty": "Ask what is happening on this page, what to do next, or open a report with the current context.",
       "placeholder": "Ask about this screen, this project, or what the user should do next…",
       "contextHint": "Current page, recent clicks and recent API errors are included.",
       "send": "Send",
       "thinking": "Thinking…",
-      "error": "Unable to reach the assistant."
+      "error": "Unable to reach the assistant.",
+      "context": {
+        "user": "User",
+        "device": "Device",
+        "lastAction": "Last action",
+        "lastApiCall": "Last API call",
+        "lastApiError": "Last API error",
+        "unknownUser": "Unknown user",
+        "none": "None yet"
+      },
+      "actions": {
+        "newConversation": "Start new conversation",
+        "openBug": "Open bug report",
+        "openFeature": "Open feature request",
+        "openContact": "Contact support"
+      }
     },
     "report": {
       "title": "Send us a message",
@@ -495,11 +510,21 @@
         "consoleErrors": "Console errors",
         "detected": "Detected context",
         "path": "Path",
-        "viewport": "Viewport"
+        "viewport": "Viewport",
+        "user": "User",
+        "device": "Device",
+        "lastAction": "Last action",
+        "lastApiCall": "Last API call",
+        "lastApiError": "Last API error",
+        "none": "None yet"
       },
       "submit": {
         "error": "Unable to create the issue right now."
       }
+    },
+    "page": {
+      "eyebrow": "Assistant",
+      "subtitle": "Full-page assistant workspace for conversation, reporting, and fast triage from the current product context."
     }
   }
 }

@@ -77,16 +77,25 @@ export interface AgentTrustedUserContext {
   permissions: string[];
 }
 
+export interface AgentChatAction {
+  type: 'open_report' | 'new_conversation';
+  label?: string;
+  kind?: AgentReportKind;
+  prefill?: string;
+}
+
 export interface AgentChatMessage {
   id: string;
   role: 'user' | 'assistant';
   content: string;
   createdAt: string;
+  actions?: AgentChatAction[];
 }
 
 export interface AgentChatResponse {
   answer: string;
   reportRecommended?: boolean;
+  actions?: AgentChatAction[];
 }
 
 export interface AgentTicketDraft {

@@ -1,6 +1,7 @@
 'use client';
 
 import { ChatBubbleLeftRightIcon, XMarkIcon } from '@heroicons/react/24/outline';
+import { usePathname } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import AgentChatTab from '@/components/agent/AgentChatTab';
 import AgentReportTab from '@/components/agent/AgentReportTab';
@@ -30,9 +31,10 @@ function TabButton({
 
 function AgentShortcutButton() {
   const t = useTranslations('agent.panel');
+  const pathname = usePathname();
   const { activeTab, isOpen, openPanel } = useAgent();
 
-  if (isOpen) return null;
+  if (isOpen || pathname.endsWith('/assistant')) return null;
 
   return (
     <button

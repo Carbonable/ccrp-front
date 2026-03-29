@@ -1,20 +1,22 @@
 'use client';
 
 import Image from 'next/image';
-import { useTranslations } from 'next-intl';
-import { useAgent } from '@/components/agent/AgentProvider';
+import { usePathname, useRouter } from 'next/navigation';
+import { useLocale, useTranslations } from 'next-intl';
 
 export default function AgentMenuButton({ setOpenMenu }: { setOpenMenu: (open: boolean) => void }) {
+  const locale = useLocale();
+  const pathname = usePathname();
+  const router = useRouter();
   const t = useTranslations('menu');
-  const { activeTab, isOpen, openPanel } = useAgent();
-  const isActive = isOpen;
+  const isActive = pathname.endsWith('/assistant');
 
   return (
     <button
       type="button"
       className="font-inter w-full text-left text-base uppercase"
       onClick={() => {
-        openPanel(activeTab);
+        router.push(`/${locale}/assistant`);
         setOpenMenu(false);
       }}
     >

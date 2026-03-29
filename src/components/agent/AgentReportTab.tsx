@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState, type KeyboardEvent as ReactKeyboardEvent, type PointerEvent as ReactPointerEvent } from 'react';
 import Image from 'next/image';
+import { useUser } from '@clerk/nextjs';
 import { ArrowPathIcon, BugAntIcon, ChatBubbleOvalLeftEllipsisIcon, LightBulbIcon, PhotoIcon, ViewfinderCircleIcon } from '@heroicons/react/24/outline';
 import { useTranslations } from 'next-intl';
 import { captureViewportScreenshot } from '@/lib/agent/capture';
@@ -94,7 +95,8 @@ function KindSelector({
 
 export default function AgentReportTab() {
   const t = useTranslations('agent.report');
-  const { activeTab, buildRuntimeContext, isOpen, selectedEntities } = useAgent();
+  const { user } = useUser();
+  const { activeTab, buildRuntimeContext, clearReportSeed, isOpen, reportSeed, selectedEntities } = useAgent();
   const previewRef = useRef<HTMLDivElement | null>(null);
 
   const [kind, setKind] = useState<AgentReportKind>('bug');
@@ -130,6 +132,22 @@ export default function AgentReportTab() {
     }));
   }, [templates]);
 
+  useEffect(() => {
+    if (!reportSeed) return;
+
+    setKind(reportSeed.kind);
+    if (reportSeed.message) {
+      setMessagesByKind((current) => ({
+        ...current,
+        [reportSeed.kind]: current[reportSeed.kind] && current[reportSeed.kind] !== templates[reportSeed.kind]
+          ? current[reportSeed.kind]
+          : reportSeed.message,
+      }));
+    }
+
+    clearReportSeed();
+  }, [clearReportSeed, reportSeed, templates]);
+
   const runtimeSnapshot = buildRuntimeContext();
 
   const recentActions = runtimeSnapshot.recentActions.map((action) => action.label).slice(-5).reverse();
@@ -141,6 +159,10 @@ export default function AgentReportTab() {
     .map((error) => error.message)
     .slice(-4)
     .reverse();
+  const lastAction = [...runtimeSnapshot.recentActions].reverse().find((entry) => entry.kind === 'click' || entry.kind === 'navigation');
+  const lastApiCall = [...runtimeSnapshot.recentActions].reverse().find((entry) => entry.kind === 'api');
+  const lastApiError = [...runtimeSnapshot.recentApiErrors].reverse()[0];
+  const browserSummary = `${runtimeSnapshot.browser.platform || 'Unknown device'} · ${runtimeSnapshot.browser.language}`;
 
   const currentMessage = messagesByKind[kind] || '';
   const hasMessage = currentMessage.trim().length > 0;
@@ -330,13 +352,14 @@ export default function AgentReportTab() {
       });
 
       if (!response.ok) {
-        throw new Error('submit-failed');
+        const payload = (await response.json().catch(() => null)) as { error?: string } | null;
+        throw new Error(payload?.error || 'submit-failed');
       }
 
       const data = (await response.json()) as AgentSubmitResponse;
       setSubmitResult(data);
-    } catch {
-      setSubmitError(t('submit.error'));
+    } catch (error) {
+      setSubmitError(error instanceof Error && error.message !== 'submit-failed' ? error.message : t('submit.error'));
     } finally {
       setSubmitting(false);
     }
@@ -463,8 +486,11 @@ export default function AgentReportTab() {
               <div className="rounded-2xl border border-neutral-800 bg-neutral-950/70 p-3">
                 <div className="text-xs font-semibold uppercase tracking-wide text-neutral-400">{t('context.detected')}</div>
                 <div className="mt-2 space-y-1 text-xs text-neutral-300">
+                  <div>• {t('context.user')}: {user?.fullName || user?.primaryEmailAddress?.emailAddress || t('context.none')}</div>
                   <div>• {t('context.path')}: {runtimeSnapshot.page.pathname}</div>
-                  <div>• {t('context.viewport')}: {runtimeSnapshot.viewport.width}×{runtimeSnapshot.viewport.height}</div>
+                  <div>• {t('context.device')}: {browserSummary}</div>
+                  <div>• {t('context.lastAction')}: {lastAction?.label || t('context.none')}</div>
+                  <div>• {lastApiError ? t('context.lastApiError') : t('context.lastApiCall')}: {lastApiError ? `${lastApiError.method} ${lastApiError.url}` : lastApiCall?.label || t('context.none')}</div>
                   {Object.entries(selectedEntities).map(([key, value]) =>
                     value ? <div key={key}>• {key}: {value}</div> : null,
                   )}

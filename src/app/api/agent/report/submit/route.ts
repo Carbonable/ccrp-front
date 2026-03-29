@@ -138,9 +138,16 @@ export async function POST(request: NextRequest) {
       message: 'Ticket created',
       issue,
     });
-  } catch {
+  } catch (error) {
+    console.error('CCPM agent report submit failed', error);
+
     return NextResponse.json(
-      { error: 'Unable to create the issue right now. Please retry in a moment.' },
+      {
+        error:
+          error instanceof Error && error.message
+            ? error.message
+            : 'Unable to create the issue right now. Please retry in a moment.',
+      },
       { status: 500 },
     );
   }

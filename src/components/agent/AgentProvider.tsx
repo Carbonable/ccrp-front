@@ -14,6 +14,7 @@ import type {
   AgentActionLog,
   AgentApiError,
   AgentConsoleError,
+  AgentReportKind,
   AgentRuntimeContext,
   AgentSelectedEntities,
   AgentTab,
@@ -25,6 +26,9 @@ interface AgentContextValue {
   openPanel: (tab?: AgentTab) => void;
   closePanel: () => void;
   setActiveTab: (tab: AgentTab) => void;
+  openReport: (kind?: AgentReportKind, prefill?: string) => void;
+  reportSeed: { kind: AgentReportKind; message?: string } | null;
+  clearReportSeed: () => void;
   buildRuntimeContext: () => AgentRuntimeContext;
   selectedEntities: AgentSelectedEntities;
   registerEntities: (entities: Partial<AgentSelectedEntities>) => void;
@@ -42,6 +46,7 @@ function keepLatest<T>(items: T[], max: number) {
 
 function extractLabel(target: EventTarget | null): string | null {
   if (!(target instanceof HTMLElement)) return null;
+  if (target.closest('[data-agent-panel]')) return null;
 
   const explicit =
     target.getAttribute('data-agent-label') ||
@@ -90,6 +95,7 @@ export function AgentProvider({ children }: Readonly<{ children: React.ReactNode
   const searchParams = useSearchParams();
   const [isOpen, setIsOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<AgentTab>('ask');
+  const [reportSeed, setReportSeed] = useState<{ kind: AgentReportKind; message?: string } | null>(null);
   const [selectedEntities, setSelectedEntities] = useState<AgentSelectedEntities>({});
   const actionsRef = useRef<AgentActionLog[]>([]);
   const apiErrorsRef = useRef<AgentApiError[]>([]);
@@ -142,6 +148,23 @@ export function AgentProvider({ children }: Readonly<{ children: React.ReactNode
       const input = typeof request === 'string' ? request : request instanceof Request ? request.url : '';
       const method = request instanceof Request ? request.method : 'GET';
 
+      if (input) {
+        try {
+          const parsedUrl = new URL(input, window.location.origin);
+          pushAction({
+            kind: 'api',
+            label: `${method.toUpperCase()} ${parsedUrl.pathname}`,
+            at: new Date().toISOString(),
+          });
+        } catch {
+          pushAction({
+            kind: 'api',
+            label: `${method.toUpperCase()} ${String(input).slice(0, 160)}`,
+            at: new Date().toISOString(),
+          });
+        }
+      }
+
       try {
         const response = await originalFetch(...args);
         if (!response.ok) {
@@ -168,7 +191,7 @@ export function AgentProvider({ children }: Readonly<{ children: React.ReactNode
     return () => {
       window.fetch = originalFetch;
     };
-  }, [pushApiError]);
+  }, [pushAction, pushApiError]);
 
   useEffect(() => {
     const onError = (event: ErrorEvent) => {
@@ -207,6 +230,18 @@ export function AgentProvider({ children }: Readonly<{ children: React.ReactNode
 
   const closePanel = useCallback(() => {
     setIsOpen(false);
+  }, []);
+
+  const openReport = useCallback((kind: AgentReportKind = 'bug', prefill?: string) => {
+    setReportSeed({ kind, message: prefill });
+    setActiveTab('report');
+    if (!pathname.endsWith('/assistant')) {
+      setIsOpen(true);
+    }
+  }, [pathname]);
+
+  const clearReportSeed = useCallback(() => {
+    setReportSeed(null);
   }, []);
 
   const registerEntities = useCallback((entities: Partial<AgentSelectedEntities>) => {
@@ -259,12 +294,15 @@ export function AgentProvider({ children }: Readonly<{ children: React.ReactNode
       openPanel,
       closePanel,
       setActiveTab,
+      openReport,
+      reportSeed,
+      clearReportSeed,
       buildRuntimeContext,
       selectedEntities,
       registerEntities,
       resetEntities,
     }),
-    [activeTab, buildRuntimeContext, closePanel, isOpen, openPanel, registerEntities, resetEntities, selectedEntities],
+    [activeTab, buildRuntimeContext, clearReportSeed, closePanel, isOpen, openPanel, openReport, registerEntities, reportSeed, resetEntities, selectedEntities],
   );
 
   return <AgentContext.Provider value={value}>{children}</AgentContext.Provider>;

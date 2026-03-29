@@ -2,7 +2,7 @@ import { auth, currentUser } from '@clerk/nextjs/server';
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { buildFallbackDraft, callGeminiJson, CHAT_PROMPT, sanitizeRuntimeContext } from '@/lib/agent/server';
-import type { AgentChatResponse, AgentTrustedUserContext } from '@/lib/agent/types';
+import type { AgentChatAction, AgentChatResponse, AgentTrustedUserContext } from '@/lib/agent/types';
 
 const chatSchema = z.object({
   messages: z.array(
@@ -84,6 +84,20 @@ function buildTrustedUserContext(
   };
 }
 
+function buildSuggestedActions(message: string, shouldReport: boolean): AgentChatAction[] {
+  if (!shouldReport) {
+    return [
+      { type: 'new_conversation', label: 'Start new conversation' },
+    ];
+  }
+
+  return [
+    { type: 'open_report', label: 'Open bug report', kind: 'bug', prefill: message },
+    { type: 'open_report', label: 'Open feature request', kind: 'feature', prefill: message },
+    { type: 'new_conversation', label: 'Start new conversation' },
+  ];
+}
+
 export async function POST(request: NextRequest) {
   const user = await currentUser();
   if (!user) {
@@ -123,12 +137,19 @@ export async function POST(request: NextRequest) {
       trusted,
     );
 
+    const shouldReport = runtimeContext.recentApiErrors.length > 0 || runtimeContext.recentConsoleErrors.length > 0;
+
     response = {
-      answer: runtimeContext.recentApiErrors.length > 0
-        ? `I can already see recent API failures on this page. I would open a ticket titled “${fallbackDraft.title}” with severity ${fallbackDraft.severity}. If you want, switch to Report and I’ll prefill it with the current context.`
-        : `You are on ${runtimeContext.page.pathname}. Based on the recent actions and your current role (${trusted.roles.join(', ') || trusted.organizationRole || 'unknown'}), I’d first validate the last step you clicked, then open a Report if the behavior is reproducible.` ,
-      reportRecommended: runtimeContext.recentApiErrors.length > 0 || runtimeContext.recentConsoleErrors.length > 0,
+      answer: shouldReport
+        ? `I can already see recent API failures on this page. The fastest next step is to open a report prefilled with the current context. I would title it “${fallbackDraft.title}” with severity ${fallbackDraft.severity}.`
+        : `You are on ${runtimeContext.page.pathname}. Based on the recent actions and your current role (${trusted.roles.join(', ') || trusted.organizationRole || 'unknown'}), I’d validate the last step you clicked before escalating this into a report.`,
+      reportRecommended: shouldReport,
+      actions: buildSuggestedActions(latestUserMessage?.content || '', shouldReport),
     };
+  } else {
+    response.actions = response.actions && response.actions.length > 0
+      ? response.actions
+      : buildSuggestedActions(latestUserMessage?.content || '', Boolean(response.reportRecommended));
   }
 
   return NextResponse.json(response);
