@@ -2,10 +2,81 @@
 
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
-import { ArrowPathIcon } from '@heroicons/react/24/outline';
+import { ArrowPathIcon, BugAntIcon, LightBulbIcon, ChatBubbleOvalLeftEllipsisIcon } from '@heroicons/react/24/outline';
 import { captureViewportScreenshot } from '@/lib/agent/capture';
-import type { AgentScreenshotPayload, AgentSubmitResponse, AgentTicketDraft } from '@/lib/agent/types';
+import type { AgentReportKind, AgentScreenshotPayload, AgentSubmitResponse, AgentTicketDraft } from '@/lib/agent/types';
 import { useAgent } from '@/components/agent/AgentProvider';
+
+// ─── Kind selector ───────────────────────────────────────────────────────────
+
+const REPORT_KINDS: {
+  id: AgentReportKind;
+  label: string;
+  subtitle: string;
+  icon: React.ComponentType<{ className?: string }>;
+}[] = [
+  {
+    id: 'bug',
+    label: 'Report a bug',
+    subtitle: "Let us know what's broken",
+    icon: BugAntIcon,
+  },
+  {
+    id: 'feature',
+    label: 'Feature request',
+    subtitle: 'Tell us how we can improve',
+    icon: LightBulbIcon,
+  },
+  {
+    id: 'contact',
+    label: 'Contact us',
+    subtitle: 'Tell us how we can help',
+    icon: ChatBubbleOvalLeftEllipsisIcon,
+  },
+];
+
+const KIND_PLACEHOLDER: Record<AgentReportKind, string> = {
+  bug: 'Describe what is broken, what you expected, and what you just tried.',
+  feature: 'Describe the feature you need and the problem it would solve.',
+  contact: 'Tell us what you need help with and how we can assist you.',
+};
+
+function KindSelector({
+  selected,
+  onChange,
+}: {
+  selected: AgentReportKind;
+  onChange: (kind: AgentReportKind) => void;
+}) {
+  return (
+    <div className="grid grid-cols-3 gap-2">
+      {REPORT_KINDS.map(({ id, label, subtitle, icon: Icon }) => {
+        const active = selected === id;
+        return (
+          <button
+            key={id}
+            type="button"
+            onClick={() => onChange(id)}
+            className={`flex cursor-pointer flex-col items-start gap-2 rounded-2xl border p-3 text-left transition-all duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary active:scale-95 ${
+              active
+                ? 'border-primary/60 bg-primary/10 text-neutral-100'
+                : 'border-neutral-800 bg-neutral-950/70 text-neutral-400 hover:border-neutral-700 hover:text-neutral-200'
+            }`}
+            aria-pressed={active}
+          >
+            <Icon className={`h-5 w-5 ${active ? 'text-primary' : 'text-neutral-500'}`} />
+            <div>
+              <div className="text-xs font-semibold leading-tight">{label}</div>
+              <div className="mt-0.5 text-[11px] leading-tight opacity-70">{subtitle}</div>
+            </div>
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+// ─── Context list ─────────────────────────────────────────────────────────────
 
 function ContextList({ title, items }: { title: string; items: string[] }) {
   if (items.length === 0) return null;
@@ -22,8 +93,12 @@ function ContextList({ title, items }: { title: string; items: string[] }) {
   );
 }
 
+// ─── Main component ───────────────────────────────────────────────────────────
+
 export default function AgentReportTab() {
   const { activeTab, buildRuntimeContext, isOpen, selectedEntities } = useAgent();
+
+  const [kind, setKind] = useState<AgentReportKind>('bug');
   const [userMessage, setUserMessage] = useState('');
   const [screenshot, setScreenshot] = useState<AgentScreenshotPayload | null>(null);
   const [draft, setDraft] = useState<AgentTicketDraft | null>(null);
@@ -46,6 +121,14 @@ export default function AgentReportTab() {
     .map((error) => error.message)
     .slice(-4)
     .reverse();
+
+  const handleKindChange = (next: AgentReportKind) => {
+    setKind(next);
+    setDraft(null);
+    setSubmitResult(null);
+    setDraftError(null);
+    setSubmitError(null);
+  };
 
   const captureNow = async () => {
     setCapturing(true);
@@ -80,6 +163,7 @@ export default function AgentReportTab() {
           message: userMessage,
           runtimeContext: buildRuntimeContext(),
           screenshot,
+          reportKind: kind,
         }),
       });
 
@@ -90,7 +174,7 @@ export default function AgentReportTab() {
       const data = (await response.json()) as { draft: AgentTicketDraft };
       setDraft(data.draft);
     } catch (error) {
-      setDraftError(error instanceof Error ? error.message : 'Unable to generate ticket draft.');
+      setDraftError(error instanceof Error ? error.message : 'Unable to generate the draft.');
     } finally {
       setGenerating(false);
     }
@@ -116,7 +200,7 @@ export default function AgentReportTab() {
 
       if (!response.ok) {
         const message = await response.text();
-        throw new Error(message || `Ticket creation failed (${response.status})`);
+        throw new Error(message || `Submission failed (${response.status})`);
       }
 
       const data = (await response.json()) as AgentSubmitResponse;
@@ -128,10 +212,13 @@ export default function AgentReportTab() {
     }
   };
 
+  const currentKindMeta = REPORT_KINDS.find((k) => k.id === kind)!;
+
   return (
     <div className="flex h-full flex-col overflow-hidden">
+      {/* Header */}
       <div className="border-b border-neutral-800 px-4 py-3">
-        <div className="text-sm font-semibold text-neutral-100">Report issue</div>
+        <div className="text-sm font-semibold text-neutral-100">Send us a message</div>
         <div className="mt-1 text-xs text-neutral-400">
           Auto-captures the current screen, page context, recent actions and recent errors before generating a structured issue draft.
         </div>
@@ -139,95 +226,106 @@ export default function AgentReportTab() {
 
       <div className="flex-1 overflow-y-auto px-4 py-4">
         <div className="space-y-4">
-          <div className="rounded-2xl border border-neutral-800 bg-neutral-950/70 p-4">
-            <div className="mb-2 flex items-center justify-between gap-3">
-              <div>
-                <div className="text-sm font-semibold text-neutral-100">Current screen</div>
-                <div className="text-xs text-neutral-400">Captured at ticket-open time. Retake if needed before submit.</div>
+
+          {/* Kind selector */}
+          <KindSelector selected={kind} onChange={handleKindChange} />
+
+          {/* Screenshot */}
+          {kind === 'bug' && (
+            <div className="rounded-2xl border border-neutral-800 bg-neutral-950/70 p-4">
+              <div className="mb-2 flex items-center justify-between gap-3">
+                <div>
+                  <div className="text-sm font-semibold text-neutral-100">Current screen</div>
+                  <div className="text-xs text-neutral-400">Captured at ticket-open time. Retake if needed before submit.</div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => void captureNow()}
+                  disabled={capturing}
+                  className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-neutral-700 px-3 py-2 text-xs text-neutral-200 transition hover:border-neutral-500 hover:text-white disabled:opacity-50"
+                >
+                  <ArrowPathIcon className={`h-4 w-4 ${capturing ? 'animate-spin' : ''}`} />
+                  {capturing ? 'Capturing…' : 'Retake'}
+                </button>
               </div>
-              <button
-                type="button"
-                onClick={() => void captureNow()}
-                disabled={capturing}
-                className="inline-flex items-center gap-2 rounded-lg border border-neutral-700 px-3 py-2 text-xs text-neutral-200 transition hover:border-neutral-500 hover:text-white disabled:opacity-50"
-              >
-                <ArrowPathIcon className={`h-4 w-4 ${capturing ? 'animate-spin' : ''}`} />
-                {capturing ? 'Capturing…' : 'Retake'}
-              </button>
+
+              {screenshot ? (
+                <Image
+                  src={screenshot.dataUrl}
+                  alt="Current CCPM view"
+                  width={screenshot.width}
+                  height={screenshot.height}
+                  unoptimized
+                  className="max-h-[220px] w-full rounded-xl border border-neutral-800 object-cover"
+                />
+              ) : (
+                <div className="rounded-xl border border-dashed border-neutral-800 px-4 py-10 text-center text-sm text-neutral-500">
+                  No screenshot captured yet.
+                </div>
+              )}
+
+              {captureError && <div role="alert" className="mt-2 text-xs text-red-400">{captureError}</div>}
             </div>
+          )}
 
-            {screenshot ? (
-              <Image
-                src={screenshot.dataUrl}
-                alt="Current CCPM view"
-                width={screenshot.width}
-                height={screenshot.height}
-                unoptimized
-                className="max-h-[220px] w-full rounded-xl border border-neutral-800 object-cover"
-              />
-            ) : (
-              <div className="rounded-xl border border-dashed border-neutral-800 px-4 py-10 text-center text-sm text-neutral-500">
-                No screenshot captured yet.
-              </div>
-            )}
-
-            {captureError && <div role="alert" className="mt-2 text-xs text-red-400">{captureError}</div>}
-          </div>
-
+          {/* Message */}
           <div className="rounded-2xl border border-neutral-800 bg-neutral-950/70 p-4">
             <label className="text-sm font-semibold text-neutral-100" htmlFor="agent-report-message">
-              What should the ticket say?
+              {currentKindMeta.label}
             </label>
+            <p className="mt-1 text-xs text-neutral-400">{currentKindMeta.subtitle}</p>
             <textarea
               id="agent-report-message"
               value={userMessage}
               onChange={(event) => setUserMessage(event.target.value)}
-              placeholder="Describe what is broken, what you expected, and what you just tried."
+              placeholder={KIND_PLACEHOLDER[kind]}
               className="mt-3 min-h-[120px] w-full rounded-2xl border border-neutral-800 bg-neutral-950 px-4 py-3 text-sm text-neutral-100 outline-none transition focus:border-primary"
             />
-            <div className="mt-2 text-xs text-neutral-500">
-              Best practice 2026: user intent + screenshot + page context + recent errors + human confirmation before submit.
-            </div>
           </div>
 
-          <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
-            <ContextList title="Recent actions" items={recentActions} />
-            <ContextList title="API errors" items={apiErrors} />
-            <ContextList title="Console errors" items={consoleErrors} />
-            <div className="rounded-2xl border border-neutral-800 bg-neutral-950/70 p-3">
-              <div className="text-xs font-semibold uppercase tracking-wide text-neutral-400">Detected context</div>
-              <div className="mt-2 space-y-1 text-xs text-neutral-300">
-                <div>• Path: {runtimeSnapshot.page.pathname}</div>
-                <div>• URL: {runtimeSnapshot.page.fullUrl}</div>
-                <div>• Viewport: {runtimeSnapshot.viewport.width}×{runtimeSnapshot.viewport.height}</div>
-                {Object.entries(selectedEntities).map(([key, value]) =>
-                  value ? <div key={key}>• {key}: {value}</div> : null,
-                )}
+          {/* Context (bug only) */}
+          {kind === 'bug' && (
+            <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+              <ContextList title="Recent actions" items={recentActions} />
+              <ContextList title="API errors" items={apiErrors} />
+              <ContextList title="Console errors" items={consoleErrors} />
+              <div className="rounded-2xl border border-neutral-800 bg-neutral-950/70 p-3">
+                <div className="text-xs font-semibold uppercase tracking-wide text-neutral-400">Detected context</div>
+                <div className="mt-2 space-y-1 text-xs text-neutral-300">
+                  <div>• Path: {runtimeSnapshot.page.pathname}</div>
+                  <div>• Viewport: {runtimeSnapshot.viewport.width}×{runtimeSnapshot.viewport.height}</div>
+                  {Object.entries(selectedEntities).map(([key, value]) =>
+                    value ? <div key={key}>• {key}: {value}</div> : null,
+                  )}
+                </div>
               </div>
             </div>
-          </div>
+          )}
 
+          {/* Generate button */}
           <div className="flex justify-end">
             <button
               type="button"
               onClick={() => void generateDraft()}
               disabled={generating}
-              className="rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-neutral-950 transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-50"
+              className="cursor-pointer rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-neutral-950 transition hover:brightness-110 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50"
             >
-              {generating ? 'Generating draft…' : 'Generate ticket draft'}
+              {generating ? 'Generating draft…' : 'Generate draft'}
             </button>
           </div>
 
           {draftError && <div role="alert" className="text-sm text-red-400">{draftError}</div>}
 
+          {/* Draft editor */}
           {draft && (
             <div className="rounded-2xl border border-primary/30 bg-neutral-950/80 p-4">
               <div className="text-sm font-semibold text-neutral-100">Draft preview</div>
 
               <div className="mt-4 space-y-4">
                 <div>
-                  <label className="mb-2 block text-xs font-semibold uppercase tracking-wide text-neutral-400">Title</label>
+                  <label className="mb-2 block text-xs font-semibold uppercase tracking-wide text-neutral-400" htmlFor="draft-title">Title</label>
                   <input
+                    id="draft-title"
                     value={draft.title}
                     onChange={(event) => setDraft({ ...draft, title: event.target.value })}
                     className="w-full rounded-xl border border-neutral-800 bg-neutral-950 px-3 py-2 text-sm text-neutral-100 outline-none transition focus:border-primary"
@@ -235,8 +333,9 @@ export default function AgentReportTab() {
                 </div>
 
                 <div>
-                  <label className="mb-2 block text-xs font-semibold uppercase tracking-wide text-neutral-400">Summary</label>
+                  <label className="mb-2 block text-xs font-semibold uppercase tracking-wide text-neutral-400" htmlFor="draft-summary">Summary</label>
                   <textarea
+                    id="draft-summary"
                     value={draft.summary}
                     onChange={(event) => setDraft({ ...draft, summary: event.target.value })}
                     className="min-h-[80px] w-full rounded-xl border border-neutral-800 bg-neutral-950 px-3 py-2 text-sm text-neutral-100 outline-none transition focus:border-primary"
@@ -244,25 +343,29 @@ export default function AgentReportTab() {
                 </div>
 
                 <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+                  {kind === 'bug' && (
+                    <div>
+                      <label className="mb-2 block text-xs font-semibold uppercase tracking-wide text-neutral-400" htmlFor="draft-severity">Severity</label>
+                      <select
+                        id="draft-severity"
+                        value={draft.severity}
+                        onChange={(event) => setDraft({ ...draft, severity: event.target.value as AgentTicketDraft['severity'] })}
+                        className="w-full cursor-pointer rounded-xl border border-neutral-800 bg-neutral-950 px-3 py-2 text-sm text-neutral-100 outline-none transition focus:border-primary"
+                      >
+                        <option value="low">Low</option>
+                        <option value="medium">Medium</option>
+                        <option value="high">High</option>
+                        <option value="critical">Critical</option>
+                      </select>
+                    </div>
+                  )}
                   <div>
-                    <label className="mb-2 block text-xs font-semibold uppercase tracking-wide text-neutral-400">Severity</label>
+                    <label className="mb-2 block text-xs font-semibold uppercase tracking-wide text-neutral-400" htmlFor="draft-type">Type</label>
                     <select
-                      value={draft.severity}
-                      onChange={(event) => setDraft({ ...draft, severity: event.target.value as AgentTicketDraft['severity'] })}
-                      className="w-full rounded-xl border border-neutral-800 bg-neutral-950 px-3 py-2 text-sm text-neutral-100 outline-none transition focus:border-primary"
-                    >
-                      <option value="low">Low</option>
-                      <option value="medium">Medium</option>
-                      <option value="high">High</option>
-                      <option value="critical">Critical</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="mb-2 block text-xs font-semibold uppercase tracking-wide text-neutral-400">Issue type</label>
-                    <select
+                      id="draft-type"
                       value={draft.issueType}
                       onChange={(event) => setDraft({ ...draft, issueType: event.target.value as AgentTicketDraft['issueType'] })}
-                      className="w-full rounded-xl border border-neutral-800 bg-neutral-950 px-3 py-2 text-sm text-neutral-100 outline-none transition focus:border-primary"
+                      className="w-full cursor-pointer rounded-xl border border-neutral-800 bg-neutral-950 px-3 py-2 text-sm text-neutral-100 outline-none transition focus:border-primary"
                     >
                       <option value="bug">Bug</option>
                       <option value="feature">Feature</option>
@@ -273,8 +376,9 @@ export default function AgentReportTab() {
                 </div>
 
                 <div>
-                  <label className="mb-2 block text-xs font-semibold uppercase tracking-wide text-neutral-400">Description</label>
+                  <label className="mb-2 block text-xs font-semibold uppercase tracking-wide text-neutral-400" htmlFor="draft-description">Description (markdown)</label>
                   <textarea
+                    id="draft-description"
                     value={draft.descriptionMarkdown}
                     onChange={(event) => setDraft({ ...draft, descriptionMarkdown: event.target.value })}
                     className="min-h-[260px] w-full rounded-xl border border-neutral-800 bg-neutral-950 px-3 py-2 font-mono text-xs text-neutral-100 outline-none transition focus:border-primary"
@@ -298,14 +402,15 @@ export default function AgentReportTab() {
         </div>
       </div>
 
+      {/* Footer */}
       <div className="border-t border-neutral-800 px-4 py-4">
         <button
           type="button"
           onClick={() => void submitTicket()}
           disabled={!draft || submitting}
-          className="w-full rounded-xl bg-primary px-4 py-3 text-sm font-semibold text-neutral-950 transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-50"
+          className="w-full cursor-pointer rounded-xl bg-primary px-4 py-3 text-sm font-semibold text-neutral-950 transition hover:brightness-110 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50"
         >
-          {submitting ? 'Creating issue…' : 'Create issue'}
+          {submitting ? 'Sending…' : 'Send'}
         </button>
       </div>
     </div>

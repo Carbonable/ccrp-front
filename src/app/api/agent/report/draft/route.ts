@@ -4,11 +4,11 @@ import { z } from 'zod';
 import {
   buildFallbackDraft,
   callGeminiJson,
-  DRAFT_PROMPT,
+  getDraftPrompt,
   sanitizeRuntimeContext,
   sanitizeScreenshot,
 } from '@/lib/agent/server';
-import type { AgentDraftRequest, AgentTicketDraft, AgentTrustedUserContext } from '@/lib/agent/types';
+import type { AgentDraftRequest, AgentReportKind, AgentTicketDraft, AgentTrustedUserContext } from '@/lib/agent/types';
 
 const draftRequestSchema = z.object({
   message: z.string().max(4000).default(''),
@@ -66,6 +66,7 @@ const draftRequestSchema = z.object({
     })
     .nullable()
     .optional(),
+  reportKind: z.enum(['bug', 'feature', 'contact']).optional(),
 });
 
 function buildTrustedUserContext(
@@ -108,16 +109,18 @@ export async function POST(request: NextRequest) {
   }
 
   const trusted = buildTrustedUserContext(user, await auth());
+  const reportKind = (parsed.data.reportKind ?? 'bug') as AgentReportKind;
   const payload: AgentDraftRequest = {
     message: parsed.data.message,
     runtimeContext: sanitizeRuntimeContext(parsed.data.runtimeContext),
     screenshot: sanitizeScreenshot(parsed.data.screenshot),
+    reportKind,
   };
 
   let draft: AgentTicketDraft | null = null;
 
   try {
-    draft = await callGeminiJson<AgentTicketDraft>(DRAFT_PROMPT, {
+    draft = await callGeminiJson<AgentTicketDraft>(getDraftPrompt(reportKind), {
       request: payload,
       trustedUserContext: trusted,
       defaultStatus: process.env.BAATON_DEFAULT_STATUS || 'backlog',

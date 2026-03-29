@@ -1,5 +1,6 @@
 import type {
   AgentDraftRequest,
+  AgentReportKind,
   AgentScreenshotPayload,
   AgentTicketDraft,
   AgentTrustedUserContext,
@@ -81,6 +82,14 @@ export function sanitizeScreenshot(
   };
 }
 
+function issueTypeFromKind(kind: AgentReportKind): AgentTicketDraft['issueType'] {
+  switch (kind) {
+    case 'feature': return 'feature';
+    case 'contact': return 'question';
+    default: return 'bug';
+  }
+}
+
 function severityFromContext(request: AgentDraftRequest): AgentTicketDraft['severity'] {
   const apiErrors = request.runtimeContext.recentApiErrors.length;
   const consoleErrors = request.runtimeContext.recentConsoleErrors.length;
@@ -103,12 +112,15 @@ export function buildFallbackDraft(
   request: AgentDraftRequest,
   trusted: AgentTrustedUserContext,
 ): AgentTicketDraft {
-  const severity = severityFromContext(request);
+  const kind: AgentReportKind = request.reportKind ?? 'bug';
+  const severity = kind === 'feature' || kind === 'contact' ? 'low' : severityFromContext(request);
   const priority = mapSeverityToPriority(severity);
+  const issueType = issueTypeFromKind(kind);
   const tags = uniqueTags([
     'ccpm',
     'agent-reported',
     'car-15',
+    kind,
     request.runtimeContext.page.pathname.split('/').filter(Boolean)[1] || 'unknown-page',
     request.runtimeContext.selectedEntities.projectSlug || '',
   ]);
@@ -147,7 +159,7 @@ export function buildFallbackDraft(
     title: titleFromMessage(request),
     summary: truncate(observedBehavior, 220),
     severity,
-    issueType: 'bug',
+    issueType,
     tags,
     descriptionMarkdown,
     reproductionSteps,
@@ -155,7 +167,7 @@ export function buildFallbackDraft(
     observedBehavior,
     baatonPayloadPreview: {
       priority,
-      issue_type: 'bug',
+      issue_type: issueType,
       status: process.env.BAATON_DEFAULT_STATUS || 'backlog',
       tags,
     },
@@ -425,6 +437,71 @@ export async function createBaatonIssue({
   }
 
   return parsed?.data || parsed;
+}
+
+export function getDraftPrompt(kind: AgentReportKind): string {
+  switch (kind) {
+    case 'feature':
+      return `You are the CCPM Agent feature-request assistant.
+Return strict JSON only with this exact shape:
+{
+  "title": string,
+  "summary": string,
+  "severity": "low",
+  "issueType": "feature",
+  "tags": string[],
+  "observedBehavior": string,
+  "expectedBehavior": string,
+  "reproductionSteps": string[],
+  "descriptionMarkdown": string,
+  "baatonPayloadPreview": {
+    "priority": "low",
+    "issue_type": "feature",
+    "status": string,
+    "tags": string[]
+  }
+}
+Best practices:
+- Title: concise description of the desired feature.
+- Summary: one-line user story ("As a [role], I want to...").
+- observedBehavior: current situation that motivated the request.
+- expectedBehavior: the desired outcome in detail.
+- reproductionSteps: steps to reproduce the current state or context.
+- Tags: include ccpm, agent-reported, feature, and a page/domain hint.
+- Do not invent data not present in the payload.`;
+
+    case 'contact':
+      return `You are the CCPM Agent support assistant.
+Return strict JSON only with this exact shape:
+{
+  "title": string,
+  "summary": string,
+  "severity": "low",
+  "issueType": "question",
+  "tags": string[],
+  "observedBehavior": string,
+  "expectedBehavior": string,
+  "reproductionSteps": string[],
+  "descriptionMarkdown": string,
+  "baatonPayloadPreview": {
+    "priority": "low",
+    "issue_type": "question",
+    "status": string,
+    "tags": string[]
+  }
+}
+Best practices:
+- Title: short, clear description of the question or request.
+- Summary: what the user needs help with.
+- observedBehavior: what the user experienced or is trying to do.
+- expectedBehavior: what they need or hope to achieve.
+- reproductionSteps: context steps that led to the question.
+- Tags: include ccpm, agent-reported, support, and a page hint.
+- Do not invent data not present in the payload.`;
+
+    default:
+      return DRAFT_PROMPT;
+  }
 }
 
 export const DRAFT_PROMPT = `You are the CCPM Agent bug triage assistant.

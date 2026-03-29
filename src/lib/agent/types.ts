@@ -1,5 +1,7 @@
 export type AgentTab = 'ask' | 'report';
 
+export type AgentReportKind = 'bug' | 'feature' | 'contact';
+
 export interface AgentActionLog {
   label: string;
   at: string;
@@ -109,6 +111,7 @@ export interface AgentDraftRequest {
   message: string;
   runtimeContext: AgentRuntimeContext;
   screenshot?: AgentScreenshotPayload | null;
+  reportKind?: AgentReportKind;
 }
 
 export interface AgentSubmitResponse {
