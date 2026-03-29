@@ -87,7 +87,7 @@ function sanitizeUnsupportedColorFunctions(sourceRoot: HTMLElement, cloneRoot: H
 }
 
 async function captureElement(target: HTMLElement) {
-  const html2canvas = (await import('html2canvas')).default;
+  const html2canvas = (await import('html2canvas-pro')).default;
 
   return html2canvas(target, {
     backgroundColor: '#0a0a0a',
