@@ -34,7 +34,7 @@ export default function ClientLayout({
             <AgentProvider>
               <MenuWrapper />
               <ApolloWrapper>
-                <div className="ml-0 mt-[66px] min-h-screen max-w-full lg:mx-auto lg:mt-0 lg:pl-[222px]">
+                <div data-report-capture className="ml-0 mt-[66px] min-h-screen max-w-full lg:mx-auto lg:mt-0 lg:pl-[222px]">
                   {children}
                 </div>
               </ApolloWrapper>
@@ -57,7 +57,7 @@ export default function ClientLayout({
             <MenuWrapper />
             <ApolloWrapper>
               <RefetchProvider>
-                <div className="2xl:max-w-8xl ml-0 mt-[66px] min-h-screen max-w-full p-4 md:p-8 lg:mx-auto lg:mt-0 lg:max-w-6xl lg:p-4 lg:pl-[240px] xl:max-w-7xl">
+                <div data-report-capture className="2xl:max-w-8xl ml-0 mt-[66px] min-h-screen max-w-full p-4 md:p-8 lg:mx-auto lg:mt-0 lg:max-w-6xl lg:p-4 lg:pl-[240px] xl:max-w-7xl">
                   {children}
                 </div>
               </RefetchProvider>
