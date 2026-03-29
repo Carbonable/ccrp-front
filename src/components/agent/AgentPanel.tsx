@@ -51,7 +51,7 @@ export default function AgentPanel() {
           <div className="flex items-center justify-between border-b border-neutral-800 px-4 py-4">
             <div>
               <div className="text-base font-semibold text-neutral-100">CCPM Agent</div>
-              <div className="text-xs text-neutral-400">Page-aware assistant + Baaton ticketing.</div>
+              <div className="text-xs text-neutral-400">Page-aware assistant + structured issue reporting.</div>
             </div>
 
             <div className="flex items-center gap-2">

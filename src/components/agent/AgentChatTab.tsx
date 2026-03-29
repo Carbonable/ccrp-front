@@ -6,7 +6,7 @@ import type { AgentChatMessage, AgentChatResponse } from '@/lib/agent/types';
 import { useAgent } from '@/components/agent/AgentProvider';
 
 const EMPTY_STATE =
-  'Ask me what you should do on this page, why something is broken, or whether this deserves a Baaton ticket.';
+  'Ask me what you should do on this page, why something is broken, or whether this should become a structured issue report.';
 
 export default function AgentChatTab() {
   const { buildRuntimeContext, setActiveTab } = useAgent();
@@ -121,7 +121,7 @@ export default function AgentChatTab() {
           className="min-h-[110px] w-full rounded-2xl border border-neutral-800 bg-neutral-950 px-4 py-3 text-sm text-neutral-100 outline-none transition focus:border-primary"
         />
 
-        {error && <div className="mt-2 text-xs text-red-400">{error}</div>}
+        {error && <div role="alert" className="mt-2 text-xs text-red-400">{error}</div>}
 
         <div className="mt-3 flex items-center justify-between gap-3">
           <div className="text-xs text-neutral-500">Current page, recent clicks and recent API errors are included.</div>

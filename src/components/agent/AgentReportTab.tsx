@@ -122,7 +122,7 @@ export default function AgentReportTab() {
       const data = (await response.json()) as AgentSubmitResponse;
       setSubmitResult(data);
     } catch (error) {
-      setSubmitError(error instanceof Error ? error.message : 'Unable to create Baaton ticket.');
+      setSubmitError(error instanceof Error ? error.message : 'Unable to create the issue.');
     } finally {
       setSubmitting(false);
     }
@@ -133,7 +133,7 @@ export default function AgentReportTab() {
       <div className="border-b border-neutral-800 px-4 py-3">
         <div className="text-sm font-semibold text-neutral-100">Report issue</div>
         <div className="mt-1 text-xs text-neutral-400">
-          Auto-captures a screenshot, the current page, recent actions, user role context and recent errors before sending to Baaton.
+          Auto-captures the current screen, page context, recent actions and recent errors before generating a structured issue draft.
         </div>
       </div>
 
@@ -171,7 +171,7 @@ export default function AgentReportTab() {
               </div>
             )}
 
-            {captureError && <div className="mt-2 text-xs text-red-400">{captureError}</div>}
+            {captureError && <div role="alert" className="mt-2 text-xs text-red-400">{captureError}</div>}
           </div>
 
           <div className="rounded-2xl border border-neutral-800 bg-neutral-950/70 p-4">
@@ -218,7 +218,7 @@ export default function AgentReportTab() {
             </button>
           </div>
 
-          {draftError && <div className="text-sm text-red-400">{draftError}</div>}
+          {draftError && <div role="alert" className="text-sm text-red-400">{draftError}</div>}
 
           {draft && (
             <div className="rounded-2xl border border-primary/30 bg-neutral-950/80 p-4">
@@ -284,13 +284,13 @@ export default function AgentReportTab() {
             </div>
           )}
 
-          {submitError && <div className="text-sm text-red-400">{submitError}</div>}
+          {submitError && <div role="alert" className="text-sm text-red-400">{submitError}</div>}
           {submitResult && (
             <div className="rounded-2xl border border-emerald-500/30 bg-emerald-500/10 p-4 text-sm text-emerald-200">
-              Ticket created{submitResult.displayId ? `: ${submitResult.displayId}` : ''}
+              Issue created{submitResult.displayId ? `: ${submitResult.displayId}` : ''}
               {submitResult.url ? (
                 <a href={submitResult.url} target="_blank" rel="noreferrer" className="ml-2 underline">
-                  Open in Baaton
+                  Open issue
                 </a>
               ) : null}
             </div>
@@ -305,7 +305,7 @@ export default function AgentReportTab() {
           disabled={!draft || submitting}
           className="w-full rounded-xl bg-primary px-4 py-3 text-sm font-semibold text-neutral-950 transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-50"
         >
-          {submitting ? 'Creating Baaton ticket…' : 'Create Baaton ticket'}
+          {submitting ? 'Creating issue…' : 'Create issue'}
         </button>
       </div>
     </div>

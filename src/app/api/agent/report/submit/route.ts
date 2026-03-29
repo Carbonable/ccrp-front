@@ -138,9 +138,9 @@ export async function POST(request: NextRequest) {
       message: 'Ticket created',
       issue,
     });
-  } catch (error) {
+  } catch {
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : 'Unable to create Baaton issue.' },
+      { error: 'Unable to create the issue right now. Please retry in a moment.' },
       { status: 500 },
     );
   }
