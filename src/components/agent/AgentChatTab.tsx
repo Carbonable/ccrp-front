@@ -363,8 +363,26 @@ export default function AgentChatTab() {
 
   const [input, setInput] = useState('');
 
+  const transport = useMemo(() => new DefaultChatTransport({
+    api: '/api/agent/chat',
+    prepareSendMessagesRequest: ({ id, messages, trigger, messageId }) => ({
+      body: {
+        id,
+        trigger,
+        messageId,
+        runtimeContext: buildRuntimeContext(),
+        messages: messages.map((message) => ({
+          id: message.id,
+          role: message.role,
+          content: getTextFromMessage(message),
+          createdAt: new Date().toISOString(),
+        })),
+      },
+    }),
+  }), [buildRuntimeContext]);
+
   const { messages, sendMessage, status } = useChat({
-    transport: new DefaultChatTransport({ api: '/api/agent/chat' }),
+    transport,
     messages: initialMessages,
     id: activeThreadId ?? undefined,
     onFinish: ({ message: msg }) => {
