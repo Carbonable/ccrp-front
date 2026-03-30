@@ -381,10 +381,13 @@ export default function AgentChatTab() {
     }),
   }), [buildRuntimeContext]);
 
-  const { messages, sendMessage, status } = useChat({
+  const { messages, sendMessage, status, error, stop, clearError } = useChat({
     transport,
     messages: initialMessages,
     id: activeThreadId ?? undefined,
+    onError: (err) => {
+      console.error('[agent/chat] useChat error', err);
+    },
     onFinish: ({ message: msg }) => {
       // Extract meta from the finished message's data parts
       const meta = getMetaFromMessage(msg);
@@ -531,6 +534,20 @@ export default function AgentChatTab() {
             <Conversation>
               {messages.length > 0 ? <ConversationDownload messages={downloadableMessages} /> : null}
               <ConversationContent>
+                {error ? (
+                  <div className="mx-4 mt-4 rounded-2xl border border-red-500/30 bg-red-500/10 p-3 text-sm text-red-100">
+                    <div className="font-medium">Something went wrong with the chat request.</div>
+                    <div className="mt-1 text-red-100/80">Try sending again. If it keeps failing, the AI backend or auth/session is probably misconfigured.</div>
+                    <button
+                      type="button"
+                      onClick={() => clearError()}
+                      className="mt-3 rounded-lg border border-red-400/30 px-2.5 py-1 text-xs text-red-100 transition hover:bg-red-500/10"
+                    >
+                      Dismiss
+                    </button>
+                  </div>
+                ) : null}
+
                 {messages.length === 0 ? (
                   <ConversationEmptyState
                     icon={<ChatBubbleLeftRightIcon className="h-8 w-8" />}
@@ -603,7 +620,7 @@ export default function AgentChatTab() {
             <PromptInputFooter>
               <div className="text-xs text-neutral-500">{t('contextHint')}</div>
               <PromptInputTools>
-                <PromptInputSubmit disabled={!canSend} status={isStreaming ? 'submitted' : 'ready'} />
+                <PromptInputSubmit disabled={!canSend} status={status} onStop={stop} />
               </PromptInputTools>
             </PromptInputFooter>
           </PromptInput>
