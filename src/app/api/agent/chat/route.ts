@@ -1,97 +1,38 @@
 import { auth, currentUser } from '@clerk/nextjs/server';
 import { NextRequest } from 'next/server';
-import { createUIMessageStream, createUIMessageStreamResponse, type UIMessage, UI_MESSAGE_STREAM_HEADERS } from 'ai';
+import { streamText, convertToModelMessages, type UIMessage } from 'ai';
+import { google } from '@ai-sdk/google';
 import { z } from 'zod';
-import {
-  enrichChatResponse,
-  callGeminiJson,
-  CHAT_PROMPT,
-  sanitizeRuntimeContext,
-} from '@/lib/agent/server';
-import type { AgentChatAction, AgentChatResponse, AgentRuntimeContext, AgentTrustedUserContext } from '@/lib/agent/types';
+import { CHAT_PROMPT, sanitizeRuntimeContext } from '@/lib/agent/server';
+import type { AgentRuntimeContext, AgentTrustedUserContext } from '@/lib/agent/types';
 
 export const maxDuration = 30;
 
-type UserIntent = 'bug' | 'feature' | 'question' | 'general';
-
-function inferUserIntent(message: string): UserIntent {
-  const value = message.toLowerCase();
-  if (/(feature|request|improve|improvement|enhancement|would like|i want|please add|missing|j'aimerais|je voudrais|ça serait bien|ajouter|améliorer)/.test(value)) return 'feature';
-  if (/(bug|error|erreur|broken|fails?|failure|crash|issue|incident|ne marche pas|bloqu|500|400|404)/.test(value)) return 'bug';
-  if (/(how|comment|pourquoi|why|where|can you|peux-tu|help|aide)/.test(value)) return 'question';
-  return 'general';
-}
-
-function isAgentInternalError(url: string) {
-  return url.includes('/api/agent/');
-}
-
-function buildSuggestedActions(message: string, shouldReport: boolean, intent: UserIntent): AgentChatAction[] {
-  if (intent === 'feature') {
-    return [
-      { type: 'open_report', label: 'Open feature request', kind: 'feature', prefill: message },
-      { type: 'new_conversation', label: 'Start new conversation' },
-    ];
-  }
-
-  if (intent === 'question' || (!shouldReport && intent === 'general')) {
-    return [{ type: 'new_conversation', label: 'Start new conversation' }];
-  }
-
-  if (!shouldReport) {
-    return [
-      { type: 'open_report', label: 'Open feature request', kind: 'feature', prefill: message },
-      { type: 'new_conversation', label: 'Start new conversation' },
-    ];
-  }
-
-  return [
-    { type: 'open_report', label: 'Open bug report', kind: 'bug', prefill: message },
-    { type: 'open_report', label: 'Open feature request', kind: 'feature', prefill: message },
-    { type: 'new_conversation', label: 'Start new conversation' },
-  ];
-}
+// ── Zod schemas ──────────────────────────────────────────────────────────────
 
 const runtimeContextSchema = z.object({
-  capturedAt: z.string(),
+  capturedAt: z.string().optional(),
   page: z.object({
     pathname: z.string(),
-    fullUrl: z.string(),
-    title: z.string(),
+    fullUrl: z.string().optional(),
+    title: z.string().optional(),
     locale: z.string().optional(),
-    query: z.record(z.string(), z.string()),
+    query: z.record(z.string(), z.string()).optional(),
   }),
-  viewport: z.object({ width: z.number(), height: z.number(), devicePixelRatio: z.number() }),
-  browser: z.object({ language: z.string(), userAgent: z.string(), platform: z.string().optional() }),
-  selectedEntities: z.record(z.string(), z.string().optional()),
-  recentActions: z.array(z.object({ label: z.string(), at: z.string(), kind: z.enum(['navigation', 'click', 'api', 'console', 'system']) })),
-  recentApiErrors: z.array(z.object({ url: z.string(), method: z.string(), status: z.number().optional(), message: z.string(), at: z.string() })),
-  recentConsoleErrors: z.array(z.object({ message: z.string(), source: z.string().optional(), at: z.string() })),
+  viewport: z.object({ width: z.number(), height: z.number(), devicePixelRatio: z.number() }).optional(),
+  browser: z.object({ language: z.string(), userAgent: z.string(), platform: z.string().optional() }).optional(),
+  selectedEntities: z.record(z.string(), z.string().optional()).optional(),
+  recentActions: z.array(z.object({ label: z.string(), at: z.string(), kind: z.string() })).optional(),
+  recentApiErrors: z.array(z.object({ url: z.string(), method: z.string(), status: z.number().optional(), message: z.string(), at: z.string() })).optional(),
+  recentConsoleErrors: z.array(z.object({ message: z.string(), source: z.string().optional(), at: z.string() })).optional(),
 });
 
 const chatSchema = z.object({
   messages: z.array(z.custom<UIMessage>()),
-  runtimeContext: runtimeContextSchema,
+  runtimeContext: runtimeContextSchema.optional(),
 });
 
-function getTextFromMessage(message: UIMessage) {
-  return message.parts
-    .filter((part) => part.type === 'text')
-    .map((part) => part.text)
-    .join('')
-    .trim();
-}
-
-function toLegacyMessages(messages: UIMessage[]) {
-  return messages
-    .map((message) => ({
-      id: message.id,
-      role: message.role,
-      content: getTextFromMessage(message),
-      createdAt: new Date().toISOString(),
-    }))
-    .filter((message) => message.content.length > 0);
-}
+// ── Helpers ──────────────────────────────────────────────────────────────────
 
 function buildTrustedUserContext(
   user: Awaited<ReturnType<typeof currentUser>>,
@@ -99,13 +40,11 @@ function buildTrustedUserContext(
 ): AgentTrustedUserContext {
   const { orgId, orgRole } = authData;
   const roles = Array.isArray(user?.publicMetadata?.roles)
-    ? (user.publicMetadata.roles as unknown[]).filter((value): value is string => typeof value === 'string')
+    ? (user.publicMetadata.roles as unknown[]).filter((v): v is string => typeof v === 'string')
     : [];
-  const rawPermissions = ((authData as { sessionClaims?: { org_permissions?: unknown; o?: { per?: unknown } } })
-    .sessionClaims?.org_permissions ??
-    (authData as { sessionClaims?: { org_permissions?: unknown; o?: { per?: unknown } } }).sessionClaims?.o?.per) as unknown;
+  const rawPermissions = ((authData as Record<string, unknown>).sessionClaims as Record<string, unknown> | undefined)?.org_permissions;
   const permissions = Array.isArray(rawPermissions)
-    ? rawPermissions.filter((value): value is string => typeof value === 'string')
+    ? rawPermissions.filter((v): v is string => typeof v === 'string')
     : [];
 
   return {
@@ -118,6 +57,18 @@ function buildTrustedUserContext(
     permissions,
   };
 }
+
+function buildSystemPrompt(trusted: AgentTrustedUserContext, runtimeContext?: AgentRuntimeContext): string {
+  const contextBlock = runtimeContext
+    ? `\n\nCurrent page context (supporting info only — never the primary answer source):\n${JSON.stringify(runtimeContext, null, 2)}`
+    : '';
+
+  const userBlock = `\n\nAuthenticated user: ${trusted.name} (${trusted.email}), org role: ${trusted.organizationRole || 'member'}`;
+
+  return CHAT_PROMPT + userBlock + contextBlock;
+}
+
+// ── Route handler ────────────────────────────────────────────────────────────
 
 export async function POST(request: NextRequest) {
   const user = await currentUser();
@@ -132,95 +83,26 @@ export async function POST(request: NextRequest) {
   }
 
   const trusted = buildTrustedUserContext(user, await auth());
-  const runtimeContext = sanitizeRuntimeContext(parsed.data.runtimeContext as AgentRuntimeContext);
-  const messages = toLegacyMessages(parsed.data.messages);
-  const latestUserMessage = [...messages].reverse().find((message) => message.role === 'user');
-  const latestMessageText = latestUserMessage?.content || '';
-  const intent = inferUserIntent(latestMessageText);
-  const relevantApiErrors = runtimeContext.recentApiErrors.filter((error) => !isAgentInternalError(error.url));
-  const relevantConsoleErrors = runtimeContext.recentConsoleErrors;
+  const runtimeContext = parsed.data.runtimeContext
+    ? sanitizeRuntimeContext(parsed.data.runtimeContext as AgentRuntimeContext)
+    : undefined;
 
-  let raw: AgentChatResponse | null = null;
-  let geminiFailed = false;
-  const geminiConfigured = Boolean(process.env.GEMINI_API_KEY || process.env.GOOGLE_GENERATIVE_AI_API_KEY);
+  const modelMessages = await convertToModelMessages(parsed.data.messages);
+  const system = buildSystemPrompt(trusted, runtimeContext);
 
-  try {
-    raw = await callGeminiJson<AgentChatResponse>(CHAT_PROMPT, {
-      trustedUserContext: trusted,
-      runtimeContext,
-      messages: messages.slice(-10),
-    });
-  } catch (error) {
-    geminiFailed = true;
-    console.error('[agent/chat] Gemini request failed', error);
-    raw = null;
-  }
+  const model = process.env.GEMINI_MODEL || 'gemini-3-flash-preview';
 
-  if (!raw) {
-    const shouldReport = intent === 'feature'
-      ? true
-      : intent === 'bug'
-        ? relevantApiErrors.length > 0 || relevantConsoleErrors.length > 0
-        : false;
-
-    raw = {
-      answer: !geminiConfigured
-        ? "The AI backend is not configured on this environment yet, so I can't generate a real model answer here."
-        : geminiFailed
-          ? "I couldn't reach the AI backend right now, so I'm showing a safe fallback instead of a real page analysis. Try again in a moment."
-          : intent === 'feature'
-            ? 'Understood — this sounds like a product improvement request. I can open a feature request prefilled with the current page context.'
-            : shouldReport
-              ? 'This looks like a real product issue. I can open a report prefilled with the current context so the team can investigate faster.'
-              : 'I have limited structured context for this page. I can still help, but I may need richer page signals to explain the charts precisely.',
-      reasoning: !geminiConfigured
-        ? 'No Gemini API key is configured for this deployment.'
-        : geminiFailed
-          ? 'Gemini did not return a valid response. Falling back to offline product-help mode.'
-          : undefined,
-      reportRecommended: shouldReport,
-      actions: buildSuggestedActions(latestMessageText, shouldReport, intent),
-    };
-  }
-
-  const shouldReport = intent === 'feature' ? true : Boolean(raw.reportRecommended);
-  const enriched = enrichChatResponse({
-    response: {
-      ...raw,
-      actions: raw.actions?.length ? raw.actions : buildSuggestedActions(latestMessageText, shouldReport, intent),
-    },
-    message: latestMessageText,
-    intent,
-    shouldReport,
-    runtimeContext,
-  });
-
-  const stream = createUIMessageStream({
-    execute: async ({ writer }) => {
-      const textId = `text-${Date.now()}`;
-
-      // Main answer text
-      writer.write({ type: 'text-start', id: textId });
-      writer.write({ type: 'text-delta', id: textId, delta: enriched.answer });
-      writer.write({ type: 'text-end', id: textId });
-
-      // Structured metadata as a typed data part
-      writer.write({
-        type: 'data-agent_meta' as `data-${string}`,
-        data: {
-          reasoning: enriched.reasoning ?? null,
-          sources: enriched.sources ?? [],
-          tasks: enriched.tasks ?? [],
-          suggestions: enriched.suggestions ?? [],
-          actions: enriched.actions ?? [],
-          reportRecommended: enriched.reportRecommended ?? false,
-        },
-      });
+  const result = streamText({
+    model: google(model),
+    system,
+    messages: modelMessages,
+    onError: ({ error }) => {
+      console.error('[agent/chat] streamText error:', error);
     },
   });
 
-  return createUIMessageStreamResponse({
-    stream,
-    headers: UI_MESSAGE_STREAM_HEADERS,
+  return result.toUIMessageStreamResponse({
+    sendReasoning: true,
+    sendSources: true,
   });
 }

@@ -12,6 +12,7 @@
     "watch": "graphql-codegen -w"
   },
   "dependencies": {
+    "@ai-sdk/google": "^3.0.54",
     "@ai-sdk/react": "^3.0.143",
     "@apollo/client": "^4.1.0",
     "@apollo/experimental-nextjs-app-support": "^0.14.4",

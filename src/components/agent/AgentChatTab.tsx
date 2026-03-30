@@ -15,7 +15,6 @@ import {
 } from '@/components/ai-elements/conversation';
 import {
   Message,
-  MessageActions,
   MessageContent,
   MessageResponse,
 } from '@/components/ai-elements/message';
@@ -41,45 +40,8 @@ import {
   SourcesTrigger,
 } from '@/components/ai-elements/sources';
 import { Suggestion, Suggestions } from '@/components/ai-elements/suggestion';
-import {
-  Task,
-  TaskContent,
-  TaskItem,
-  TaskTrigger,
-} from '@/components/ai-elements/task';
 import { Button } from '@/components/ui/button';
-import type {
-  AgentChatAction,
-  AgentChatSource,
-  AgentChatSuggestion,
-  AgentChatTask,
-  AgentRuntimeContext,
-} from '@/lib/agent/types';
-
-interface AgentMetaData {
-  reasoning: string | null;
-  sources: AgentChatSource[];
-  tasks: AgentChatTask[];
-  suggestions: AgentChatSuggestion[];
-  actions: AgentChatAction[];
-  reportRecommended: boolean;
-}
-
-function getTextFromMessage(message: UIMessage) {
-  return message.parts
-    .filter((part) => part.type === 'text')
-    .map((part) => part.text)
-    .join('');
-}
-
-function getMetaFromMessage(message: UIMessage): AgentMetaData | null {
-  for (const part of message.parts) {
-    if (part.type === 'data-agent_meta') {
-      return (part as { type: string; data: AgentMetaData }).data;
-    }
-  }
-  return null;
-}
+import type { AgentRuntimeContext } from '@/lib/agent/types';
 
 function buildStarterSuggestions(runtime: AgentRuntimeContext): string[] {
   const path = runtime.page.pathname || '/';
@@ -97,116 +59,56 @@ function buildStarterSuggestions(runtime: AgentRuntimeContext): string[] {
   return base.slice(0, 4);
 }
 
-function ActionButtons({
-  actions,
-  onAction,
-}: {
-  actions: AgentChatAction[];
-  onAction: (action: AgentChatAction) => void;
-}) {
-  if (!actions.length) return null;
-
-  return (
-    <MessageActions className="mt-3 flex flex-wrap gap-2">
-      {actions.map((action, index) => (
-        <Button
-          key={`${action.type}-${action.kind ?? 'none'}-${index}`}
-          type="button"
-          variant="outline"
-          size="sm"
-          onClick={() => onAction(action)}
-          className="border-primary/30 bg-primary/10 text-white hover:bg-primary/15 hover:text-white"
-        >
-          {action.label}
-        </Button>
-      ))}
-    </MessageActions>
-  );
-}
-
-function AssistantMessage({
-  message,
-  onAction,
-  onSuggestion,
-}: {
-  message: UIMessage;
-  onAction: (action: AgentChatAction) => void;
-  onSuggestion: (prompt: string) => void;
-}) {
+function AssistantMessage({ message }: { message: UIMessage }) {
   const t = useTranslations('agent.chat');
-  const text = getTextFromMessage(message);
-  const meta = getMetaFromMessage(message);
+
+  // Collect source-url parts
+  const sourceParts = message.parts?.filter(
+    (p): p is Extract<typeof p, { type: 'source-url' }> => p.type === 'source-url'
+  ) ?? [];
 
   return (
     <Message from="assistant">
       <MessageContent>
-        {text ? <MessageResponse>{text}</MessageResponse> : null}
+        {message.parts.map((part, i) => {
+          switch (part.type) {
+            case 'text':
+              return (
+                <MessageResponse key={`${message.id}-${i}`}>
+                  {part.text}
+                </MessageResponse>
+              );
+            case 'reasoning':
+              return (
+                <Reasoning key={`${message.id}-reasoning-${i}`}>
+                  <ReasoningTrigger>{t('reasoningTitle')}</ReasoningTrigger>
+                  <ReasoningContent>
+                    <MessageResponse>{part.text}</MessageResponse>
+                  </ReasoningContent>
+                </Reasoning>
+              );
+            default:
+              return null;
+          }
+        })}
 
-        {meta?.reasoning ? (
-          <div className="mt-3">
-            <Reasoning>
-              <ReasoningTrigger>{t('reasoningTitle')}</ReasoningTrigger>
-              <ReasoningContent>
-                <MessageResponse>{meta.reasoning}</MessageResponse>
-              </ReasoningContent>
-            </Reasoning>
-          </div>
-        ) : null}
-
-        {meta?.tasks?.length ? (
-          <div className="mt-3 space-y-2">
-            {meta.tasks.map((task, taskIndex) => (
-              <Task key={`${task.title}-${taskIndex}`} defaultOpen={taskIndex === 0}>
-                <TaskTrigger title={task.title} status={task.status} />
-                <TaskContent>
-                  {task.items.map((item, itemIndex) => (
-                    <TaskItem key={`${task.title}-${itemIndex}`} status={item.state}>
-                      {item.text}
-                    </TaskItem>
-                  ))}
-                </TaskContent>
-              </Task>
-            ))}
-          </div>
-        ) : null}
-
-        {meta?.sources?.length ? (
+        {sourceParts.length > 0 && (
           <div className="mt-3">
             <Sources>
-              <SourcesTrigger count={meta.sources.length}>{t('sourcesTitle')}</SourcesTrigger>
+              <SourcesTrigger count={sourceParts.length}>{t('sourcesTitle')}</SourcesTrigger>
               <SourcesContent>
-                {meta.sources.map((source, index) => (
+                {sourceParts.map((source, index) => (
                   <Source
-                    key={`${source.title}-${index}`}
-                    title={source.title}
-                    description={source.description}
-                    href={source.href}
-                    meta={source.meta || source.type}
+                    key={`${source.sourceId}-${index}`}
+                    title={source.title ?? source.sourceId}
+                    href={source.url}
+                    meta={source.providerMetadata ? String(source.providerMetadata) : undefined}
                   />
                 ))}
               </SourcesContent>
             </Sources>
           </div>
-        ) : null}
-
-        {meta?.suggestions?.length ? (
-          <div className="mt-3">
-            <div className="mb-2 text-xs font-semibold uppercase tracking-wide text-neutral-500">
-              {t('suggestionsTitle')}
-            </div>
-            <Suggestions>
-              {meta.suggestions.map((suggestion) => (
-                <Suggestion
-                  key={suggestion.prompt}
-                  suggestion={suggestion.label}
-                  onClick={() => onSuggestion(suggestion.prompt)}
-                />
-              ))}
-            </Suggestions>
-          </div>
-        ) : null}
-
-        {meta?.actions?.length ? <ActionButtons actions={meta.actions} onAction={onAction} /> : null}
+        )}
       </MessageContent>
     </Message>
   );
@@ -234,6 +136,7 @@ export default function AgentChatTab() {
   const { messages, sendMessage, status, error, stop, clearError } = useChat({
     id: chatId,
     transport,
+    experimental_throttle: 50,
     onError: (chatError) => {
       console.error('[agent/chat] useChat error', chatError);
     },
@@ -252,22 +155,6 @@ export default function AgentChatTab() {
       await sendMessage({ text: trimmed });
     },
     [clearError, isBusy, sendMessage],
-  );
-
-  const handleAction = useCallback(
-    (action: AgentChatAction) => {
-      if (action.type === 'new_conversation') {
-        clearError();
-        setInput('');
-        setChatId(`agent-${generateId()}`);
-        return;
-      }
-
-      if (action.type === 'open_report') {
-        openReport(action.kind ?? 'bug', action.prefill);
-      }
-    },
-    [clearError, openReport],
   );
 
   const handleReset = useCallback(() => {
@@ -350,15 +237,15 @@ export default function AgentChatTab() {
                       );
                     }
 
-                    return (
-                      <AssistantMessage
-                        key={message.id}
-                        message={message}
-                        onAction={handleAction}
-                        onSuggestion={(prompt) => void handleSend(prompt)}
-                      />
-                    );
+                    return <AssistantMessage key={message.id} message={message} />;
                   })
+                )}
+
+                {status === 'submitted' && (
+                  <div className="flex items-center gap-2 px-4 py-2 text-sm text-neutral-400">
+                    <div className="h-4 w-4 animate-spin rounded-full border-2 border-neutral-600 border-t-primary" />
+                    Thinking…
+                  </div>
                 )}
               </ConversationContent>
 
