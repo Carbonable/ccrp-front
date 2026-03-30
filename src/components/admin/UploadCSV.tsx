@@ -89,7 +89,7 @@ export default function UploadCSV({ template }: FileUploadSectionProps) {
   };
 
   return (
-    <div className="mb-6 rounded-2xl border border-opacityLight-10 bg-opacityLight-5 p-5">
+    <div className="mb-6 rounded-2xl border border-opacity-light-10 bg-opacity-light-5 p-5">
       <div className="mb-4 flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
         <div>
           <h2 className="text-lg font-semibold text-neutral-100">{title}</h2>
@@ -100,7 +100,7 @@ export default function UploadCSV({ template }: FileUploadSectionProps) {
         </div>
         <button
           onClick={handleDownloadTemplate}
-          className="flex items-center gap-1 self-start rounded border border-opacityLight-10 bg-neutral-800 px-3 py-2 text-xs text-neutral-300 transition-colors hover:border-neutral-400 hover:bg-opacityLight-10 hover:text-neutral-100"
+          className="flex items-center gap-1 self-start rounded border border-opacity-light-10 bg-neutral-800 px-3 py-2 text-xs text-neutral-300 transition-colors hover:border-neutral-400 hover:bg-opacity-light-10 hover:text-neutral-100"
           title={t('downloadTemplateTitle', { title })}
         >
           <DownloadIcon />
@@ -113,7 +113,7 @@ export default function UploadCSV({ template }: FileUploadSectionProps) {
           type="file"
           accept={template.acceptedFormats}
           onChange={handleFileChange}
-          className={`w-full rounded-xl border border-opacityLight-10 bg-opacityLight-5 px-3 py-3 text-left outline-0 focus:border-neutral-300 md:w-auto ${
+          className={`w-full rounded-xl border border-opacity-light-10 bg-opacity-light-5 px-3 py-3 text-left outline-0 focus:border-neutral-300 md:w-auto ${
             uploadResult !== null && uploadResult.success === false
               ? 'border-red-500 focus:border-red-500'
               : ''

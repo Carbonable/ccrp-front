@@ -19,7 +19,7 @@ export default function PaginationComponent({
       total={totalPages}
       onChange={handlePageClick}
       classNames={{
-        wrapper: 'bg-opacityLight-5 border border-neutral-600',
+        wrapper: 'bg-opacity-light-5 border border-neutral-600',
         item: 'text-neutral-100 hover:!bg-neutral-600',
         cursor: 'rounded-lg',
       }}

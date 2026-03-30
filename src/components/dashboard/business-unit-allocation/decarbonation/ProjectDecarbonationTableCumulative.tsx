@@ -9,7 +9,7 @@ import { CumulativeData, PageInfo } from '@/graphql/__generated__/graphql';
 import { CUMULATIVE } from '@/graphql/queries/net-zero';
 import { RESULT_PER_PAGE } from '@/utils/constant';
 import { roundIfFloat } from '@/utils/numbers';
-import { useQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client/react';
 import { useEffect, useState } from 'react';
 
 export default function ProjectDecarbonationTableCumulative({
@@ -20,7 +20,7 @@ export default function ProjectDecarbonationTableCumulative({
   const t = useTranslations('tables');
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState<number>(1);
-  const { loading, error, data, refetch } = useQuery(CUMULATIVE, {
+  const { loading, error, data, refetch } = useQuery<any>(CUMULATIVE, {
     variables: {
       view: {
         business_unit_id: businessUnitId,

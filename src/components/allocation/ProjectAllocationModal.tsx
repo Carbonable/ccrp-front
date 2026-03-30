@@ -2,7 +2,7 @@
 
 import { GreenButton, SecondaryButton } from '@/components/common/Button';
 import { BusinessUnit, Project } from '@/graphql/__generated__/graphql';
-import { useQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client/react';
 import {
   Modal,
   ModalContent,
@@ -28,7 +28,7 @@ export default function ProjectAllocationButton({ projectId }: { projectId: stri
   const [amount, setAmount] = useState<string>('');
   const [hasError, setHasError] = useState(false);
 
-  const { loading, error, data, refetch } = useQuery(GET_PROJECT_WITHOUT_VINTAGES, {
+  const { loading, error, data, refetch } = useQuery<any>(GET_PROJECT_WITHOUT_VINTAGES, {
     variables: {
       field: 'id',
       value: projectId,
@@ -71,7 +71,7 @@ export default function ProjectAllocationButton({ projectId }: { projectId: stri
           onOpenChange={onOpenChange}
           classNames={{
             body: 'py-6',
-            backdrop: 'bg-opacityLight-5 backdrop-opacity-40',
+            backdrop: 'bg-opacity-light-5 backdrop-opacity-40',
             base: 'bg-neutral-900 text-neutral-100',
           }}
         >
@@ -94,7 +94,7 @@ export default function ProjectAllocationButton({ projectId }: { projectId: stri
           onOpenChange={onOpenChange}
           classNames={{
             body: 'py-6',
-            backdrop: 'bg-opacityLight-5 backdrop-opacity-40',
+            backdrop: 'bg-opacity-light-5 backdrop-opacity-40',
             base: 'bg-neutral-900 text-neutral-100',
           }}
         >
@@ -116,7 +116,7 @@ export default function ProjectAllocationButton({ projectId }: { projectId: stri
         onOpenChange={onOpenChange}
         classNames={{
           body: 'py-6',
-          backdrop: 'bg-opacityLight-5 backdrop-opacity-40',
+          backdrop: 'bg-opacity-light-5 backdrop-opacity-40',
           base: 'bg-neutral-900 text-neutral-100',
         }}
       >
@@ -128,7 +128,7 @@ export default function ProjectAllocationButton({ projectId }: { projectId: stri
                   <div className="mx-auto mt-8 w-full text-center">
                     <div className="relative w-full">
                       <div
-                        className={`font-inter bg-allocation-bu relative w-full rounded-2xl border border-opacityLight-10 px-6 py-4 text-left`}
+                        className={`font-inter bg-allocation-bu relative w-full rounded-2xl border border-opacity-light-10 px-6 py-4 text-left`}
                       >
                         <div className="text-lg uppercase text-neutral-200">{project.name}</div>
                       </div>
@@ -142,7 +142,7 @@ export default function ProjectAllocationButton({ projectId }: { projectId: stri
                       </div>
                       <div className="relative mt-1 w-full">
                         <input
-                          className={`w-full rounded-xl border border-opacityLight-10 bg-opacityLight-5 px-3 py-3 text-left outline-0 focus:border-neutral-300 ${
+                          className={`w-full rounded-xl border border-opacity-light-10 bg-opacity-light-5 px-3 py-3 text-left outline-0 focus:border-neutral-300 ${
                             hasError ? 'border-red-500 focus:border-red-500' : ''
                           }`}
                           type="number"
@@ -173,7 +173,7 @@ export default function ProjectAllocationButton({ projectId }: { projectId: stri
                           </span>
                         </div>
                       </div>
-                      <div className="mt-8 rounded-xl border border-opacityLight-10 bg-neutral-800 px-8 py-6 text-left text-sm">
+                      <div className="mt-8 rounded-xl border border-opacity-light-10 bg-neutral-800 px-8 py-6 text-left text-sm">
                         Carbon units will be allocated to this business unit on a fifo basis, based
                         on target and other business units allocations.
                       </div>

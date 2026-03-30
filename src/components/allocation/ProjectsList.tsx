@@ -1,7 +1,7 @@
 'use client';
 import { Project } from '@/graphql/__generated__/graphql';
 import { GET_PROJECTS } from '@/graphql/queries/projects';
-import { useQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client/react';
 import { Select, SelectItem } from '@nextui-org/react';
 import { useEffect, useState } from 'react';
 
@@ -12,7 +12,7 @@ export default function ProjectsList({
   selectedProject: Project | undefined;
   setSelectedProject: (project: Project) => void;
 }) {
-  const { loading, error, data } = useQuery(GET_PROJECTS);
+  const { loading, error, data } = useQuery<any>(GET_PROJECTS);
   const [value, setValue] = useState(new Set([]));
 
   const handleSelectionChange = (e: any) => {

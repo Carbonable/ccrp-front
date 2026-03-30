@@ -1,7 +1,7 @@
 'use client';
 import { BusinessUnit } from '@/graphql/__generated__/graphql';
 import { BUSINESS_UNITS } from '@/graphql/queries/business-units';
-import { useQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client/react';
 import { Select, SelectItem } from '@nextui-org/react';
 import { useEffect, useState } from 'react';
 
@@ -12,7 +12,7 @@ export default function BUList({
   selectedBU: BusinessUnit | undefined;
   setSelectedBU: (project: BusinessUnit) => void;
 }) {
-  const { loading, error, data } = useQuery(BUSINESS_UNITS);
+  const { loading, error, data } = useQuery<any>(BUSINESS_UNITS);
   const [value, setValue] = useState(new Set([]));
 
   const handleSelectionChange = (e: any) => {

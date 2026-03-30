@@ -1,5 +1,5 @@
 import type { Config } from 'tailwindcss';
-const { nextui } = require('@nextui-org/react');
+import { nextui } from '@nextui-org/react';
 
 const config: Config = {
   content: [
@@ -39,7 +39,7 @@ const config: Config = {
           900: '#0E3725',
           1000: '#082015',
         },
-        opacityLight: {
+        'opacity-light': {
           5: 'rgba(208, 209, 214, 0.05)',
           10: 'rgba(208, 209, 214, 0.1)',
           20: 'rgba(208, 209, 214, 0.2)',
@@ -49,7 +49,7 @@ const config: Config = {
           80: 'rgba(208, 209, 214, 0.8)',
           90: 'rgba(208, 209, 214, 0.9)',
         },
-        opacityDark: {
+        'opacity-dark': {
           40: 'rgba(11, 13, 19, 0.4)',
           50: 'rgba(11, 13, 19, 0.5)',
           60: 'rgba(11, 13, 19, 0.6)',

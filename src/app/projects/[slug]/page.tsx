@@ -1,7 +1,8 @@
 import { redirect } from 'next/navigation';
 
-export default function ProjectPage({
+export default async function ProjectPage({
   params,
-}: Readonly<{ params: { slug: string } }>) {
-  redirect(`/en/projects/${params.slug}`);
+}: Readonly<{ params: Promise<{ slug: string }> }>) {
+  const { slug } = await params;
+  redirect(`/en/projects/${slug}`);
 }

@@ -1,5 +1,7 @@
 'use client';
 
+import { use } from 'react';
+
 const DMRV_BASE_URL = 'https://dmrv.carbonable.io/project';
 
 /**
@@ -17,8 +19,9 @@ function findDmrvSlug(sanitySlug: string): string | null {
   return mapping?.dmrvSlug ?? null;
 }
 
-export default function DmrvPage({ params }: Readonly<{ params: { slug: string } }>) {
-  const dmrvSlug = findDmrvSlug(params.slug);
+export default function DmrvPage({ params }: Readonly<{ params: Promise<{ slug: string }> }>) {
+  const { slug } = use(params);
+  const dmrvSlug = findDmrvSlug(slug);
 
   if (!dmrvSlug) {
     return (

@@ -20,7 +20,7 @@ const ProjectNavigationTabs = ({ slug }: { slug: string }) => {
     <Tabs
       selectedKey={pathname}
       classNames={{
-        tabList: 'bg-opacityLight-5 text-neutral-100',
+        tabList: 'bg-opacity-light-5 text-neutral-100',
       }}
     >
       <Tab

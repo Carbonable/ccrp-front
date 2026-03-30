@@ -1,7 +1,7 @@
 'use client';
 import { AllocationAvailability } from '@/graphql/__generated__/graphql';
 import { AVAILABLE_ALLOCATION } from '@/graphql/queries/allocation';
-import { useQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client/react';
 import { useEffect } from 'react';
 
 interface AvailableProps {
@@ -16,7 +16,7 @@ export default function Available({
   businessUnitId,
   setAvailableObject,
 }: AvailableProps) {
-  const { loading, error, data } = useQuery(AVAILABLE_ALLOCATION, {
+  const { loading, error, data } = useQuery<any>(AVAILABLE_ALLOCATION, {
     variables: {
       project_id: projectId,
       business_unit_id: businessUnitId,

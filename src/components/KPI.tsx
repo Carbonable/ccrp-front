@@ -18,7 +18,7 @@ export function GlobalKPI({ title, kpi, loading, error, refetchData }: KPIProps)
     return (
       <div className={cssClass}>
         <div className="text-sm font-light text-neutral-300">{title}</div>
-        <div className="mt-2 h-6 w-3/4 animate-pulse rounded-md bg-opacityLight-10"></div>
+        <div className="mt-2 h-6 w-3/4 animate-pulse rounded-md bg-opacity-light-10"></div>
       </div>
     );
 
@@ -27,7 +27,7 @@ export function GlobalKPI({ title, kpi, loading, error, refetchData }: KPIProps)
       <div className={cssClass}>
         <div className="text-sm font-light text-neutral-300">{title}</div>
         <div
-          className="mt-2 cursor-pointer rounded-xl border border-neutral-600 bg-opacityLight-5 px-4 py-2 text-xl font-bold text-neutral-100 hover:brightness-105"
+          className="mt-2 cursor-pointer rounded-xl border border-neutral-600 bg-opacity-light-5 px-4 py-2 text-xl font-bold text-neutral-100 hover:brightness-105"
           onClick={refetchData}
         >
           {t('reload')}
@@ -58,12 +58,12 @@ export function KPI({
 }) {
   const t = useTranslations('common');
   const cssClass =
-    'relative w-full border border-opacityLight-10 py-1 px-2 md:py-2 md:px-4 rounded-lg';
+    'relative w-full border border-opacity-light-10 py-1 px-2 md:py-2 md:px-4 rounded-lg';
   if (loading)
     return (
       <div className={cssClass}>
         <div className="text-sm font-light text-neutral-200">{title}</div>
-        <div className="mt-2 h-6 w-3/4 animate-pulse rounded-md bg-opacityLight-10"></div>
+        <div className="mt-2 h-6 w-3/4 animate-pulse rounded-md bg-opacity-light-10"></div>
       </div>
     );
 
@@ -72,7 +72,7 @@ export function KPI({
       <div className={cssClass}>
         <div className="text-sm font-light text-neutral-200">{title}</div>
         <div
-          className="mt-2 cursor-pointer rounded-xl border border-neutral-600 bg-opacityLight-5 px-4 py-2 text-xl text-neutral-100 hover:brightness-105"
+          className="mt-2 cursor-pointer rounded-xl border border-neutral-600 bg-opacity-light-5 px-4 py-2 text-xl text-neutral-100 hover:brightness-105"
           onClick={refetchData}
         >
           {t('reload')}

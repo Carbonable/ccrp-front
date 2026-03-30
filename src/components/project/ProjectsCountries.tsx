@@ -29,7 +29,7 @@ function ProjectCountriesDetails({ country }: { country: LocalizationRepartition
       <div className="w-full pl-4">
         <div className="font-inter text-sm text-neutral-300">{country.country.name}</div>
         <div className="mt-1 flex items-center">
-          <div className="h-2 w-full rounded-full bg-opacityLight-5">
+          <div className="h-2 w-full rounded-full bg-opacity-light-5">
             <div
               className="h-2 rounded-full bg-greenish-700"
               style={{ width: `${getNumericPercentage(country.value)}%` }}

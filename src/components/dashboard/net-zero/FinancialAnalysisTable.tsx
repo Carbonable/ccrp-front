@@ -1,6 +1,6 @@
 'use client';
 
-import { useQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client/react';
 import { useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import PaginationComponent from '../../common/Pagination';
@@ -17,7 +17,7 @@ export default function FinancialAnalysisTable() {
   const [totalPages, setTotalPages] = useState<number>(1);
   const t = useTranslations('tables');
 
-  const { loading, error, data, refetch } = useQuery(FINANCIAL_ANALYSIS, {
+  const { loading, error, data, refetch } = useQuery<any>(FINANCIAL_ANALYSIS, {
     variables: {
       view: {
         company_id: CARBONABLE_COMPANY_ID,

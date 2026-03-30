@@ -8,14 +8,14 @@ import TableLoading from '@/components/table/TableLoading';
 import { FinancialAnalysisData, PageInfo } from '@/graphql/__generated__/graphql';
 import { FINANCIAL_ANALYSIS } from '@/graphql/queries/net-zero';
 import { RESULT_PER_PAGE } from '@/utils/constant';
-import { useQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client/react';
 import { useEffect, useState } from 'react';
 
 export default function FinancialAnalysisTable({ businessUnitId }: { businessUnitId: string }) {
   const t = useTranslations('tables');
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState<number>(1);
-  const { loading, error, data, refetch } = useQuery(FINANCIAL_ANALYSIS, {
+  const { loading, error, data, refetch } = useQuery<any>(FINANCIAL_ANALYSIS, {
     variables: {
       view: {
         business_unit_id: businessUnitId,

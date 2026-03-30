@@ -1,10 +1,12 @@
 import { SignIn } from '@clerk/nextjs';
 
-export default function SignInPage({
-  params: { locale },
+export default async function SignInPage({
+  params,
 }: {
-  params: { locale: string };
+  params: Promise<{ locale: string }>;
 }) {
+  const { locale } = await params;
+
   return (
     <div className="flex min-h-[60vh] items-center justify-center">
       <SignIn

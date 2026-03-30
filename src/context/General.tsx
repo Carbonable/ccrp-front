@@ -1,7 +1,7 @@
 // src/contexts/RefetchContext.tsx
 
 import React, { createContext, useContext } from 'react';
-import { useApolloClient } from '@apollo/client';
+import { useApolloClient } from '@apollo/client/react';
 
 // Define the shape of the context
 interface RefetchContextType {

@@ -1,4 +1,4 @@
-import { useQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client/react';
 import { useEffect, useState } from 'react';
 import ProjectDecarbonationTableComponent from './ProjectDecarbonationTableComponent';
 import { ANNUAL } from '@/graphql/queries/net-zero';
@@ -6,7 +6,7 @@ import { RESULT_PER_PAGE } from '@/utils/constant';
 
 export default function ProjectDecarbonationTable({ projectId }: { projectId: string }) {
   const [currentPage, setCurrentPage] = useState(1);
-  const { loading, error, data, refetch } = useQuery(ANNUAL, {
+  const { loading, error, data, refetch } = useQuery<any>(ANNUAL, {
     variables: {
       view: {
         project_id: projectId,

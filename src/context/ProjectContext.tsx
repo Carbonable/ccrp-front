@@ -2,7 +2,7 @@
 
 import { Project } from '@/graphql/__generated__/graphql';
 import { GET_PROJECT_WITHOUT_VINTAGES } from '@/graphql/queries/projects';
-import { useQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client/react';
 import { createContext, use, useContext, useEffect, useState } from 'react';
 
 interface ProjectContextType {
@@ -17,7 +17,7 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode; slug: string
 }) => {
   const [project, setProject] = useState<Project | undefined>(undefined);
 
-  const { data } = useQuery(GET_PROJECT_WITHOUT_VINTAGES, {
+  const { data } = useQuery<any>(GET_PROJECT_WITHOUT_VINTAGES, {
     variables: {
       field: 'slug',
       value: slug,

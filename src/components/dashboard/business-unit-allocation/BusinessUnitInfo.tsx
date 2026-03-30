@@ -2,11 +2,11 @@
 
 import { BusinessUnit } from '@/graphql/__generated__/graphql';
 import { BUSINESS_UNITS_DETAILS } from '@/graphql/queries/business-units';
-import { useQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client/react';
 import BUAllocationButton from '../../allocation/BUAllocationModal';
 
 export default function BusinessUnitInfo({ id }: { id: string }) {
-  const { loading, error, data } = useQuery(BUSINESS_UNITS_DETAILS, {
+  const { loading, error, data } = useQuery<any>(BUSINESS_UNITS_DETAILS, {
     variables: {
       id,
     },

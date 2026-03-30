@@ -15,7 +15,7 @@
 
 @layer components {
   .input-common {
-    @apply w-full rounded-lg border border-opacityLight-10 bg-opacityLight-5 px-3 py-2 text-neutral-100 outline-none focus:border-opacityLight-30 focus:bg-opacityLight-10;
+    @apply w-full rounded-lg border border-opacity-light-10 bg-opacity-light-5 px-3 py-2 text-neutral-100 outline-none focus:border-opacity-light-30 focus:bg-opacity-light-10;
   }
 
   .primary-button {

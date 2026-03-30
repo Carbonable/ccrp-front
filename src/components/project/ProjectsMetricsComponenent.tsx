@@ -2,13 +2,12 @@ import ProjectsColors from './ProjectsColors';
 import ProjectsTypes from './ProjectsTypes';
 import ProjectsStandards from './ProjectsStandards';
 import ProjectsCountries from './ProjectsCountries';
-import type { ApolloError } from '@apollo/client';
 import { ProjectMetrics } from '@/graphql/__generated__/graphql';
 import ErrorReload from '../common/ErrorReload';
 
 interface ProjectMetricsProps {
   loading: boolean;
-  error: ApolloError | undefined;
+  error: Error | undefined;
   data: any;
   refetch: any;
 }
