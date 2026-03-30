@@ -1,13 +1,8 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-
 # dependencies
 /node_modules
 /.pnp
 .pnp.js
 .yarn/install-state.gz
-
-# testing
-/coverage
 
 # next.js
 /.next/
@@ -16,11 +11,17 @@
 # production
 /build
 
-# misc
-.DS_Store
-*.pem
+# testing
+/coverage
 
-# debug
+# vcs / local tooling
+.git
+.gitignore
+.vscode
+.trash
+
+# package manager noise
+package-lock.json
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
@@ -30,11 +31,13 @@ yarn-error.log*
 .env
 .env.deploy
 
-# vercel
-.vercel
-
-# typescript
+# misc
+.DS_Store
+*.pem
 *.tsbuildinfo
 next-env.d.ts
 
-.vscode
+# deployment/docs not needed in image context
+README.md
+UPGRADE_AUDIT_*.md
+POSTGRES_17_UPGRADE_RUNBOOK_*.md
