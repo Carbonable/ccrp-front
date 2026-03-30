@@ -142,6 +142,7 @@ export async function POST(request: NextRequest) {
 
   let raw: AgentChatResponse | null = null;
   let geminiFailed = false;
+  const geminiConfigured = Boolean(process.env.GEMINI_API_KEY || process.env.GOOGLE_GENERATIVE_AI_API_KEY);
 
   try {
     raw = await callGeminiJson<AgentChatResponse>(CHAT_PROMPT, {
@@ -163,16 +164,20 @@ export async function POST(request: NextRequest) {
         : false;
 
     raw = {
-      answer: geminiFailed
-        ? "I couldn't reach the AI backend right now, so I'm showing a safe fallback instead of a real page analysis. Try again in a moment."
-        : intent === 'feature'
-          ? 'Understood — this sounds like a product improvement request. I can open a feature request prefilled with the current page context.'
-          : shouldReport
-            ? 'This looks like a real product issue. I can open a report prefilled with the current context so the team can investigate faster.'
-            : 'I have limited structured context for this page. I can still help, but I may need richer page signals to explain the charts precisely.',
-      reasoning: geminiFailed
-        ? 'Gemini did not return a valid response. Falling back to offline product-help mode.'
-        : undefined,
+      answer: !geminiConfigured
+        ? "The AI backend is not configured on this environment yet, so I can't generate a real model answer here."
+        : geminiFailed
+          ? "I couldn't reach the AI backend right now, so I'm showing a safe fallback instead of a real page analysis. Try again in a moment."
+          : intent === 'feature'
+            ? 'Understood — this sounds like a product improvement request. I can open a feature request prefilled with the current page context.'
+            : shouldReport
+              ? 'This looks like a real product issue. I can open a report prefilled with the current context so the team can investigate faster.'
+              : 'I have limited structured context for this page. I can still help, but I may need richer page signals to explain the charts precisely.',
+      reasoning: !geminiConfigured
+        ? 'No Gemini API key is configured for this deployment.'
+        : geminiFailed
+          ? 'Gemini did not return a valid response. Falling back to offline product-help mode.'
+          : undefined,
       reportRecommended: shouldReport,
       actions: buildSuggestedActions(latestMessageText, shouldReport, intent),
     };
