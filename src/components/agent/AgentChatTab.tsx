@@ -75,7 +75,7 @@ function getTextFromMessage(message: UIMessage) {
 function getMetaFromMessage(message: UIMessage): AgentMetaData | null {
   for (const part of message.parts) {
     if (part.type === 'data-agent_meta') {
-      return (part as { data: AgentMetaData }).data;
+      return (part as { type: string; data: AgentMetaData }).data;
     }
   }
   return null;

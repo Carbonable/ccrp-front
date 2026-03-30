@@ -196,14 +196,17 @@ export async function POST(request: NextRequest) {
   });
 
   const stream = createUIMessageStream({
-    execute: ({ writer }) => {
+    execute: async ({ writer }) => {
       const textId = `text-${Date.now()}`;
-      writer.write({ type: 'start' });
+
+      // Main answer text
       writer.write({ type: 'text-start', id: textId });
       writer.write({ type: 'text-delta', id: textId, delta: enriched.answer });
       writer.write({ type: 'text-end', id: textId });
+
+      // Structured metadata as a typed data part
       writer.write({
-        type: 'data-agent_meta',
+        type: 'data-agent_meta' as `data-${string}`,
         data: {
           reasoning: enriched.reasoning ?? null,
           sources: enriched.sources ?? [],
@@ -213,7 +216,6 @@ export async function POST(request: NextRequest) {
           reportRecommended: enriched.reportRecommended ?? false,
         },
       });
-      writer.write({ type: 'finish' });
     },
   });
 
