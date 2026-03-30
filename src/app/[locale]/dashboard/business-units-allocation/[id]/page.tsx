@@ -1,6 +1,5 @@
 'use client';
 
-import { use } from 'react';
 import { useTranslations } from 'next-intl';
 import { BackButton } from '@/components/common/Button';
 import Title from '@/components/common/Title';
@@ -11,8 +10,8 @@ import DecarbonationOverview from '@/components/dashboard/business-unit-allocati
 import ProjectsMetrics from '@/components/dashboard/business-unit-allocation/ProjectsMetrics';
 import ProjectsImpact from '@/components/dashboard/business-unit-allocation/Impact';
 
-export default function BusinessUnitsDetails({ params }: Readonly<{ params: Promise<{ id: string }> }>) {
-  const { id } = use(params);
+export default function BusinessUnitsDetails({ params }: Readonly<{ params: { id: string } }>) {
+  const { id } = params;
   const t = useTranslations('allocation');
   const tp = useTranslations('projectMetrics');
   const ti = useTranslations('impact');
