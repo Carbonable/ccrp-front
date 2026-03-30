@@ -19,7 +19,7 @@ RUN --mount=type=cache,id=pnpm-store,target=/root/.local/share/pnpm/store \
     pnpm fetch --frozen-lockfile
 RUN pnpm approve-builds --all
 RUN --mount=type=cache,id=pnpm-store,target=/root/.local/share/pnpm/store \
-    pnpm install --frozen-lockfile --offline --config.confirmModulesPurge=false
+    pnpm install --no-frozen-lockfile --config.confirmModulesPurge=false
 
 FROM deps AS builder
 COPY . .
