@@ -11,8 +11,8 @@ import type {
   AgentRuntimeContext,
 } from '@/lib/agent/types';
 
-const GEMINI_API_BASE = 'https://generativelanguage.googleapis.com/v1';
-const DEFAULT_GEMINI_MODEL = process.env.GEMINI_MODEL || 'gemini-2.0-flash';
+const GEMINI_API_BASE = 'https://generativelanguage.googleapis.com/v1beta';
+const DEFAULT_GEMINI_MODEL = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
 
 function truncate(value: string, max: number) {
   return value.length > max ? `${value.slice(0, max)}…` : value;
