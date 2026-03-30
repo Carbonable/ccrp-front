@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
-import { NextUIProvider } from '@nextui-org/react';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -18,9 +17,7 @@ export default function BaseLayout({
   return (
     <html lang="en" className="bg-neutral-950">
       <body className={`${inter.className} min-h-screen bg-neutral-950 text-neutral-100`}>
-        <main>
-          <NextUIProvider>{children}</NextUIProvider>
-        </main>
+        <main>{children}</main>
       </body>
     </html>
   );

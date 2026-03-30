@@ -15,6 +15,9 @@ import {
 } from '@/lib/agent/conversations';
 import type { AgentChatAction, AgentChatResponse, AgentConversationThread, AgentRuntimeContext } from '@/lib/agent/types';
 import { useAgent } from '@/components/agent/AgentProvider';
+import SectionCard from '@/components/ai-elements/SectionCard';
+import MessageBubble from '@/components/ai-elements/MessageBubble';
+import PromptComposer from '@/components/ai-elements/PromptComposer';
 
 function formatBrowser(runtime: AgentRuntimeContext) {
   const platform = runtime.browser.platform || 'Unknown device';
@@ -52,22 +55,22 @@ function ContextBrief() {
 
   return (
     <div className="mb-4 grid grid-cols-1 gap-2 md:grid-cols-2">
-      <div className="rounded-2xl border border-neutral-800 bg-neutral-950/70 p-3 text-xs text-neutral-300">
+      <SectionCard className="p-3 text-xs text-neutral-300">
         <div className="font-semibold uppercase tracking-wide text-neutral-500">{t('context.user')}</div>
         <div className="mt-1">{user?.fullName || user?.primaryEmailAddress?.emailAddress || t('context.unknownUser')}</div>
-      </div>
-      <div className="rounded-2xl border border-neutral-800 bg-neutral-950/70 p-3 text-xs text-neutral-300">
+      </SectionCard>
+      <SectionCard className="p-3 text-xs text-neutral-300">
         <div className="font-semibold uppercase tracking-wide text-neutral-500">{t('context.device')}</div>
         <div className="mt-1">{formatBrowser(runtime)}</div>
-      </div>
-      <div className="rounded-2xl border border-neutral-800 bg-neutral-950/70 p-3 text-xs text-neutral-300">
+      </SectionCard>
+      <SectionCard className="p-3 text-xs text-neutral-300">
         <div className="font-semibold uppercase tracking-wide text-neutral-500">{t('context.lastAction')}</div>
         <div className="mt-1 line-clamp-2">{lastAction?.label || t('context.none')}</div>
-      </div>
-      <div className="rounded-2xl border border-neutral-800 bg-neutral-950/70 p-3 text-xs text-neutral-300">
+      </SectionCard>
+      <SectionCard className="p-3 text-xs text-neutral-300">
         <div className="font-semibold uppercase tracking-wide text-neutral-500">{lastApiError ? t('context.lastApiError') : t('context.lastApiCall')}</div>
         <div className="mt-1 line-clamp-2">{lastApiError ? `${lastApiError.method} ${lastApiError.url}` : lastApiCall?.label || t('context.none')}</div>
-      </div>
+      </SectionCard>
     </div>
   );
 }
@@ -116,14 +119,14 @@ function HistoryPanel({
 
   if (threads.length === 0) {
     return (
-      <div className="mb-4 rounded-2xl border border-dashed border-neutral-800 bg-neutral-950/50 p-4 text-sm text-neutral-400">
+      <SectionCard className="mb-4 border-dashed bg-neutral-950/50 text-sm text-neutral-400">
         {t('empty')}
-      </div>
+      </SectionCard>
     );
   }
 
   return (
-    <div className="mb-4 rounded-2xl border border-neutral-800 bg-neutral-950/70 p-3">
+    <SectionCard className="mb-4 p-3">
       <div className="mb-3 flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-neutral-500">
         <ClockIcon className="h-4 w-4" />
         {t('title')}
@@ -159,7 +162,7 @@ function HistoryPanel({
           );
         })}
       </div>
-    </div>
+    </SectionCard>
   );
 }
 
@@ -319,50 +322,33 @@ export default function AgentChatTab() {
         <ContextBrief />
 
         {assistantHint && (
-          <div className="rounded-2xl border border-dashed border-neutral-800 bg-neutral-950/60 p-4 text-sm text-neutral-400">
+          <SectionCard className="border-dashed bg-neutral-950/60 text-sm text-neutral-400">
             {assistantHint}
-          </div>
+          </SectionCard>
         )}
 
         <div className="space-y-3">
           {messages.map((message) => (
-            <div
-              key={message.id}
-              className={`max-w-[92%] rounded-2xl px-4 py-3 text-sm leading-6 ${
-                message.role === 'assistant'
-                  ? 'border border-neutral-800 bg-neutral-950 text-neutral-100'
-                  : 'ml-auto bg-primary/15 text-primary'
-              }`}
-            >
+            <MessageBubble key={message.id} role={message.role}>
               <div className="whitespace-pre-wrap">{message.content}</div>
               {message.role === 'assistant' && <ActionButtons actions={message.actions} onAction={handleAction} />}
-            </div>
+            </MessageBubble>
           ))}
         </div>
       </div>
 
-      <div className="border-t border-neutral-800 px-4 py-4">
-        <textarea
-          value={input}
-          onChange={(event) => setInput(event.target.value)}
-          placeholder={t('placeholder')}
-          className="min-h-[110px] w-full rounded-2xl border border-neutral-800 bg-neutral-950 px-4 py-3 text-sm text-neutral-100 outline-none transition focus:border-primary"
-        />
-
-        {error && <div role="alert" className="mt-2 text-xs text-red-400">{error}</div>}
-
-        <div className="mt-3 flex items-center justify-between gap-3">
-          <div className="text-xs text-neutral-500">{t('contextHint')}</div>
-          <button
-            type="button"
-            onClick={handleSubmit}
-            disabled={!canSend}
-            className="rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-neutral-950 transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-50"
-          >
-            {loading ? t('thinking') : t('send')}
-          </button>
-        </div>
-      </div>
+      <PromptComposer
+        value={input}
+        onChange={setInput}
+        onSubmit={handleSubmit}
+        placeholder={t('placeholder')}
+        helperText={t('contextHint')}
+        error={error}
+        disabled={!canSend}
+        loading={loading}
+        submitLabel={t('send')}
+        loadingLabel={t('thinking')}
+      />
     </div>
   );
 }
