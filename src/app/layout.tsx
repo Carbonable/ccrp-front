@@ -17,7 +17,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={cn("bg-neutral-950", "font-sans", geist.variable)}>
+    <html lang="en" className={cn("dark bg-neutral-950", "font-sans", geist.variable)}>
       <body className={`${inter.className} min-h-screen bg-neutral-950 text-neutral-100`}>
         {children}
       </body>

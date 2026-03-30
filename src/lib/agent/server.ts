@@ -1,4 +1,8 @@
 import type {
+  AgentChatResponse,
+  AgentChatSource,
+  AgentChatSuggestion,
+  AgentChatTask,
   AgentDraftRequest,
   AgentReportKind,
   AgentScreenshotPayload,
@@ -515,6 +519,197 @@ Best practices to follow:
 - If there are recent API or console errors, reflect them.
 - Default to issueType=bug unless the payload clearly asks for feature/question.
 - Tags should include ccpm, agent-reported, car-15 and a page/feature hint.`;
+
+function createChatSources(runtimeContext: AgentRuntimeContext): AgentChatSource[] {
+  const entityEntries = Object.entries(runtimeContext.selectedEntities || {}).filter(([, value]) => Boolean(value));
+  const lastAction = [...runtimeContext.recentActions].reverse().find((entry) => entry.kind === 'click' || entry.kind === 'navigation');
+  const lastApiError = [...runtimeContext.recentApiErrors].reverse()[0];
+  const lastConsoleError = [...runtimeContext.recentConsoleErrors].reverse()[0];
+
+  return [
+    {
+      type: 'page' as const,
+      title: runtimeContext.page.title || runtimeContext.page.pathname || 'Current page',
+      href: runtimeContext.page.fullUrl,
+      description: runtimeContext.page.pathname,
+      meta: `Viewport ${runtimeContext.viewport.width}×${runtimeContext.viewport.height}`,
+    },
+    ...entityEntries.slice(0, 3).map(([key, value]) => ({
+      type: 'entity' as const,
+      title: `${key}: ${value}`,
+      description: 'Detected from current route / query context',
+      meta: 'Selected entity',
+    })),
+    ...(lastAction
+      ? [{
+          type: 'action' as const,
+          title: lastAction.label,
+          description: 'Most recent meaningful user action',
+          meta: new Date(lastAction.at).toLocaleString(),
+        }]
+      : []),
+    ...(lastApiError
+      ? [{
+          type: 'api' as const,
+          title: `${lastApiError.method} ${lastApiError.url}`,
+          description: lastApiError.message,
+          meta: `Latest API error${lastApiError.status ? ` · ${lastApiError.status}` : ''}`,
+        }]
+      : []),
+    ...(lastConsoleError
+      ? [{
+          type: 'console' as const,
+          title: lastConsoleError.message,
+          description: lastConsoleError.source,
+          meta: 'Latest console error',
+        }]
+      : []),
+  ].slice(0, 5);
+}
+
+function createChatReasoning({
+  message,
+  intent,
+  shouldReport,
+  runtimeContext,
+}: {
+  message: string;
+  intent: 'bug' | 'feature' | 'question' | 'general';
+  shouldReport: boolean;
+  runtimeContext: AgentRuntimeContext;
+}) {
+  const entityLabels = Object.entries(runtimeContext.selectedEntities || {})
+    .filter(([, value]) => Boolean(value))
+    .slice(0, 3)
+    .map(([key, value]) => `- ${key}: ${value}`);
+  const latestAction = [...runtimeContext.recentActions].reverse().find((entry) => entry.kind === 'click' || entry.kind === 'navigation');
+  const latestApiError = [...runtimeContext.recentApiErrors].reverse()[0];
+
+  return [
+    `- User intent detected: **${intent}**`,
+    `- Current page: **${runtimeContext.page.title || runtimeContext.page.pathname || 'Unknown page'}**`,
+    ...(message.trim() ? [`- Latest user message: ${truncate(message.trim(), 180)}`] : []),
+    ...(entityLabels.length > 0 ? ['- Context entities considered:', ...entityLabels] : []),
+    ...(latestAction ? [`- Last meaningful action: ${latestAction.label}`] : []),
+    ...(latestApiError ? [`- Latest API signal: ${latestApiError.method} ${latestApiError.url} → ${latestApiError.status ?? 'ERR'}`] : []),
+    shouldReport
+      ? '- Recommended path: keep helping, but offer a prefilled report because the request looks actionable for the product team.'
+      : '- Recommended path: answer in-product first, keep report as a fallback only if the user confirms it is a product issue.',
+  ].join('\n');
+}
+
+function createChatTasks({
+  shouldReport,
+  intent,
+  runtimeContext,
+}: {
+  shouldReport: boolean;
+  intent: 'bug' | 'feature' | 'question' | 'general';
+  runtimeContext: AgentRuntimeContext;
+}): AgentChatTask[] {
+  const tasks: AgentChatTask[] = [
+    {
+      title: 'Context scan',
+      status: 'completed',
+      items: [
+        { text: `Page captured: ${runtimeContext.page.pathname || '/'}`, state: 'completed' },
+        {
+          text: runtimeContext.recentApiErrors.length > 0
+            ? `${runtimeContext.recentApiErrors.length} recent API error(s) found`
+            : 'No recent API errors captured',
+          state: 'completed',
+        },
+        {
+          text: Object.keys(runtimeContext.selectedEntities || {}).length > 0
+            ? 'Selected entities detected from route/query context'
+            : 'No strong entity context detected from route/query',
+          state: 'completed',
+        },
+      ],
+    },
+  ];
+
+  tasks.push(
+    shouldReport
+      ? {
+          title: intent === 'feature' ? 'Recommended next move: feature request' : 'Recommended next move: report with context',
+          status: 'in_progress',
+          items: [
+            { text: 'Review the suggested answer and confirm it matches the issue', state: 'completed' },
+            { text: 'Open a prefilled report with page context attached', state: 'in_progress' },
+            { text: 'Add a screenshot only if the issue is visual or layout-related', state: 'pending' },
+          ],
+        }
+      : {
+          title: 'Recommended next move: continue in-product help',
+          status: 'in_progress',
+          items: [
+            { text: 'Use the answer to unblock the current workflow first', state: 'completed' },
+            { text: 'Ask one follow-up if a metric, filter, or expected behavior is still unclear', state: 'in_progress' },
+            { text: 'Escalate to a report only if the problem reproduces consistently', state: 'pending' },
+          ],
+        },
+  );
+
+  return tasks;
+}
+
+function createChatSuggestions({
+  intent,
+  runtimeContext,
+}: {
+  intent: 'bug' | 'feature' | 'question' | 'general';
+  runtimeContext: AgentRuntimeContext;
+}): AgentChatSuggestion[] {
+  const pathname = runtimeContext.page.pathname || '/';
+  const suggestions: AgentChatSuggestion[] = [];
+
+  if (pathname.includes('/dashboard')) {
+    suggestions.push(
+      { label: 'Explain this dashboard', prompt: 'Explain the current dashboard and what each main block means.' },
+      { label: 'Check the selected chart', prompt: 'Explain what the selected chart is showing and what to verify first.' },
+    );
+  }
+
+  if (pathname.includes('/assistant')) {
+    suggestions.push({ label: 'Summarize this conversation', prompt: 'Summarize this conversation into a short action plan.' });
+  }
+
+  if (intent === 'feature') {
+    suggestions.push({ label: 'Draft the feature clearly', prompt: 'Rewrite this as a concise feature request with user value and expected outcome.' });
+  } else {
+    suggestions.push({ label: 'Open a report', prompt: 'Open a prefilled report with the current page context.' });
+  }
+
+  suggestions.push({ label: 'What should I do next?', prompt: 'What is the fastest next action I should take from this screen?' });
+
+  return suggestions.slice(0, 4);
+}
+
+export function enrichChatResponse({
+  response,
+  message,
+  intent,
+  shouldReport,
+  runtimeContext,
+}: {
+  response: AgentChatResponse;
+  message: string;
+  intent: 'bug' | 'feature' | 'question' | 'general';
+  shouldReport: boolean;
+  runtimeContext: AgentRuntimeContext;
+}): AgentChatResponse {
+  return {
+    ...response,
+    reportRecommended: shouldReport,
+    reasoning: response.reasoning || createChatReasoning({ message, intent, shouldReport, runtimeContext }),
+    sources: response.sources && response.sources.length > 0 ? response.sources : createChatSources(runtimeContext),
+    tasks: response.tasks && response.tasks.length > 0 ? response.tasks : createChatTasks({ shouldReport, intent, runtimeContext }),
+    suggestions: response.suggestions && response.suggestions.length > 0
+      ? response.suggestions
+      : createChatSuggestions({ intent, runtimeContext }),
+  };
+}
 
 export const CHAT_PROMPT = `You are CCPM Agent, embedded in the CCPM product.
 

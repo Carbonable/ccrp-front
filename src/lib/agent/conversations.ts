@@ -1,4 +1,11 @@
-import type { AgentChatAction, AgentChatMessage, AgentConversationThread } from '@/lib/agent/types';
+import type {
+  AgentChatAction,
+  AgentChatMessage,
+  AgentChatSource,
+  AgentChatSuggestion,
+  AgentChatTask,
+  AgentConversationThread,
+} from '@/lib/agent/types';
 
 const STORAGE_KEY = 'ccpm-agent-conversations-v1';
 const MAX_THREADS = 20;
@@ -157,6 +164,12 @@ export function createChatMessage(
   role: AgentChatMessage['role'],
   content: string,
   actions?: AgentChatAction[],
+  meta?: {
+    reasoning?: string;
+    sources?: AgentChatSource[];
+    tasks?: AgentChatTask[];
+    suggestions?: AgentChatSuggestion[];
+  },
 ): AgentChatMessage {
   return {
     id: createId(),
@@ -164,5 +177,9 @@ export function createChatMessage(
     content,
     createdAt: new Date().toISOString(),
     actions,
+    reasoning: meta?.reasoning,
+    sources: meta?.sources,
+    tasks: meta?.tasks,
+    suggestions: meta?.suggestions,
   };
 }
