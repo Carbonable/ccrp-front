@@ -12,7 +12,7 @@ import type {
 } from '@/lib/agent/types';
 
 const GEMINI_API_BASE = 'https://generativelanguage.googleapis.com/v1beta';
-const DEFAULT_GEMINI_MODEL = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
+const DEFAULT_GEMINI_MODEL = process.env.GEMINI_MODEL || 'gemini-3-flash-preview';
 
 function truncate(value: string, max: number) {
   return value.length > max ? `${value.slice(0, max)}…` : value;
