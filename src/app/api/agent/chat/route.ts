@@ -128,24 +128,32 @@ export async function POST(request: NextRequest) {
 
   // Call Gemini
   let raw: AgentChatResponse | null = null;
+  let geminiFailed = false;
   try {
     raw = await callGeminiJson<AgentChatResponse>(CHAT_PROMPT, {
       trustedUserContext: trusted,
       runtimeContext,
       messages: parsed.data.messages.slice(-10),
     });
-  } catch {
+  } catch (error) {
+    geminiFailed = true;
+    console.error('[agent/chat] Gemini request failed', error);
     raw = null;
   }
 
   if (!raw) {
     const shouldReport = intent === 'feature' ? true : intent === 'bug' ? relevantApiErrors.length > 0 || relevantConsoleErrors.length > 0 : false;
     raw = {
-      answer: intent === 'feature'
-        ? 'Understood — this sounds like a product improvement request. I can open a feature request prefilled with the current page context.'
-        : shouldReport
-          ? 'This looks like a real product issue. I can open a report prefilled with the current context so the team can investigate faster.'
-          : "I'll treat the page context as supporting information. Let me answer your request first.",
+      answer: geminiFailed
+        ? "I couldn't reach the AI backend right now, so I'm showing a safe fallback instead of a real page analysis. Try again in a moment."
+        : intent === 'feature'
+          ? 'Understood — this sounds like a product improvement request. I can open a feature request prefilled with the current page context.'
+          : shouldReport
+            ? 'This looks like a real product issue. I can open a report prefilled with the current context so the team can investigate faster.'
+            : 'I have limited structured context for this page. I can still help, but I may need richer page signals to explain the charts precisely.',
+      reasoning: geminiFailed
+        ? 'Gemini did not return a valid response. Falling back to offline product-help mode.'
+        : undefined,
       reportRecommended: shouldReport,
       actions: buildSuggestedActions(latestMessageText, shouldReport, intent),
     };
