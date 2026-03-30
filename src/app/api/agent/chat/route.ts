@@ -188,5 +188,8 @@ export async function POST(request: NextRequest) {
     },
   });
 
-  return new Response(stream, { headers: UI_MESSAGE_STREAM_HEADERS });
+  return createUIMessageStreamResponse({
+    stream,
+    headers: UI_MESSAGE_STREAM_HEADERS,
+  });
 }
