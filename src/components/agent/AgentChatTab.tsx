@@ -463,8 +463,8 @@ export default function AgentChatTab() {
     const trimmed = (text ?? input).trim();
     if (!trimmed || isStreaming) return;
     sendMessage({ text: trimmed });
-    if (!text) setInput('');
-  }, [input, isStreaming, sendMessage, buildRuntimeContext, setInput]);
+    setInput('');
+  }, [input, isStreaming, sendMessage, setInput]);
 
   const startNewConversation = useCallback(() => {
     const next = createConversationThread(fallbackTitle);
