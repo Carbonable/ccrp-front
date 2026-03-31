@@ -1,7 +1,7 @@
 'use client';
 import { GlobalData } from '@/graphql/__generated__/graphql';
 import { GET_GLOBAL_DATA } from '@/graphql/queries/net-zero';
-import { useQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client/react';
 
 export default function BusinessUnitsData({
   businessUnitId,
@@ -10,7 +10,7 @@ export default function BusinessUnitsData({
   businessUnitId: string | undefined;
   loadingBU: boolean;
 }) {
-  const { loading, error, data } = useQuery(GET_GLOBAL_DATA, {
+  const { loading, error, data } = useQuery<any>(GET_GLOBAL_DATA, {
     variables: {
       view: {
         business_unit_id: businessUnitId,

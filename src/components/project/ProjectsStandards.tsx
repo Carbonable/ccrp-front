@@ -32,7 +32,7 @@ function ProjectStandardDetails({ standard }: { standard: Map }) {
       <div className="w-full pl-8">
         <div className="font-inter text-sm text-neutral-300">{standard.key}</div>
         <div className="mt-1 flex items-center">
-          <div className="h-2 w-full rounded-full bg-opacityLight-5">
+          <div className="h-2 w-full rounded-full bg-opacity-light-5">
             <div
               className="h-2 rounded-full bg-greenish-700"
               style={{ width: `${getNumericPercentage(standard.value)}%` }}

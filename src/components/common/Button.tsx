@@ -16,7 +16,7 @@ interface LinkButtonProps {
 }
 
 const secondaryButton =
-  'font-inter uppercase rounded-lg px-4 py-2 text-sm text-neutal-500 border border-neutral-500 tracking-wide hover:bg-opacityLight-5 ';
+  'font-inter uppercase rounded-lg px-4 py-2 text-sm text-neutal-500 border border-neutral-500 tracking-wide hover:bg-opacity-light-5 ';
 const greenButton =
   'font-inter uppercase rounded-lg px-4 py-2 text-sm text-neutal-500 border border-neutral-500 tracking-wide bg-greenish-500 hover:brightness-110 ';
 
@@ -80,7 +80,7 @@ export function MapButton({ children, className, onClick }: ButtonProps) {
   return (
     <button
       className={
-        `font-inter rounded-lg border border-neutral-500 bg-opacityDark-70 px-4 py-2 text-center text-neutral-50 hover:bg-opacityDark-60 focus:outline-none ` +
+        `font-inter rounded-lg border border-neutral-500 bg-opacity-dark-70 px-4 py-2 text-center text-neutral-50 hover:bg-opacity-dark-60 focus:outline-none ` +
         className
       }
       onClick={onClick}

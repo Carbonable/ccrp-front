@@ -1,12 +1,13 @@
 import type { Config } from 'tailwindcss';
-const { nextui } = require('@nextui-org/react');
+import { heroui } from '@heroui/theme/plugin';
 
 const config: Config = {
   content: [
     './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
     './src/components/**/*.{js,ts,jsx,tsx,mdx}',
     './src/app/**/*.{js,ts,jsx,tsx,mdx}',
-    './node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}',
+    './node_modules/@heroui/theme/dist/**/*.{js,ts,jsx,tsx}',
+    './node_modules/@heroui/react/dist/**/*.{js,ts,jsx,tsx}',
   ],
   theme: {
     extend: {
@@ -26,6 +27,7 @@ const config: Config = {
           700: '#1F2128',
           800: '#13151C',
           900: '#0B0D13',
+          950: '#05070b',
         },
         greenish: {
           100: '#DDF6EB',
@@ -39,7 +41,7 @@ const config: Config = {
           900: '#0E3725',
           1000: '#082015',
         },
-        opacityLight: {
+        'opacity-light': {
           5: 'rgba(208, 209, 214, 0.05)',
           10: 'rgba(208, 209, 214, 0.1)',
           20: 'rgba(208, 209, 214, 0.2)',
@@ -49,7 +51,7 @@ const config: Config = {
           80: 'rgba(208, 209, 214, 0.8)',
           90: 'rgba(208, 209, 214, 0.9)',
         },
-        opacityDark: {
+        'opacity-dark': {
           40: 'rgba(11, 13, 19, 0.4)',
           50: 'rgba(11, 13, 19, 0.5)',
           60: 'rgba(11, 13, 19, 0.6)',
@@ -60,18 +62,19 @@ const config: Config = {
       },
       backgroundImage: {
         planification:
-          "linear-gradient(50.39deg, rgba(11, 13, 19, 0.5) 15.27%, rgba(19, 21, 28, 0.5) 46.91%, rgba(31, 33, 40, 0.5) 91.42%), url('/assets/images/backgrounds/bg-planification.png');",
+          "linear-gradient(50.39deg, rgba(11, 13, 19, 0.5) 15.27%, rgba(19, 21, 28, 0.5) 46.91%, rgba(31, 33, 40, 0.5) 91.42%), url('/assets/images/backgrounds/bg-planification.png')",
         'project-info':
-          'linear-gradient(166.49deg, #13151C 32.69%, rgba(0, 0, 0, 0) 170.72%), linear-gradient(270deg, rgba(168, 196, 239, 0.4) 23.44%, rgba(10, 242, 173, 0.4) 48.44%);',
+          'linear-gradient(166.49deg, #13151C 32.69%, rgba(0, 0, 0, 0) 170.72%), linear-gradient(270deg, rgba(168, 196, 239, 0.4) 23.44%, rgba(10, 242, 173, 0.4) 48.44%)',
         'project-header':
-          'linear-gradient(270deg, rgba(168, 196, 239, 0.1) 39.58%, rgba(10, 242, 173, 0.1) 100%);',
+          'linear-gradient(270deg, rgba(168, 196, 239, 0.1) 39.58%, rgba(10, 242, 173, 0.1) 100%)',
         'project-header-border':
-          'linear-gradient(270deg, rgba(168, 196, 239, 0.1) 39.58%, rgba(10, 242, 173, 0.1) 100%);',
+          'linear-gradient(270deg, rgba(168, 196, 239, 0.1) 39.58%, rgba(10, 242, 173, 0.1) 100%)',
         'beta-button':
-          'linear-gradient(180deg, rgba(11, 255, 138, 0.4) 0%, rgba(113, 170, 255, 0.4) 100%);',
+          'linear-gradient(180deg, rgba(11, 255, 138, 0.4) 0%, rgba(113, 170, 255, 0.4) 100%)',
       },
     },
   },
-  plugins: [nextui()],
+  plugins: [heroui()],
 };
+
 export default config;

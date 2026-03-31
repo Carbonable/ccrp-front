@@ -1,5 +1,6 @@
 'use client';
 
+import { use } from 'react';
 import Title from '@/components/common/Title';
 import ImageGallery from '@/components/project/overview/ImagesGallery';
 import SectionWrapper from '@/components/project/overview/SectionWrapper';
@@ -7,14 +8,15 @@ import { SanityContent } from '@/utils/sanity/types';
 import { useEffect, useState } from 'react';
 import AgentPageContext from '@/components/agent/AgentPageContext';
 
-export default function ProjectPage({ params }: Readonly<{ params: { slug: string } }>) {
+export default function ProjectPage({ params }: Readonly<{ params: Promise<{ slug: string }> }>) {
+  const { slug } = use(params);
   const [content, setContent] = useState<SanityContent | undefined>(undefined);
 
   useEffect(() => {
     const fetchProjectData = async () => {
       try {
         const query = `*[_type == "project" && slug.current == $slug]`;
-        const sanityParams = JSON.stringify({ slug: params.slug });
+        const sanityParams = JSON.stringify({ slug });
         const res = await fetch(`/api/sanity?query=${encodeURIComponent(query)}&params=${encodeURIComponent(sanityParams)}`);
         if (!res.ok) throw new Error(`API error: ${res.status}`);
         const result = await res.json();
@@ -25,7 +27,7 @@ export default function ProjectPage({ params }: Readonly<{ params: { slug: strin
     };
 
     fetchProjectData();
-  }, [params.slug]);
+  }, [slug]);
 
   if (!content) {
     return <div className="mt-6">Overview is not available</div>;
@@ -35,8 +37,8 @@ export default function ProjectPage({ params }: Readonly<{ params: { slug: strin
     <>
       <AgentPageContext
         entities={{
-          projectSlug: params.slug,
-          projectName: content.title || params.slug,
+          projectSlug: slug,
+          projectName: content.title || slug,
         }}
       />
       {content &&

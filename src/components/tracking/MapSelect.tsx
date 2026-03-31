@@ -21,7 +21,7 @@ export default function MapSelect({
       <div className="font-inter relative mt-1">
         <Listbox.Button
           className={({ open: boolean }) =>
-            `flex w-full min-w-max cursor-pointer items-center justify-start rounded-lg border border-neutral-500 bg-opacityDark-70 py-2 pl-4 pr-10 text-left text-neutral-50 hover:bg-opacityDark-60 focus:outline-none`
+            `flex w-full min-w-max cursor-pointer items-center justify-start rounded-lg border border-neutral-500 bg-opacity-dark-70 py-2 pl-4 pr-10 text-left text-neutral-50 hover:bg-opacity-dark-60 focus:outline-none`
           }
         >
           <span className="block truncate">{selectedValue?.name}</span>
@@ -35,14 +35,14 @@ export default function MapSelect({
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <Listbox.Options className="font-inter top-100 absolute mt-1 max-h-60 w-[120px] overflow-auto rounded-md border border-neutral-500 bg-opacityDark-70 p-6 px-0 text-sm shadow-lg focus:outline-none">
+          <Listbox.Options className="font-inter top-100 absolute mt-1 max-h-60 w-[120px] overflow-auto rounded-md border border-neutral-500 bg-opacity-dark-70 p-6 px-0 text-sm shadow-lg focus:outline-none">
             {values.map((value: ValueProps) => (
               <Listbox.Option
                 key={value.id}
                 value={value}
                 className={({ active }) =>
                   `relative ml-0 cursor-pointer select-none list-none px-4 py-2 ${
-                    active ? 'bg-opacityLight-5 text-neutral-50' : 'text-neutral-50'
+                    active ? 'bg-opacity-light-5 text-neutral-50' : 'text-neutral-50'
                   }`
                 }
               >

@@ -1,9 +1,9 @@
 'use client';
+
 import { BusinessUnit } from '@/graphql/__generated__/graphql';
 import { BUSINESS_UNITS } from '@/graphql/queries/business-units';
-import { useQuery } from '@apollo/client';
-import { Select, SelectItem } from '@nextui-org/react';
-import { useEffect, useState } from 'react';
+import { useQuery } from '@apollo/client/react';
+import { useEffect } from 'react';
 
 export default function BUList({
   selectedBU,
@@ -12,32 +12,27 @@ export default function BUList({
   selectedBU: BusinessUnit | undefined;
   setSelectedBU: (project: BusinessUnit) => void;
 }) {
-  const { loading, error, data } = useQuery(BUSINESS_UNITS);
-  const [value, setValue] = useState(new Set([]));
-
-  const handleSelectionChange = (e: any) => {
-    if (!e.target.value || businessUnits === undefined || businessUnits.length === 0) {
-      return;
-    }
-
-    setValue(e.target.value);
-    const selectBu = businessUnits.find((bu) => bu.id === e.target.value);
-    if (selectBu) {
-      setSelectedBU(selectBu);
-    }
-  };
+  const { loading, error, data } = useQuery<any>(BUSINESS_UNITS);
 
   if (error) {
     console.error(error);
   }
 
-  const businessUnits: BusinessUnit[] = data?.businessUnits;
+  const businessUnits: BusinessUnit[] = data?.businessUnits ?? [];
 
   useEffect(() => {
-    if (businessUnits && businessUnits.length > 0) {
+    if (businessUnits.length > 0 && !selectedBU) {
       setSelectedBU(businessUnits[0]);
     }
-  }, [businessUnits]);
+  }, [businessUnits, selectedBU, setSelectedBU]);
+
+  const handleSelectionChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const nextId = event.target.value;
+    const nextBusinessUnit = businessUnits.find((bu) => bu.id === nextId);
+    if (nextBusinessUnit) {
+      setSelectedBU(nextBusinessUnit);
+    }
+  };
 
   if (loading || !selectedBU) {
     return (
@@ -54,17 +49,17 @@ export default function BUList({
       <div className="mb-2 text-left font-light uppercase text-neutral-200">
         Select business unit
       </div>
-      <Select
-        variant="flat"
-        className="select-component w-full"
-        classNames={{ popoverContent: 'bg-neutral-800', value: '!text-neutral-200' }}
-        selectedKeys={selectedBU.id!}
+      <select
+        className="w-full rounded-2xl border border-neutral-800 bg-neutral-950 px-4 py-3 text-neutral-200 outline-none transition focus:border-primary"
+        value={selectedBU.id || ''}
         onChange={handleSelectionChange}
       >
         {businessUnits.map((bu) => (
-          <SelectItem key={`${bu.id!}`}>{bu.name}</SelectItem>
+          <option key={bu.id || bu.name} value={bu.id || ''} className="bg-neutral-900 text-neutral-100">
+            {bu.name}
+          </option>
         ))}
-      </Select>
+      </select>
     </>
   );
 }

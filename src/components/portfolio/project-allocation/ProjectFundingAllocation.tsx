@@ -3,12 +3,12 @@
 import CompanyAssetsAllocationComponent from '@/components/common/allocation/CompanyAssetsAllocationComponent';
 import { GET_COMPANY_ALLOCATIONS } from '@/graphql/queries/allocation';
 import { CARBONABLE_COMPANY_ID, RESULT_PER_PAGE } from '@/utils/constant';
-import { useQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client/react';
 import { useEffect, useState } from 'react';
 
 export default function ProjectFundingAllocation() {
   const [currentPage, setCurrentPage] = useState(1);
-  const { loading, error, data, refetch } = useQuery(GET_COMPANY_ALLOCATIONS, {
+  const { loading, error, data, refetch } = useQuery<any>(GET_COMPANY_ALLOCATIONS, {
     variables: {
       id: CARBONABLE_COMPANY_ID,
       pagination: {

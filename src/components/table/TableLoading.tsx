@@ -15,7 +15,7 @@ export default function TableLoading({
             {colums.map((column: number) => {
               return (
                 <td
-                  className="h-12 animate-pulse border-4 border-transparent bg-opacityLight-10"
+                  className="h-12 animate-pulse border-4 border-transparent bg-opacity-light-10"
                   key={`loader_${line}_${column}`}
                 ></td>
               );

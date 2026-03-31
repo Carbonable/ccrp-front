@@ -472,7 +472,11 @@
         "untitled": "Conversation sans titre",
         "delete": "Supprimer la conversation",
         "newConversationTitle": "Nouvelle conversation"
-      }
+      },
+      "suggestionsTitle": "Suggestions utiles",
+      "reasoningTitle": "Pourquoi cette réponse",
+      "sourcesTitle": "Contexte utilisé",
+      "loadingAnswer": "Analyse du contexte en cours…"
     },
     "report": {
       "title": "Envoyez-nous un message",

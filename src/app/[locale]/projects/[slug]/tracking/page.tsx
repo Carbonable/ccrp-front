@@ -2,7 +2,7 @@
 
 import { getDmrvData } from '@/actions/dmrv/dmrv';
 import { Coordinates, Dmrv, Ndvi, Rgb, TrackingIndicator } from '@/types/dmrv';
-import { useEffect, useRef, useState } from 'react';
+import { use, useEffect, useRef, useState } from 'react';
 import mapboxgl from 'mapbox-gl';
 import Title from '@/components/common/Title';
 import {
@@ -17,14 +17,15 @@ import TrackingSlider from '@/components/tracking/TrackingSlider';
 import TrackingModal from '@/components/tracking/TrackingModal';
 import moment from 'moment';
 
-export default function TrackingPage({ params }: Readonly<{ params: { slug: string } }>) {
+export default function TrackingPage({ params }: Readonly<{ params: Promise<{ slug: string }> }>) {
   mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_KEY || '';
+  const { slug } = use(params);
   const [dmrvData, setDmrvData] = useState<Dmrv | null>(null);
 
   useEffect(() => {
     const fetchDmrvData = async () => {
       try {
-        const data = await getDmrvData(params.slug);
+        const data = await getDmrvData(slug);
         setDmrvData(data);
       } catch (error) {
         console.error('Error fetching DMRV data:', error);
@@ -32,7 +33,7 @@ export default function TrackingPage({ params }: Readonly<{ params: { slug: stri
     };
 
     fetchDmrvData();
-  }, [params.slug]);
+  }, [slug]);
 
   const mapContainer = useRef<any>(null);
   const map = useRef<mapboxgl.Map | null>(null);
@@ -285,7 +286,7 @@ export default function TrackingPage({ params }: Readonly<{ params: { slug: stri
         </div>
         {mapLoaded && (
           <div className="absolute bottom-[-12px] z-50 w-full">
-            <div className="mx-auto flex h-[24px] w-[24px] items-center justify-center rounded-full bg-opacityLight-80">
+            <div className="mx-auto flex h-[24px] w-[24px] items-center justify-center rounded-full bg-opacity-light-80">
               <ChevronLeftIcon className="w-[20px] text-neutral-900" />
               <ChevronRightIcon className="w-[20px] text-neutral-900" />
             </div>
@@ -293,9 +294,9 @@ export default function TrackingPage({ params }: Readonly<{ params: { slug: stri
         )}
       </div>
       {mapLoaded && (
-        <div className="mx-auto mt-6 w-fit rounded-xl border border-neutral-300 bg-opacityLight-10 py-2 pl-3 pr-2 text-sm">
+        <div className="mx-auto mt-6 w-fit rounded-xl border border-neutral-300 bg-opacity-light-10 py-2 pl-3 pr-2 text-sm">
           {moment(ndvis[selectedDateIndex].date).format('MMM. Do YYYY')}{' '}
-          <span className="ml-2 rounded-lg border border-neutral-300 bg-opacityLight-10 px-2 py-1 text-xs">
+          <span className="ml-2 rounded-lg border border-neutral-300 bg-opacity-light-10 px-2 py-1 text-xs">
             🌳 {Math.round(ndvis[selectedDateIndex].value * 100)}%
           </span>
         </div>

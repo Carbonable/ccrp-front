@@ -20,8 +20,10 @@ function TabButton({
     <button
       type="button"
       onClick={onClick}
-      className={`rounded-xl px-3 py-2 text-sm font-medium transition ${
-        active ? 'bg-primary text-neutral-950' : 'text-neutral-300 hover:bg-neutral-800 hover:text-white'
+      className={`rounded-xl border px-3 py-2 text-sm font-medium transition ${
+        active
+          ? 'border-primary/30 bg-primary/10 text-white shadow-[inset_0_0_0_1px_rgba(10,242,173,0.08)]'
+          : 'border-transparent text-neutral-300 hover:border-neutral-700 hover:bg-neutral-800 hover:text-white'
       }`}
     >
       {label}
@@ -41,12 +43,12 @@ function AgentShortcutButton() {
       type="button"
       aria-label={t('open')}
       onClick={() => openPanel(activeTab)}
-      className="group fixed bottom-5 right-5 z-[69] inline-flex h-12 w-12 cursor-pointer items-center overflow-hidden rounded-full border border-primary/30 bg-neutral-950/95 text-neutral-100 shadow-2xl shadow-black/30 transition-all duration-200 hover:-translate-y-0.5 hover:w-[172px] hover:border-primary/50 hover:bg-neutral-900 focus-visible:w-[172px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70 active:scale-[0.98]"
+      className="group fixed bottom-5 right-5 z-[69] inline-flex h-12 w-12 cursor-pointer items-center overflow-hidden rounded-full border border-primary/30 bg-neutral-950/95 text-neutral-100 shadow-2xl shadow-black/30 transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/50 hover:bg-neutral-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70 active:scale-[0.98] sm:w-auto"
     >
       <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-primary text-neutral-950">
         <ChatBubbleLeftRightIcon className="h-5 w-5" />
       </div>
-      <div className="pointer-events-none hidden whitespace-nowrap pl-2 pr-4 text-left text-sm font-semibold text-white opacity-0 transition-opacity duration-150 group-hover:opacity-100 group-focus-visible:opacity-100 sm:block">
+      <div className="pointer-events-none hidden whitespace-nowrap pl-2 pr-4 text-left text-sm font-semibold text-white sm:block">
         {t('shortcutLabel')}
       </div>
     </button>

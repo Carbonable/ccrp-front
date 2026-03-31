@@ -6,7 +6,7 @@ import ProjectDecarbonationTable from '@/components/project/carbon-management/Pr
 import { useProject } from '@/context/ProjectContext';
 import { Project } from '@/graphql/__generated__/graphql';
 import { GET_PROJECT_WITHOUT_VINTAGES } from '@/graphql/queries/projects';
-import { useQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client/react';
 
 export default function CarbonManagementPage() {
   const { project } = useProject();

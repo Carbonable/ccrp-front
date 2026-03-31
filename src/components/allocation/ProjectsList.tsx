@@ -1,9 +1,9 @@
 'use client';
+
 import { Project } from '@/graphql/__generated__/graphql';
 import { GET_PROJECTS } from '@/graphql/queries/projects';
-import { useQuery } from '@apollo/client';
-import { Select, SelectItem } from '@nextui-org/react';
-import { useEffect, useState } from 'react';
+import { useQuery } from '@apollo/client/react';
+import { useEffect } from 'react';
 
 export default function ProjectsList({
   selectedProject,
@@ -12,31 +12,27 @@ export default function ProjectsList({
   selectedProject: Project | undefined;
   setSelectedProject: (project: Project) => void;
 }) {
-  const { loading, error, data } = useQuery(GET_PROJECTS);
-  const [value, setValue] = useState(new Set([]));
-
-  const handleSelectionChange = (e: any) => {
-    if (!e.target.value || projects === undefined || projects.length === 0) {
-      return;
-    }
-
-    setValue(e.target.value);
-    const selectProject = projects.find((project) => project.id === e.target.value);
-    if (selectProject) {
-      setSelectedProject(selectProject);
-    }
-  };
+  const { loading, error, data } = useQuery<any>(GET_PROJECTS);
 
   if (error) {
     console.error(error);
   }
 
-  const projects: Project[] = data?.projects;
+  const projects: Project[] = data?.projects ?? [];
+
   useEffect(() => {
-    if (projects && projects.length > 0) {
+    if (projects.length > 0 && !selectedProject) {
       setSelectedProject(projects[0]);
     }
-  }, [projects]);
+  }, [projects, selectedProject, setSelectedProject]);
+
+  const handleSelectionChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const nextId = event.target.value;
+    const nextProject = projects.find((project) => project.id === nextId);
+    if (nextProject) {
+      setSelectedProject(nextProject);
+    }
+  };
 
   if (loading || !selectedProject) {
     return (
@@ -51,17 +47,17 @@ export default function ProjectsList({
   return (
     <>
       <div className="mb-2 text-left font-light uppercase text-neutral-200">Select Project</div>
-      <Select
-        variant="flat"
-        className="select-component w-full"
-        classNames={{ popoverContent: 'bg-neutral-800', value: '!text-neutral-200' }}
-        selectedKeys={selectedProject.id!}
+      <select
+        className="w-full rounded-2xl border border-neutral-800 bg-neutral-950 px-4 py-3 text-neutral-200 outline-none transition focus:border-primary"
+        value={selectedProject.id || ''}
         onChange={handleSelectionChange}
       >
         {projects.map((project) => (
-          <SelectItem key={project.id}>{project.name}</SelectItem>
+          <option key={project.id || project.name} value={project.id || ''} className="bg-neutral-900 text-neutral-100">
+            {project.name}
+          </option>
         ))}
-      </Select>
+      </select>
     </>
   );
 }

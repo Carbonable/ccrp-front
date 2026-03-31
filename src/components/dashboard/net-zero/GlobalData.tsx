@@ -4,10 +4,10 @@ import GlobalDataComponent from '@/components/common/global-data/GlobalData';
 import { GET_GLOBAL_DATA } from '@/graphql/queries/net-zero';
 import { CARBONABLE_COMPANY_ID } from '@/utils/constant';
 
-import { useQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client/react';
 
 export default function GlobalData() {
-  const { loading, error, data, refetch } = useQuery(GET_GLOBAL_DATA, {
+  const { loading, error, data, refetch } = useQuery<any>(GET_GLOBAL_DATA, {
     variables: {
       view: {
         company_id: CARBONABLE_COMPANY_ID,

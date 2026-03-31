@@ -3,9 +3,8 @@
 import TableLoading from '@/components/table/TableLoading';
 import { CompanyCarbonAssetAllocationData, PageInfo } from '@/graphql/__generated__/graphql';
 import { RESULT_PER_PAGE } from '@/utils/constant';
-import { use, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ErrorReloadTable, NoDataTable } from '../ErrorReload';
-import { Pagination } from '@nextui-org/react';
 import SquaredInitials from '../SquaredInitials';
 import { getNumericPercentage } from '@/utils/utils';
 import { SecondaryButton } from '../Button';
@@ -62,8 +61,8 @@ export default function CompanyAssetsAllocationComponent({
     setTotalPages(pagination.total_page);
   }, [pagination]);
 
-  const handlePageClick = (data: number) => {
-    setCurrentPage(data);
+  const handlePageClick = (page: number) => {
+    setCurrentPage(page);
   };
 
   return (

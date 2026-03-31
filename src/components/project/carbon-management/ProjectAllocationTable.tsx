@@ -1,12 +1,12 @@
 import ProjectAssetsAllocationComponent from '@/components/common/allocation/ProjectAssetsAllocationComponent';
 import { GET_PROJECT_ALLOCATIONS } from '@/graphql/queries/allocation';
 import { RESULT_PER_PAGE } from '@/utils/constant';
-import { useQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client/react';
 import { useEffect, useState } from 'react';
 
 export default function ProjectAllocationTable({ projectId }: { projectId: string }) {
   const [currentPage, setCurrentPage] = useState(1);
-  const { loading, error, data, refetch } = useQuery(GET_PROJECT_ALLOCATIONS, {
+  const { loading, error, data, refetch } = useQuery<any>(GET_PROJECT_ALLOCATIONS, {
     variables: {
       id: projectId,
       pagination: {

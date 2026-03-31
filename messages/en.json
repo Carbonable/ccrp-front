@@ -472,7 +472,11 @@
         "untitled": "Untitled conversation",
         "delete": "Delete conversation",
         "newConversationTitle": "New conversation"
-      }
+      },
+      "suggestionsTitle": "Helpful suggestions",
+      "reasoningTitle": "Why this answer",
+      "sourcesTitle": "Context used",
+      "loadingAnswer": "Analyzing the current context…"
     },
     "report": {
       "title": "Send us a message",

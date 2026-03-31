@@ -86,97 +86,99 @@ export default function ProjectDecarbonationComponent({
   };
 
   return (
-    <div className="mt-8 h-full w-full px-0">
+    <div className="mt-8 w-full px-0">
       <Title title={tTables('netZeroPlanning')} />
-      <ResponsiveContainer width="100%" height="100%" aspect={2.2}>
-        <ComposedChart
-          width={300}
-          height={300}
-          data={netZeroPlanning}
-          margin={{
-            top: 5,
-            right: 30,
-            left: 20,
-            bottom: 5,
-          }}
-          style={{
-            fontSize: '14px',
-            fontFamily: 'Inter',
-          }}
-        >
-          <CartesianGrid stroke="#2B2E36" />
-          <XAxis dataKey="vintage" />
-          <YAxis
-            yAxisId="left"
-            domain={[0, 'dataMax']}
-            label={{ value: tCharts('axes.tons'), angle: -90, position: 'insideLeft' }}
-          />
-          <YAxis
-            yAxisId="right"
-            orientation="right"
-            label={{ value: tCharts('axes.targetPercent'), angle: 90, position: 'insideRight' }}
-            domain={[0, 100]}
-          />
-          <Tooltip content={<CustomTooltip />} />
-          {!isFullScreen && <Legend />}
-          <Bar
-            dataKey="emission"
-            name={tCharts('netZeroLegend.emissions')}
-            yAxisId="left"
-            fill="#334566"
-            radius={[10, 10, 0, 0]}
-          />
-          <Bar
-            dataKey="ex_post_count"
-            name={tCharts('netZeroLegend.exPost')}
-            yAxisId="left"
-            stackId="a"
-            fill="#046B4D"
+      <div className="mt-6 h-[420px] w-full md:h-[520px] xl:h-[620px]">
+        <ResponsiveContainer width="100%" height="100%">
+          <ComposedChart
+            width={300}
+            height={300}
+            data={netZeroPlanning}
+            margin={{
+              top: 5,
+              right: 30,
+              left: 20,
+              bottom: 24,
+            }}
+            style={{
+              fontSize: '14px',
+              fontFamily: 'Inter',
+            }}
           >
-            {netZeroPlanning.map((entry: any, index: number) => {
-              return <Cell key={`cell-${index}`} radius={entry.ex_ante_count === 0 ? 10 : undefined} />;
-            })}
-          </Bar>
-          <Bar
-            dataKey="ex_ante_count"
-            name={tCharts('netZeroLegend.exAnte')}
-            yAxisId="left"
-            stackId="a"
-            barSize={10}
-            fill="#06A475"
-            radius={[10, 10, 0, 0]}
-          />
-          <Bar
-            dataKey="retired"
-            name={tCharts('netZeroLegend.retired')}
-            yAxisId="left"
-            fill="#0E3725"
-            radius={[10, 10, 0, 0]}
-          />
-          <Line
-            type="monotone"
-            name={tCharts('netZeroLegend.target')}
-            yAxisId="right"
-            dataKey="target"
-            stroke="#D0D1D6"
-            strokeWidth={2}
-            dot={false}
-            activeDot={false}
-          />
-          <Line
-            type="monotone"
-            name={tCharts('netZeroLegend.actual')}
-            yAxisId="right"
-            dataKey="actual"
-            stroke="#877B44"
-            strokeWidth={2}
-            dot={false}
-            activeDot={false}
-          />
-          <Brush dataKey="vintage" height={30} stroke="#878A94" fill="#1F2128" />
-        </ComposedChart>
-      </ResponsiveContainer>
-      <div className="font-inter mx-auto w-fit text-center text-sm text-neutral-300 md:mt-2 lg:text-lg">
+            <CartesianGrid stroke="#2B2E36" />
+            <XAxis dataKey="vintage" />
+            <YAxis
+              yAxisId="left"
+              domain={[0, 'dataMax']}
+              label={{ value: tCharts('axes.tons'), angle: -90, position: 'insideLeft' }}
+            />
+            <YAxis
+              yAxisId="right"
+              orientation="right"
+              label={{ value: tCharts('axes.targetPercent'), angle: 90, position: 'insideRight' }}
+              domain={[0, 100]}
+            />
+            <Tooltip content={<CustomTooltip />} />
+            {!isFullScreen && <Legend />}
+            <Bar
+              dataKey="emission"
+              name={tCharts('netZeroLegend.emissions')}
+              yAxisId="left"
+              fill="#334566"
+              radius={[10, 10, 0, 0]}
+            />
+            <Bar
+              dataKey="ex_post_count"
+              name={tCharts('netZeroLegend.exPost')}
+              yAxisId="left"
+              stackId="a"
+              fill="#046B4D"
+            >
+              {netZeroPlanning.map((entry: any, index: number) => {
+                return <Cell key={`cell-${index}`} radius={entry.ex_ante_count === 0 ? 10 : undefined} />;
+              })}
+            </Bar>
+            <Bar
+              dataKey="ex_ante_count"
+              name={tCharts('netZeroLegend.exAnte')}
+              yAxisId="left"
+              stackId="a"
+              barSize={10}
+              fill="#06A475"
+              radius={[10, 10, 0, 0]}
+            />
+            <Bar
+              dataKey="retired"
+              name={tCharts('netZeroLegend.retired')}
+              yAxisId="left"
+              fill="#0E3725"
+              radius={[10, 10, 0, 0]}
+            />
+            <Line
+              type="monotone"
+              name={tCharts('netZeroLegend.target')}
+              yAxisId="right"
+              dataKey="target"
+              stroke="#D0D1D6"
+              strokeWidth={2}
+              dot={false}
+              activeDot={false}
+            />
+            <Line
+              type="monotone"
+              name={tCharts('netZeroLegend.actual')}
+              yAxisId="right"
+              dataKey="actual"
+              stroke="#877B44"
+              strokeWidth={2}
+              dot={false}
+              activeDot={false}
+            />
+            <Brush dataKey="vintage" height={30} stroke="#878A94" fill="#1F2128" />
+          </ComposedChart>
+        </ResponsiveContainer>
+      </div>
+      <div className="font-inter mx-auto mt-4 mb-8 w-fit text-center text-sm text-neutral-300 lg:text-lg">
         <CustomLegend payload={legendPayload} />
       </div>
     </div>

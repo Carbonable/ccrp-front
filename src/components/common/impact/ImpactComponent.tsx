@@ -4,7 +4,6 @@ import { useTranslations } from 'next-intl';
 import { CARBONABLE_COMPANY_ID } from '@/utils/constant';
 import ErrorReload from '../ErrorReload';
 import { ImpactTitle } from '../Title';
-import type { ApolloError } from '@apollo/client';
 import { ImpactMetrics, Sdg } from '@/graphql/__generated__/graphql';
 import { LinkSecondary } from '../Button';
 
@@ -16,7 +15,7 @@ export default function ImpactComponent({
   link,
 }: {
   loading: boolean;
-  error: ApolloError | undefined;
+  error: Error | undefined;
   data: any;
   refetch: any;
   link?: string;

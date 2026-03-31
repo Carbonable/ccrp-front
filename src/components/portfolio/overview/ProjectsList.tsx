@@ -2,11 +2,11 @@
 
 import { Project } from '@/graphql/__generated__/graphql';
 import { GET_PROJECTS } from '@/graphql/queries/projects';
-import { useQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client/react';
 import { useTranslations } from 'next-intl';
 
 export default function ProjectsList() {
-  const { loading, error, data } = useQuery(GET_PROJECTS);
+  const { loading, error, data } = useQuery<any>(GET_PROJECTS);
   const t = useTranslations('portfolio');
   const tc = useTranslations('common');
 

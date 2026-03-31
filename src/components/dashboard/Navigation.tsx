@@ -1,9 +1,9 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Tabs, Tab } from '@nextui-org/react';
 import { Link, usePathname } from '@/i18n/navigation';
 import { useTranslations } from 'next-intl';
+import NavigationTabs from '@/components/common/NavigationTabs';
 
 const DashboardNavigationTabs = () => {
   const [selectedKey, setSelectedKey] = useState<string>('/dashboard');
@@ -19,37 +19,35 @@ const DashboardNavigationTabs = () => {
   }, [pathname]);
 
   return (
-    <Tabs
-      selectedKey={selectedKey}
-      classNames={{
-        tabList: 'bg-opacityLight-5 text-neutral-100',
-      }}
-    >
-      <Tab
-        key="/dashboard"
-        title={
-          <Link href="/dashboard" prefetch>
-            {t('netZeroOverview')}
-          </Link>
-        }
-      />
-      <Tab
-        key="/dashboard/business-units-allocation"
-        title={
-          <Link href="/dashboard/business-units-allocation" prefetch>
-            {t('businessUnitsAllocation')}
-          </Link>
-        }
-      />
-      <Tab
-        key="/dashboard/reporting"
-        title={
-          <Link href="/dashboard/reporting" prefetch>
-            {t('reporting')}
-          </Link>
-        }
-      />
-    </Tabs>
+    <NavigationTabs
+      activeKey={selectedKey}
+      items={[
+        {
+          key: '/dashboard',
+          label: (
+            <Link href="/dashboard" prefetch className="block px-3 py-2">
+              {t('netZeroOverview')}
+            </Link>
+          ),
+        },
+        {
+          key: '/dashboard/business-units-allocation',
+          label: (
+            <Link href="/dashboard/business-units-allocation" prefetch className="block px-3 py-2">
+              {t('businessUnitsAllocation')}
+            </Link>
+          ),
+        },
+        {
+          key: '/dashboard/reporting',
+          label: (
+            <Link href="/dashboard/reporting" prefetch className="block px-3 py-2">
+              {t('reporting')}
+            </Link>
+          ),
+        },
+      ]}
+    />
   );
 };
 

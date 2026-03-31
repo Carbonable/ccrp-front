@@ -3,13 +3,13 @@
 import { useTranslations } from 'next-intl';
 import { BUSINESS_UNITS } from '@/graphql/queries/business-units';
 import Block from './Block';
-import { useQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client/react';
 import { BusinessUnit } from '@/graphql/__generated__/graphql';
 import ErrorReload from '@/components/common/ErrorReload';
 
 export default function DecarbonizationMap() {
   const t = useTranslations('allocation');
-  const { loading, error, data, refetch } = useQuery(BUSINESS_UNITS);
+  const { loading, error, data, refetch } = useQuery<any>(BUSINESS_UNITS);
 
 
   const businessUnits: BusinessUnit[] = data?.businessUnits;
@@ -17,7 +17,7 @@ export default function DecarbonizationMap() {
   if (loading)
     return (
       <BusinessUnitWrapper>
-        <div className="w-full animate-pulse cursor-pointer rounded-3xl border border-neutral-700 bg-opacityLight-5 p-4 xl:p-8"></div>
+        <div className="w-full animate-pulse cursor-pointer rounded-3xl border border-neutral-700 bg-opacity-light-5 p-4 xl:p-8"></div>
       </BusinessUnitWrapper>
     );
 

@@ -5,7 +5,7 @@ import { colorLegendPayload } from '@/components/project/ProjectsColors';
 export default function Repartition({ block }: { block: BusinessUnit }) {
   if (!block.allocations || block.allocations.length === 0 || !block.colors_amount || block.colors_amount.length == 0) {
     
-    return <div className="h-[10px] w-full rounded-full bg-opacityLight-5"></div>;
+    return <div className="h-[10px] w-full rounded-full bg-opacity-light-5"></div>;
   }
 
   const totalAllocation = block.colors_amount.reduce(

@@ -3,12 +3,12 @@
 import ImpactComponent from '@/components/common/impact/ImpactComponent';
 import { useProject } from '@/context/ProjectContext';
 import { GET_IMPACT_METRICS } from '@/graphql/queries/impact';
-import { useQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client/react';
 
 export default function ImpactPage() {
   const { project } = useProject();
 
-  const { loading, error, data, refetch } = useQuery(GET_IMPACT_METRICS, {
+  const { loading, error, data, refetch } = useQuery<any>(GET_IMPACT_METRICS, {
     variables: {
       view: {
         project_id: project?.id,

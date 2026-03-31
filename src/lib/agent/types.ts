@@ -84,12 +84,40 @@ export interface AgentChatAction {
   prefill?: string;
 }
 
+export interface AgentChatSource {
+  type: 'page' | 'entity' | 'action' | 'api' | 'console';
+  title: string;
+  href?: string;
+  description?: string;
+  meta?: string;
+}
+
+export interface AgentChatTaskItem {
+  text: string;
+  state: 'pending' | 'in_progress' | 'completed';
+}
+
+export interface AgentChatTask {
+  title: string;
+  status: 'pending' | 'in_progress' | 'completed';
+  items: AgentChatTaskItem[];
+}
+
+export interface AgentChatSuggestion {
+  label: string;
+  prompt: string;
+}
+
 export interface AgentChatMessage {
   id: string;
   role: 'user' | 'assistant';
   content: string;
   createdAt: string;
   actions?: AgentChatAction[];
+  reasoning?: string;
+  sources?: AgentChatSource[];
+  tasks?: AgentChatTask[];
+  suggestions?: AgentChatSuggestion[];
 }
 
 export interface AgentConversationThread {
@@ -104,6 +132,10 @@ export interface AgentChatResponse {
   answer: string;
   reportRecommended?: boolean;
   actions?: AgentChatAction[];
+  reasoning?: string;
+  sources?: AgentChatSource[];
+  tasks?: AgentChatTask[];
+  suggestions?: AgentChatSuggestion[];
 }
 
 export interface AgentTicketDraft {

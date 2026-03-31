@@ -1,368 +1,324 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
-import { useUser } from '@clerk/nextjs';
-import { ClockIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
+import { useCallback, useMemo, useState } from 'react';
+import { ArrowPathIcon, ChatBubbleLeftRightIcon } from '@heroicons/react/24/outline';
+import { DefaultChatTransport, generateId, type UIMessage } from 'ai';
+import { useChat } from '@ai-sdk/react';
 import { useTranslations } from 'next-intl';
-import {
-  createChatMessage,
-  createConversationThread,
-  deleteConversationThread,
-  getConversationScope,
-  loadConversationState,
-  saveConversationState,
-  upsertThreadMessages,
-} from '@/lib/agent/conversations';
-import type { AgentChatAction, AgentChatResponse, AgentConversationThread, AgentRuntimeContext } from '@/lib/agent/types';
 import { useAgent } from '@/components/agent/AgentProvider';
+import {
+  Conversation,
+  ConversationContent,
+  ConversationDownload,
+  ConversationEmptyState,
+  ConversationScrollButton,
+} from '@/components/ai-elements/conversation';
+import {
+  Message,
+  MessageContent,
+  MessageResponse,
+} from '@/components/ai-elements/message';
+import {
+  PromptInput,
+  PromptInputBody,
+  PromptInputFooter,
+  type PromptInputMessage,
+  PromptInputProvider,
+  PromptInputSubmit,
+  PromptInputTextarea,
+  PromptInputTools,
+} from '@/components/ai-elements/prompt-input';
+import {
+  Reasoning,
+  ReasoningContent,
+  ReasoningTrigger,
+} from '@/components/ai-elements/reasoning';
+import {
+  Source,
+  Sources,
+  SourcesContent,
+  SourcesTrigger,
+} from '@/components/ai-elements/sources';
+import { Suggestion, Suggestions } from '@/components/ai-elements/suggestion';
+import { Button } from '@/components/ui/button';
+import type { AgentRuntimeContext } from '@/lib/agent/types';
 
-function formatBrowser(runtime: AgentRuntimeContext) {
-  const platform = runtime.browser.platform || 'Unknown device';
-  const language = runtime.browser.language || 'unknown';
-  return `${platform} · ${language}`;
-}
+function buildStarterSuggestions(runtime: AgentRuntimeContext): string[] {
+  const path = runtime.page.pathname || '/';
+  const base: string[] = [];
 
-function getLastMeaningfulAction(runtime: AgentRuntimeContext) {
-  return [...runtime.recentActions].reverse().find((entry) => entry.kind === 'click' || entry.kind === 'navigation');
-}
-
-function getLastApiCall(runtime: AgentRuntimeContext) {
-  return [...runtime.recentActions].reverse().find((entry) => entry.kind === 'api');
-}
-
-function formatTimeLabel(value: string) {
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return '';
-  return date.toLocaleString([], {
-    month: 'short',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-  });
-}
-
-function ContextBrief() {
-  const t = useTranslations('agent.chat');
-  const { user } = useUser();
-  const { buildRuntimeContext } = useAgent();
-  const runtime = buildRuntimeContext();
-  const lastAction = getLastMeaningfulAction(runtime);
-  const lastApiCall = getLastApiCall(runtime);
-  const lastApiError = [...runtime.recentApiErrors].reverse()[0];
-
-  return (
-    <div className="mb-4 grid grid-cols-1 gap-2 md:grid-cols-2">
-      <div className="rounded-2xl border border-neutral-800 bg-neutral-950/70 p-3 text-xs text-neutral-300">
-        <div className="font-semibold uppercase tracking-wide text-neutral-500">{t('context.user')}</div>
-        <div className="mt-1">{user?.fullName || user?.primaryEmailAddress?.emailAddress || t('context.unknownUser')}</div>
-      </div>
-      <div className="rounded-2xl border border-neutral-800 bg-neutral-950/70 p-3 text-xs text-neutral-300">
-        <div className="font-semibold uppercase tracking-wide text-neutral-500">{t('context.device')}</div>
-        <div className="mt-1">{formatBrowser(runtime)}</div>
-      </div>
-      <div className="rounded-2xl border border-neutral-800 bg-neutral-950/70 p-3 text-xs text-neutral-300">
-        <div className="font-semibold uppercase tracking-wide text-neutral-500">{t('context.lastAction')}</div>
-        <div className="mt-1 line-clamp-2">{lastAction?.label || t('context.none')}</div>
-      </div>
-      <div className="rounded-2xl border border-neutral-800 bg-neutral-950/70 p-3 text-xs text-neutral-300">
-        <div className="font-semibold uppercase tracking-wide text-neutral-500">{lastApiError ? t('context.lastApiError') : t('context.lastApiCall')}</div>
-        <div className="mt-1 line-clamp-2">{lastApiError ? `${lastApiError.method} ${lastApiError.url}` : lastApiCall?.label || t('context.none')}</div>
-      </div>
-    </div>
-  );
-}
-
-function ActionButtons({ actions, onAction }: { actions?: AgentChatAction[]; onAction: (action: AgentChatAction) => void }) {
-  const t = useTranslations('agent.chat.actions');
-
-  if (!actions || actions.length === 0) return null;
-
-  const getLabel = (action: AgentChatAction) => {
-    if (action.label) return action.label;
-    if (action.type === 'new_conversation') return t('newConversation');
-    if (action.kind === 'feature') return t('openFeature');
-    if (action.kind === 'contact') return t('openContact');
-    return t('openBug');
-  };
-
-  return (
-    <div className="mt-3 flex flex-wrap gap-2">
-      {actions.map((action, index) => (
-        <button
-          key={`${action.type}-${action.kind || 'none'}-${index}`}
-          type="button"
-          onClick={() => onAction(action)}
-          className="rounded-xl border border-primary/30 bg-primary/10 px-3 py-2 text-xs font-medium text-primary transition hover:border-primary/60 hover:bg-primary/15"
-        >
-          {getLabel(action)}
-        </button>
-      ))}
-    </div>
-  );
-}
-
-function HistoryPanel({
-  threads,
-  activeThreadId,
-  onSelect,
-  onDelete,
-}: {
-  threads: AgentConversationThread[];
-  activeThreadId: string | null;
-  onSelect: (threadId: string) => void;
-  onDelete: (threadId: string) => void;
-}) {
-  const t = useTranslations('agent.chat.history');
-
-  if (threads.length === 0) {
-    return (
-      <div className="mb-4 rounded-2xl border border-dashed border-neutral-800 bg-neutral-950/50 p-4 text-sm text-neutral-400">
-        {t('empty')}
-      </div>
-    );
+  if (path.includes('/dashboard')) {
+    base.push('Explain this dashboard and the key charts.', 'What should I look at first on this dashboard?');
   }
 
-  return (
-    <div className="mb-4 rounded-2xl border border-neutral-800 bg-neutral-950/70 p-3">
-      <div className="mb-3 flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-neutral-500">
-        <ClockIcon className="h-4 w-4" />
-        {t('title')}
-      </div>
-      <div className="space-y-2">
-        {threads.map((thread) => {
-          const active = thread.id === activeThreadId;
-          const preview = thread.messages.at(-1)?.content || t('emptyThread');
+  if (path.includes('/projects')) {
+    base.push('Summarize this project and what to verify first.', 'What looks unusual on this project page?');
+  }
 
-          return (
-            <div
-              key={thread.id}
-              className={`flex items-start gap-2 rounded-2xl border p-3 transition ${
-                active ? 'border-primary/50 bg-primary/10' : 'border-neutral-800 bg-neutral-950 hover:border-neutral-700'
-              }`}
-            >
-              <button type="button" onClick={() => onSelect(thread.id)} className="min-w-0 flex-1 text-left">
-                <div className="truncate text-sm font-medium text-neutral-100">{thread.title || t('untitled')}</div>
-                <div className="mt-1 line-clamp-2 text-xs text-neutral-400">{preview}</div>
-                <div className="mt-2 text-[11px] text-neutral-500">{formatTimeLabel(thread.updatedAt)}</div>
-              </button>
-              {threads.length > 1 ? (
-                <button
-                  type="button"
-                  onClick={() => onDelete(thread.id)}
-                  className="rounded-lg border border-neutral-800 p-2 text-neutral-400 transition hover:border-red-500/40 hover:text-red-300"
-                  aria-label={t('delete')}
-                >
-                  <TrashIcon className="h-4 w-4" />
-                </button>
-              ) : null}
-            </div>
-          );
+  base.push('What should I do next on this screen?', 'Open a prefilled report with the current context.');
+  return base.slice(0, 4);
+}
+
+function ToolCallPart({ part }: { part: { type: string; state: string; toolName: string; input: Record<string, unknown>; output?: unknown } }) {
+  const toolName = part.toolName;
+  const state = part.state;
+
+  if (toolName === 'create_ticket') {
+    if (state === 'input-streaming' || state === 'input-available') {
+      const input = part.input as { title?: string; type?: string; severity?: string };
+      return (
+        <div className="my-2 rounded-lg border border-primary/30 bg-primary/5 p-3 text-sm">
+          <div className="flex items-center gap-2 text-primary">
+            <svg className="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg>
+            Creating ticket…
+          </div>
+          {input.title && <div className="mt-1 font-medium text-neutral-200">{input.title}</div>}
+          {input.type && <div className="text-xs text-neutral-400">{input.type} · {input.severity}</div>}
+        </div>
+      );
+    }
+
+    if (state === 'output-available') {
+      return (
+        <div className="my-2 rounded-lg border border-green-500/30 bg-green-500/10 p-3 text-sm">
+          <div className="flex items-center gap-2 text-green-400">
+            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
+            Ticket created
+          </div>
+          <div className="mt-1 text-neutral-300">{String(part.output)}</div>
+        </div>
+      );
+    }
+
+    if (state === 'output-error') {
+      return (
+        <div className="my-2 rounded-lg border border-red-500/30 bg-red-500/10 p-3 text-sm text-red-300">
+          Failed to create ticket
+        </div>
+      );
+    }
+  }
+
+  // Generic fallback for unknown tools
+  return null;
+}
+
+function AssistantMessage({ message }: { message: UIMessage }) {
+  const t = useTranslations('agent.chat');
+
+  // Collect source-url parts
+  const sourceParts = message.parts?.filter(
+    (p): p is Extract<typeof p, { type: 'source-url' }> => p.type === 'source-url'
+  ) ?? [];
+
+  return (
+    <Message from="assistant">
+      <MessageContent>
+        {message.parts.map((part, i) => {
+          switch (part.type) {
+            case 'text':
+              return (
+                <MessageResponse key={`${message.id}-${i}`}>
+                  {part.text}
+                </MessageResponse>
+              );
+            case 'reasoning':
+              return (
+                <Reasoning key={`${message.id}-reasoning-${i}`}>
+                  <ReasoningTrigger>{t('reasoningTitle')}</ReasoningTrigger>
+                  <ReasoningContent>
+                    <MessageResponse>{part.text}</MessageResponse>
+                  </ReasoningContent>
+                </Reasoning>
+              );
+            default:
+              // Handle tool-* parts
+              if (part.type.startsWith('tool-')) {
+                return <ToolCallPart key={`${message.id}-tool-${i}`} part={part as never} />;
+              }
+              return null;
+          }
         })}
-      </div>
-    </div>
+
+        {sourceParts.length > 0 && (
+          <div className="mt-3">
+            <Sources>
+              <SourcesTrigger count={sourceParts.length}>{t('sourcesTitle')}</SourcesTrigger>
+              <SourcesContent>
+                {sourceParts.map((source, index) => (
+                  <Source
+                    key={`${source.sourceId}-${index}`}
+                    title={source.title ?? source.sourceId}
+                    href={source.url}
+                    meta={source.providerMetadata ? String(source.providerMetadata) : undefined}
+                  />
+                ))}
+              </SourcesContent>
+            </Sources>
+          </div>
+        )}
+      </MessageContent>
+    </Message>
   );
 }
 
 export default function AgentChatTab() {
   const t = useTranslations('agent.chat');
-  const { user, isLoaded } = useUser();
   const { buildRuntimeContext, openReport } = useAgent();
-  const [threads, setThreads] = useState<AgentConversationThread[]>([]);
-  const [activeThreadId, setActiveThreadId] = useState<string | null>(null);
   const [input, setInput] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [historyOpen, setHistoryOpen] = useState(false);
-  const [hydrated, setHydrated] = useState(false);
+  const [chatId, setChatId] = useState(() => `agent-${generateId()}`);
 
-  const fallbackThreadTitle = t('history.newConversationTitle');
-  const scope = getConversationScope(user?.id || user?.primaryEmailAddress?.emailAddress || null);
+  const runtimeContext = buildRuntimeContext();
+  const starterSuggestions = useMemo(() => buildStarterSuggestions(runtimeContext), [runtimeContext]);
 
-  useEffect(() => {
-    if (!isLoaded) return;
-
-    const state = loadConversationState(scope, fallbackThreadTitle);
-    setThreads(state.threads);
-    setActiveThreadId(state.activeThreadId);
-    setHydrated(true);
-  }, [fallbackThreadTitle, isLoaded, scope]);
-
-  useEffect(() => {
-    if (!hydrated) return;
-    saveConversationState(scope, { threads, activeThreadId });
-  }, [activeThreadId, hydrated, scope, threads]);
-
-  const activeThread = useMemo(
-    () => threads.find((thread) => thread.id === activeThreadId) || threads[0] || null,
-    [activeThreadId, threads],
+  const transport = useMemo(
+    () => new DefaultChatTransport({
+      api: '/api/agent/chat',
+      body: () => ({
+        runtimeContext: buildRuntimeContext(),
+      }),
+    }),
+    [buildRuntimeContext],
   );
 
-  const messages = activeThread?.messages || [];
-  const canSend = input.trim().length > 0 && !loading;
+  const { messages, sendMessage, status, error, stop, clearError } = useChat({
+    id: chatId,
+    transport,
+    experimental_throttle: 50,
+    onError: (chatError) => {
+      console.error('[agent/chat] useChat error', chatError);
+    },
+  });
 
-  const assistantHint = useMemo(() => {
-    if (messages.length > 0) return null;
-    return t('empty');
-  }, [messages.length, t]);
+  const isBusy = status === 'submitted' || status === 'streaming';
 
-  const startNewConversation = () => {
-    const nextThread = createConversationThread(fallbackThreadTitle);
-    setThreads((current) => [nextThread, ...current].slice(0, 20));
-    setActiveThreadId(nextThread.id);
+  const handleSend = useCallback(
+    async (message: PromptInputMessage | string) => {
+      const text = typeof message === 'string' ? message : message.text;
+      const trimmed = text.trim();
+      if (!trimmed || isBusy) return;
+
+      clearError();
+      setInput('');
+      await sendMessage({ text: trimmed });
+    },
+    [clearError, isBusy, sendMessage],
+  );
+
+  const handleReset = useCallback(() => {
+    clearError();
     setInput('');
-    setError(null);
-    setHistoryOpen(false);
-  };
-
-  const handleDeleteThread = (threadId: string) => {
-    const nextState = deleteConversationThread(threads, threadId, fallbackThreadTitle);
-    setThreads(nextState.threads);
-    setActiveThreadId(nextState.activeThreadId);
-    setHistoryOpen(false);
-  };
-
-  const handleAction = (action: AgentChatAction) => {
-    if (action.type === 'new_conversation') {
-      startNewConversation();
-      return;
-    }
-
-    if (action.type === 'open_report') {
-      openReport(action.kind || 'bug', action.prefill);
-    }
-  };
-
-  const handleSubmit = async () => {
-    const trimmed = input.trim();
-    if (!trimmed || loading) return;
-
-    const threadId = activeThread?.id || createConversationThread(fallbackThreadTitle).id;
-    const nextUserMessage = createChatMessage('user', trimmed);
-    const nextMessages = [...messages, nextUserMessage];
-
-    setThreads((current) => upsertThreadMessages(current, threadId, nextMessages, fallbackThreadTitle));
-    setActiveThreadId(threadId);
-    setInput('');
-    setLoading(true);
-    setError(null);
-
-    try {
-      const response = await fetch('/api/agent/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          messages: nextMessages,
-          runtimeContext: buildRuntimeContext(),
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error(`Agent request failed (${response.status})`);
-      }
-
-      const data = (await response.json()) as AgentChatResponse;
-      const assistantMessage = createChatMessage('assistant', data.answer, data.actions);
-      setThreads((current) => upsertThreadMessages(current, threadId, [...nextMessages, assistantMessage], fallbackThreadTitle));
-    } catch {
-      setError(t('error'));
-      setThreads((current) => upsertThreadMessages(current, threadId, messages, fallbackThreadTitle));
-      setInput(trimmed);
-    } finally {
-      setLoading(false);
-    }
-  };
+    setChatId(`agent-${generateId()}`);
+  }, [clearError]);
 
   return (
-    <div className="flex h-full flex-col">
-      <div className="border-b border-neutral-800 px-4 py-3">
-        <div className="flex items-start justify-between gap-3">
-          <div>
-            <div className="text-sm font-semibold text-neutral-100">{t('title')}</div>
-            <div className="text-xs text-neutral-400">{t('subtitle')}</div>
-          </div>
-          <div className="flex items-center gap-2">
-            <button
-              type="button"
-              onClick={() => setHistoryOpen((current) => !current)}
-              className={`rounded-lg border px-2.5 py-1.5 text-xs transition ${
-                historyOpen ? 'border-primary/40 bg-primary/10 text-primary' : 'border-neutral-800 text-neutral-300 hover:border-neutral-600 hover:text-white'
-              }`}
-            >
-              {t('history.button')} {threads.length > 1 ? `(${threads.length})` : ''}
-            </button>
-            <button
-              type="button"
-              onClick={startNewConversation}
-              className="inline-flex items-center gap-1 rounded-lg border border-neutral-800 px-2.5 py-1.5 text-xs text-neutral-300 transition hover:border-neutral-600 hover:text-white"
-            >
-              <PlusIcon className="h-3.5 w-3.5" />
-              {t('clear')}
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <div className="flex-1 overflow-y-auto px-4 py-4">
-        {historyOpen && (
-          <HistoryPanel
-            threads={threads}
-            activeThreadId={activeThread?.id || activeThreadId}
-            onSelect={(threadId) => {
-              setActiveThreadId(threadId);
-              setHistoryOpen(false);
-              setError(null);
-            }}
-            onDelete={handleDeleteThread}
-          />
-        )}
-
-        <ContextBrief />
-
-        {assistantHint && (
-          <div className="rounded-2xl border border-dashed border-neutral-800 bg-neutral-950/60 p-4 text-sm text-neutral-400">
-            {assistantHint}
-          </div>
-        )}
-
-        <div className="space-y-3">
-          {messages.map((message) => (
-            <div
-              key={message.id}
-              className={`max-w-[92%] rounded-2xl px-4 py-3 text-sm leading-6 ${
-                message.role === 'assistant'
-                  ? 'border border-neutral-800 bg-neutral-950 text-neutral-100'
-                  : 'ml-auto bg-primary/15 text-primary'
-              }`}
-            >
-              <div className="whitespace-pre-wrap">{message.content}</div>
-              {message.role === 'assistant' && <ActionButtons actions={message.actions} onAction={handleAction} />}
+    <PromptInputProvider>
+      <div className="flex h-full min-h-0 flex-col">
+        <div className="border-b border-neutral-800 px-4 py-3">
+          <div className="flex items-start justify-between gap-3">
+            <div>
+              <div className="text-sm font-semibold text-neutral-100">{t('title')}</div>
+              <div className="text-xs text-neutral-400">{t('subtitle')}</div>
             </div>
-          ))}
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={handleReset}
+              className="border-neutral-800 bg-transparent text-neutral-300 hover:bg-neutral-800 hover:text-white"
+            >
+              <ArrowPathIcon className="mr-2 h-4 w-4" />
+              {t('clear')}
+            </Button>
+          </div>
+        </div>
+
+        <div className="flex min-h-0 flex-1 flex-col px-4 py-4">
+          <div className="relative min-h-0 flex-1 overflow-hidden rounded-3xl border border-neutral-800 bg-surface-panel">
+            <Conversation className="h-full">
+              <ConversationContent>
+                {error ? (
+                  <div className="mx-4 mt-4 rounded-2xl border border-red-500/30 bg-red-500/10 p-3 text-sm text-red-100">
+                    <div className="font-medium">Chat request failed.</div>
+                    <div className="mt-1 text-red-100/80">
+                      The request did not complete. Check auth, backend env, or API route logs.
+                    </div>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={clearError}
+                      className="mt-3 border-red-400/30 bg-transparent text-red-100 hover:bg-red-500/10 hover:text-red-50"
+                    >
+                      Dismiss
+                    </Button>
+                  </div>
+                ) : null}
+
+                {messages.length === 0 ? (
+                  <ConversationEmptyState
+                    icon={<ChatBubbleLeftRightIcon className="h-8 w-8" />}
+                    title={t('title')}
+                    description={t('empty')}
+                  >
+                    <div className="mt-6 flex w-full flex-col items-center gap-3 px-4">
+                      <Suggestions>
+                        {starterSuggestions.map((prompt) => (
+                          <Suggestion key={prompt} suggestion={prompt} onClick={() => void handleSend(prompt)} />
+                        ))}
+                      </Suggestions>
+                    </div>
+                  </ConversationEmptyState>
+                ) : (
+                  messages.map((message) => {
+                    if (message.role === 'user') {
+                      return (
+                        <Message from="user" key={message.id}>
+                          <MessageContent>
+                            {message.parts.map((part, index) => (
+                              part.type === 'text' ? (
+                                <MessageResponse key={`${message.id}-${index}`}>{part.text}</MessageResponse>
+                              ) : null
+                            ))}
+                          </MessageContent>
+                        </Message>
+                      );
+                    }
+
+                    return <AssistantMessage key={message.id} message={message} />;
+                  })
+                )}
+
+                {status === 'submitted' && (
+                  <div className="flex items-center gap-2 px-4 py-2 text-sm text-neutral-400">
+                    <div className="h-4 w-4 animate-spin rounded-full border-2 border-neutral-600 border-t-primary" />
+                    Thinking…
+                  </div>
+                )}
+              </ConversationContent>
+
+              {messages.length > 0 ? <ConversationDownload messages={messages} /> : null}
+              <ConversationScrollButton />
+            </Conversation>
+          </div>
+
+          <PromptInput onSubmit={(message) => void handleSend(message)} className="mt-4">
+            <PromptInputBody>
+              <PromptInputTextarea
+                value={input}
+                onChange={(event) => setInput(event.currentTarget.value)}
+                placeholder={t('placeholder')}
+              />
+            </PromptInputBody>
+            <PromptInputFooter>
+              <div className="text-xs text-neutral-500">{t('contextHint')}</div>
+              <PromptInputTools>
+                <PromptInputSubmit status={status} disabled={!input.trim() && !isBusy} onStop={stop} />
+              </PromptInputTools>
+            </PromptInputFooter>
+          </PromptInput>
         </div>
       </div>
-
-      <div className="border-t border-neutral-800 px-4 py-4">
-        <textarea
-          value={input}
-          onChange={(event) => setInput(event.target.value)}
-          placeholder={t('placeholder')}
-          className="min-h-[110px] w-full rounded-2xl border border-neutral-800 bg-neutral-950 px-4 py-3 text-sm text-neutral-100 outline-none transition focus:border-primary"
-        />
-
-        {error && <div role="alert" className="mt-2 text-xs text-red-400">{error}</div>}
-
-        <div className="mt-3 flex items-center justify-between gap-3">
-          <div className="text-xs text-neutral-500">{t('contextHint')}</div>
-          <button
-            type="button"
-            onClick={handleSubmit}
-            disabled={!canSend}
-            className="rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-neutral-950 transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-50"
-          >
-            {loading ? t('thinking') : t('send')}
-          </button>
-        </div>
-      </div>
-    </div>
+    </PromptInputProvider>
   );
 }

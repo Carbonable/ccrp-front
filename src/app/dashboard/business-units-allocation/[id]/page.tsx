@@ -7,31 +7,35 @@ import DecarbonationOverview from '@/components/dashboard/business-unit-allocati
 import ProjectsMetrics from '@/components/dashboard/business-unit-allocation/ProjectsMetrics';
 import ProjectsImpact from '@/components/dashboard/business-unit-allocation/Impact';
 
-export default function BusinessUnitsDetails({ params }: Readonly<{ params: { id: string } }>) {
+export default async function BusinessUnitsDetails({
+  params,
+}: Readonly<{ params: Promise<{ id: string }> }>) {
+  const { id } = await params;
+
   return (
     <>
       <div className="ml-1 mt-4">
         <BackButton href="/dashboard/business-units-allocation">Back to list</BackButton>
         <div className="mt-12">
-          <BusinessUnitInfo id={params.id} />
+          <BusinessUnitInfo id={id} />
         </div>
         <div className="mt-16">
-          <GlobalData businessUnitId={params.id} />
+          <GlobalData businessUnitId={id} />
         </div>
         <div className="mt-16">
           <Title title="Projects Allocation" />
-          <ProjectFundingAllocation businessUnitId={params.id} />
+          <ProjectFundingAllocation businessUnitId={id} />
         </div>
         <div className="mt-16">
-          <DecarbonationOverview businessUnitId={params.id} />
+          <DecarbonationOverview businessUnitId={id} />
         </div>
         <div className="mt-16">
           <Title title="Project metrics" />
-          <ProjectsMetrics businessUnitId={params.id} />
+          <ProjectsMetrics businessUnitId={id} />
         </div>
         <div className="mb-12 mt-16">
           <Title title="Impact metrics" />
-          <ProjectsImpact businessUnitId={params.id} />
+          <ProjectsImpact businessUnitId={id} />
         </div>
       </div>
     </>

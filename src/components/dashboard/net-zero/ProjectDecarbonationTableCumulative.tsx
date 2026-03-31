@@ -3,7 +3,7 @@
 import { CumulativeData, PageInfo } from '@/graphql/__generated__/graphql';
 import { CUMULATIVE } from '@/graphql/queries/net-zero';
 import { CARBONABLE_COMPANY_ID, RESULT_PER_PAGE } from '@/utils/constant';
-import { useQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client/react';
 import { useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import Title from '../../common/Title';
@@ -18,7 +18,7 @@ export default function ProjectDecarbonationTableCumulative() {
   const [totalPages, setTotalPages] = useState<number>(1);
   const t = useTranslations('tables');
 
-  const { loading, error, data, refetch } = useQuery(CUMULATIVE, {
+  const { loading, error, data, refetch } = useQuery<any>(CUMULATIVE, {
     variables: {
       view: {
         company_id: CARBONABLE_COMPANY_ID,

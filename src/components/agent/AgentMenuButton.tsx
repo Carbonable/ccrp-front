@@ -23,7 +23,7 @@ export default function AgentMenuButton({ setOpenMenu }: { setOpenMenu: (open: b
       <div className={`flex w-full items-center justify-start ${isActive ? '' : 'hover:brightness-125'}`}>
         <div className={`h-[48px] w-[3px] ${isActive ? 'bg-primary' : 'bg-transparent'}`}></div>
         <div
-          className={`flex w-full items-center justify-start pl-6 ${isActive ? 'bg-menu-selected text-primary' : 'text-neutral-200'}`}
+          className={`flex w-full items-center justify-start pl-6 ${isActive ? 'bg-menu-selected text-white' : 'text-neutral-200'}`}
         >
           <Image
             src={`/assets/images/menu/agent${isActive ? '-active' : ''}.svg`}

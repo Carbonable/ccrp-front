@@ -1,62 +1,38 @@
 import { auth, currentUser } from '@clerk/nextjs/server';
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
+import { streamText, convertToModelMessages, tool, stepCountIs, type UIMessage } from 'ai';
+import { google } from '@ai-sdk/google';
 import { z } from 'zod';
-import { buildFallbackDraft, callGeminiJson, CHAT_PROMPT, sanitizeRuntimeContext } from '@/lib/agent/server';
-import type { AgentChatAction, AgentChatResponse, AgentTrustedUserContext } from '@/lib/agent/types';
+import { CHAT_PROMPT, sanitizeRuntimeContext, resolveBaatonProjectId } from '@/lib/agent/server';
+import type { AgentRuntimeContext, AgentTrustedUserContext } from '@/lib/agent/types';
+
+export const maxDuration = 30;
+
+// ── Zod schemas ──────────────────────────────────────────────────────────────
+
+const runtimeContextSchema = z.object({
+  capturedAt: z.string().optional(),
+  page: z.object({
+    pathname: z.string(),
+    fullUrl: z.string().optional(),
+    title: z.string().optional(),
+    locale: z.string().optional(),
+    query: z.record(z.string(), z.string()).optional(),
+  }),
+  viewport: z.object({ width: z.number(), height: z.number(), devicePixelRatio: z.number() }).optional(),
+  browser: z.object({ language: z.string(), userAgent: z.string(), platform: z.string().optional() }).optional(),
+  selectedEntities: z.record(z.string(), z.string().optional()).optional(),
+  recentActions: z.array(z.object({ label: z.string(), at: z.string(), kind: z.string() })).optional(),
+  recentApiErrors: z.array(z.object({ url: z.string(), method: z.string(), status: z.number().optional(), message: z.string(), at: z.string() })).optional(),
+  recentConsoleErrors: z.array(z.object({ message: z.string(), source: z.string().optional(), at: z.string() })).optional(),
+});
 
 const chatSchema = z.object({
-  messages: z.array(
-    z.object({
-      role: z.enum(['user', 'assistant']),
-      content: z.string().max(4000),
-      createdAt: z.string(),
-    }),
-  ),
-  runtimeContext: z.object({
-    capturedAt: z.string(),
-    page: z.object({
-      pathname: z.string(),
-      fullUrl: z.string(),
-      title: z.string(),
-      locale: z.string().optional(),
-      query: z.record(z.string(), z.string()),
-    }),
-    viewport: z.object({
-      width: z.number(),
-      height: z.number(),
-      devicePixelRatio: z.number(),
-    }),
-    browser: z.object({
-      language: z.string(),
-      userAgent: z.string(),
-      platform: z.string().optional(),
-    }),
-    selectedEntities: z.record(z.string(), z.string().optional()),
-    recentActions: z.array(
-      z.object({
-        label: z.string(),
-        at: z.string(),
-        kind: z.enum(['navigation', 'click', 'api', 'console', 'system']),
-      }),
-    ),
-    recentApiErrors: z.array(
-      z.object({
-        url: z.string(),
-        method: z.string(),
-        status: z.number().optional(),
-        message: z.string(),
-        at: z.string(),
-      }),
-    ),
-    recentConsoleErrors: z.array(
-      z.object({
-        message: z.string(),
-        source: z.string().optional(),
-        at: z.string(),
-      }),
-    ),
-  }),
+  messages: z.array(z.custom<UIMessage>()),
+  runtimeContext: runtimeContextSchema.optional(),
 });
+
+// ── Helpers ──────────────────────────────────────────────────────────────────
 
 function buildTrustedUserContext(
   user: Awaited<ReturnType<typeof currentUser>>,
@@ -64,13 +40,11 @@ function buildTrustedUserContext(
 ): AgentTrustedUserContext {
   const { orgId, orgRole } = authData;
   const roles = Array.isArray(user?.publicMetadata?.roles)
-    ? user?.publicMetadata?.roles.filter((value): value is string => typeof value === 'string')
+    ? (user.publicMetadata.roles as unknown[]).filter((v): v is string => typeof v === 'string')
     : [];
-  const rawPermissions = ((authData as { sessionClaims?: { org_permissions?: unknown; o?: { per?: unknown } } })
-    .sessionClaims?.org_permissions ??
-    (authData as { sessionClaims?: { org_permissions?: unknown; o?: { per?: unknown } } }).sessionClaims?.o?.per) as unknown;
+  const rawPermissions = ((authData as Record<string, unknown>).sessionClaims as Record<string, unknown> | undefined)?.org_permissions;
   const permissions = Array.isArray(rawPermissions)
-    ? rawPermissions.filter((value): value is string => typeof value === 'string')
+    ? rawPermissions.filter((v): v is string => typeof v === 'string')
     : [];
 
   return {
@@ -84,126 +58,120 @@ function buildTrustedUserContext(
   };
 }
 
-type UserIntent = 'bug' | 'feature' | 'question' | 'general';
+function buildSystemPrompt(trusted: AgentTrustedUserContext, runtimeContext?: AgentRuntimeContext): string {
+  const contextBlock = runtimeContext
+    ? `\n\nCurrent page context (supporting info only — never the primary answer source):\n${JSON.stringify(runtimeContext, null, 2)}`
+    : '';
 
-function inferUserIntent(message: string): UserIntent {
-  const value = message.toLowerCase();
+  const userBlock = `\n\nAuthenticated user: ${trusted.name} (${trusted.email}), org role: ${trusted.organizationRole || 'member'}`;
 
-  if (
-    /(feature|request|improve|improvement|enhancement|would like|i want|please add|missing|j'aimerais|je voudrais|ça serait bien|ce serait bien|ajouter|améliorer|développer|developper|develop|devleopp)/.test(
-      value,
-    )
-  ) {
-    return 'feature';
-  }
-
-  if (/(bug|error|erreur|broken|fails?|failure|crash|issue|incident|ne marche pas|bloqu|500|400|404)/.test(value)) {
-    return 'bug';
-  }
-
-  if (/(how|comment|pourquoi|why|where|can you|peux-tu|help|aide)/.test(value)) {
-    return 'question';
-  }
-
-  return 'general';
+  return CHAT_PROMPT + userBlock + contextBlock;
 }
 
-function isAgentInternalError(url: string) {
-  return url.includes('/api/agent/');
-}
-
-function buildSuggestedActions(message: string, shouldReport: boolean, intent: UserIntent): AgentChatAction[] {
-  if (intent === 'feature') {
-    return [
-      { type: 'open_report', label: 'Open feature request', kind: 'feature', prefill: message },
-      { type: 'new_conversation', label: 'Start new conversation' },
-    ];
-  }
-
-  if (intent === 'question' || (!shouldReport && intent === 'general')) {
-    return [{ type: 'new_conversation', label: 'Start new conversation' }];
-  }
-
-  if (!shouldReport) {
-    return [
-      { type: 'open_report', label: 'Open feature request', kind: 'feature', prefill: message },
-      { type: 'new_conversation', label: 'Start new conversation' },
-    ];
-  }
-
-  return [
-    { type: 'open_report', label: 'Open bug report', kind: 'bug', prefill: message },
-    { type: 'open_report', label: 'Open feature request', kind: 'feature', prefill: message },
-    { type: 'new_conversation', label: 'Start new conversation' },
-  ];
-}
+// ── Route handler ────────────────────────────────────────────────────────────
 
 export async function POST(request: NextRequest) {
   const user = await currentUser();
   if (!user) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 });
   }
 
   const body = await request.json();
   const parsed = chatSchema.safeParse(body);
-
   if (!parsed.success) {
-    return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 });
+    return new Response(JSON.stringify({ error: parsed.error.flatten() }), { status: 400 });
   }
 
   const trusted = buildTrustedUserContext(user, await auth());
-  const runtimeContext = sanitizeRuntimeContext(parsed.data.runtimeContext);
-  const latestUserMessage = [...parsed.data.messages].reverse().find((message) => message.role === 'user');
-  const latestMessageText = latestUserMessage?.content || '';
-  const intent = inferUserIntent(latestMessageText);
-  const relevantApiErrors = runtimeContext.recentApiErrors.filter((error) => !isAgentInternalError(error.url));
-  const relevantConsoleErrors = runtimeContext.recentConsoleErrors;
+  const runtimeContext = parsed.data.runtimeContext
+    ? sanitizeRuntimeContext(parsed.data.runtimeContext as AgentRuntimeContext)
+    : undefined;
 
-  let response: AgentChatResponse | null = null;
+  const modelMessages = await convertToModelMessages(parsed.data.messages);
+  const system = buildSystemPrompt(trusted, runtimeContext);
 
-  try {
-    response = await callGeminiJson<AgentChatResponse>(CHAT_PROMPT, {
-      trustedUserContext: trusted,
-      runtimeContext,
-      messages: parsed.data.messages.slice(-10),
-    });
-  } catch {
-    response = null;
-  }
+  const model = process.env.GEMINI_MODEL || 'gemini-3-flash-preview';
 
-  if (!response) {
-    const fallbackDraft = buildFallbackDraft(
-      {
-        message: latestMessageText,
-        runtimeContext,
-        screenshot: null,
-        reportKind: intent === 'feature' ? 'feature' : intent === 'question' ? 'contact' : 'bug',
-      },
-      trusted,
-    );
+  const result = streamText({
+    model: google(model),
+    system,
+    messages: modelMessages,
+    tools: {
+      // Server-side tool: creates a ticket on Baaton when the user reports a bug or requests a feature.
+      // The model decides when to call this based on the conversation.
+      create_ticket: tool({
+        description:
+          'Create a bug report or feature request ticket on the project tracker. ' +
+          'Use this when the user reports a bug, a broken feature, or explicitly asks for a ticket/report. ' +
+          'Do NOT use this for general questions or help requests.',
+        inputSchema: z.object({
+          title: z.string().describe('Short, descriptive ticket title'),
+          description: z.string().describe('Detailed description in markdown with reproduction steps if applicable'),
+          type: z.enum(['bug', 'feature']).describe('Whether this is a bug report or feature request'),
+          severity: z.enum(['low', 'medium', 'high', 'critical']).describe('Severity level'),
+          tags: z.array(z.string()).describe('Relevant tags like page name, component, etc.'),
+        }),
+        execute: async ({ title, description, type, severity, tags }) => {
+          try {
+            const apiKey = process.env.BAATON_CARBO_KEY || process.env.BAATON_API_KEY;
+            const baseUrl = process.env.BAATON_BASE_URL || 'https://api.baaton.dev/api/v1';
 
-    const shouldReport = intent === 'feature'
-      ? true
-      : intent === 'bug'
-        ? relevantApiErrors.length > 0 || relevantConsoleErrors.length > 0
-        : false;
+            if (!apiKey) {
+              return 'Ticket system is not configured on this environment (missing BAATON_API_KEY).';
+            }
 
-    response = {
-      answer: intent === 'feature'
-        ? `Understood — this sounds like a product improvement request, not a bug report. I can help you open a feature request prefilled with the current page context so the team can review it.`
-        : shouldReport
-          ? `This sounds related to a real product issue. I can help you open a report prefilled with the current context so the team can investigate faster.`
-          : `I’ll treat the page context as supporting information only. Based on your message, I’d first answer the request itself and only escalate to a report if it is clearly needed.`,
-      reportRecommended: shouldReport,
-      actions: buildSuggestedActions(latestMessageText, shouldReport, intent),
-    };
-  } else {
-    const shouldReport = intent === 'feature' ? true : Boolean(response.reportRecommended);
-    response.reportRecommended = shouldReport;
-    response.actions = response.actions && response.actions.length > 0
-      ? response.actions
-      : buildSuggestedActions(latestMessageText, shouldReport, intent);
-  }
+            const priority = severity === 'critical' ? 'urgent' : severity === 'high' ? 'high' : severity === 'medium' ? 'medium' : 'low';
 
-  return NextResponse.json(response);
+            // Build description with context
+            const contextSection = runtimeContext
+              ? `\n\n---\n**Page:** ${runtimeContext.page.pathname}\n**User:** ${trusted.name} (${trusted.email})\n**Captured:** ${runtimeContext.capturedAt || new Date().toISOString()}`
+              : '';
+
+            const fullDescription = description + contextSection;
+
+            const projectId = await resolveBaatonProjectId(baseUrl, apiKey);
+
+            const response = await fetch(`${baseUrl}/issues`, {
+              method: 'POST',
+              headers: {
+                Authorization: `Bearer ${apiKey}`,
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                project_id: projectId,
+                title,
+                description: fullDescription,
+                type,
+                priority,
+                status: 'backlog',
+                tags: [...tags, 'agent-reported', 'ccpm'],
+              }),
+            });
+
+            const text = await response.text();
+            if (!response.ok) {
+              console.error('[agent/chat] Baaton error:', text);
+              return `Failed to create ticket (HTTP ${response.status}): ${text.slice(0, 200)}`;
+            }
+
+            const parsed = JSON.parse(text);
+            const ticketId = parsed?.data?.id || parsed?.data?.slug || parsed?.id || 'created';
+            return `✅ Ticket created: ${ticketId} — "${title}" (${type}, ${priority})`;
+          } catch (error) {
+            console.error('[agent/chat] create_ticket failed:', error);
+            return `Failed to create ticket: ${error instanceof Error ? error.message : 'Unknown error'}`;
+          }
+        },
+      }),
+    },
+    stopWhen: stepCountIs(3),
+    onError: ({ error }) => {
+      console.error('[agent/chat] streamText error:', error);
+    },
+  });
+
+  return result.toUIMessageStreamResponse({
+    sendReasoning: true,
+    sendSources: true,
+  });
 }
