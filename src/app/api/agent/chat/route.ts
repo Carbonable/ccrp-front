@@ -3,7 +3,7 @@ import { NextRequest } from 'next/server';
 import { streamText, convertToModelMessages, tool, stepCountIs, type UIMessage } from 'ai';
 import { google } from '@ai-sdk/google';
 import { z } from 'zod';
-import { CHAT_PROMPT, sanitizeRuntimeContext } from '@/lib/agent/server';
+import { CHAT_PROMPT, sanitizeRuntimeContext, resolveBaatonProjectId } from '@/lib/agent/server';
 import type { AgentRuntimeContext, AgentTrustedUserContext } from '@/lib/agent/types';
 
 export const maxDuration = 30;
@@ -129,6 +129,8 @@ export async function POST(request: NextRequest) {
 
             const fullDescription = description + contextSection;
 
+            const projectId = await resolveBaatonProjectId(baseUrl, apiKey);
+
             const response = await fetch(`${baseUrl}/issues`, {
               method: 'POST',
               headers: {
@@ -136,7 +138,7 @@ export async function POST(request: NextRequest) {
                 'Content-Type': 'application/json',
               },
               body: JSON.stringify({
-                project_id: process.env.BAATON_PROJECT_ID || undefined,
+                project_id: projectId,
                 title,
                 description: fullDescription,
                 type,

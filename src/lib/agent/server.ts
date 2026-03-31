@@ -325,7 +325,7 @@ export function mapSeverityToPriority(
   }
 }
 
-async function resolveBaatonProjectId(baseUrl: string, apiKey: string) {
+export async function resolveBaatonProjectId(baseUrl: string, apiKey: string) {
   if (process.env.BAATON_PROJECT_ID) {
     return process.env.BAATON_PROJECT_ID;
   }
