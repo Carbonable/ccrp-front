@@ -1,6 +1,6 @@
 import { auth, currentUser } from '@clerk/nextjs/server';
 import { NextRequest } from 'next/server';
-import { streamText, convertToModelMessages, type UIMessage } from 'ai';
+import { streamText, convertToModelMessages, tool, stepCountIs, type UIMessage } from 'ai';
 import { google } from '@ai-sdk/google';
 import { z } from 'zod';
 import { CHAT_PROMPT, sanitizeRuntimeContext } from '@/lib/agent/server';
@@ -96,6 +96,73 @@ export async function POST(request: NextRequest) {
     model: google(model),
     system,
     messages: modelMessages,
+    tools: {
+      // Server-side tool: creates a ticket on Baaton when the user reports a bug or requests a feature.
+      // The model decides when to call this based on the conversation.
+      create_ticket: tool({
+        description:
+          'Create a bug report or feature request ticket on the project tracker. ' +
+          'Use this when the user reports a bug, a broken feature, or explicitly asks for a ticket/report. ' +
+          'Do NOT use this for general questions or help requests.',
+        inputSchema: z.object({
+          title: z.string().describe('Short, descriptive ticket title'),
+          description: z.string().describe('Detailed description in markdown with reproduction steps if applicable'),
+          type: z.enum(['bug', 'feature']).describe('Whether this is a bug report or feature request'),
+          severity: z.enum(['low', 'medium', 'high', 'critical']).describe('Severity level'),
+          tags: z.array(z.string()).describe('Relevant tags like page name, component, etc.'),
+        }),
+        execute: async ({ title, description, type, severity, tags }) => {
+          try {
+            const apiKey = process.env.BAATON_CARBO_KEY || process.env.BAATON_API_KEY;
+            const baseUrl = process.env.BAATON_BASE_URL || 'https://api.baaton.dev/api/v1';
+
+            if (!apiKey) {
+              return 'Ticket system is not configured on this environment (missing BAATON_API_KEY).';
+            }
+
+            const priority = severity === 'critical' ? 'urgent' : severity === 'high' ? 'high' : severity === 'medium' ? 'medium' : 'low';
+
+            // Build description with context
+            const contextSection = runtimeContext
+              ? `\n\n---\n**Page:** ${runtimeContext.page.pathname}\n**User:** ${trusted.name} (${trusted.email})\n**Captured:** ${runtimeContext.capturedAt || new Date().toISOString()}`
+              : '';
+
+            const fullDescription = description + contextSection;
+
+            const response = await fetch(`${baseUrl}/issues`, {
+              method: 'POST',
+              headers: {
+                Authorization: `Bearer ${apiKey}`,
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                project_id: process.env.BAATON_PROJECT_ID || undefined,
+                title,
+                description: fullDescription,
+                type,
+                priority,
+                status: 'backlog',
+                tags: [...tags, 'agent-reported', 'ccpm'],
+              }),
+            });
+
+            const text = await response.text();
+            if (!response.ok) {
+              console.error('[agent/chat] Baaton error:', text);
+              return `Failed to create ticket (HTTP ${response.status}): ${text.slice(0, 200)}`;
+            }
+
+            const parsed = JSON.parse(text);
+            const ticketId = parsed?.data?.id || parsed?.data?.slug || parsed?.id || 'created';
+            return `✅ Ticket created: ${ticketId} — "${title}" (${type}, ${priority})`;
+          } catch (error) {
+            console.error('[agent/chat] create_ticket failed:', error);
+            return `Failed to create ticket: ${error instanceof Error ? error.message : 'Unknown error'}`;
+          }
+        },
+      }),
+    },
+    stopWhen: stepCountIs(3),
     onError: ({ error }) => {
       console.error('[agent/chat] streamText error:', error);
     },

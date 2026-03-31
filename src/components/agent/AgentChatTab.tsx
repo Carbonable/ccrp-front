@@ -59,6 +59,50 @@ function buildStarterSuggestions(runtime: AgentRuntimeContext): string[] {
   return base.slice(0, 4);
 }
 
+function ToolCallPart({ part }: { part: { type: string; state: string; toolName: string; input: Record<string, unknown>; output?: unknown } }) {
+  const toolName = part.toolName;
+  const state = part.state;
+
+  if (toolName === 'create_ticket') {
+    if (state === 'input-streaming' || state === 'input-available') {
+      const input = part.input as { title?: string; type?: string; severity?: string };
+      return (
+        <div className="my-2 rounded-lg border border-primary/30 bg-primary/5 p-3 text-sm">
+          <div className="flex items-center gap-2 text-primary">
+            <svg className="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg>
+            Creating ticket…
+          </div>
+          {input.title && <div className="mt-1 font-medium text-neutral-200">{input.title}</div>}
+          {input.type && <div className="text-xs text-neutral-400">{input.type} · {input.severity}</div>}
+        </div>
+      );
+    }
+
+    if (state === 'output-available') {
+      return (
+        <div className="my-2 rounded-lg border border-green-500/30 bg-green-500/10 p-3 text-sm">
+          <div className="flex items-center gap-2 text-green-400">
+            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
+            Ticket created
+          </div>
+          <div className="mt-1 text-neutral-300">{String(part.output)}</div>
+        </div>
+      );
+    }
+
+    if (state === 'output-error') {
+      return (
+        <div className="my-2 rounded-lg border border-red-500/30 bg-red-500/10 p-3 text-sm text-red-300">
+          Failed to create ticket
+        </div>
+      );
+    }
+  }
+
+  // Generic fallback for unknown tools
+  return null;
+}
+
 function AssistantMessage({ message }: { message: UIMessage }) {
   const t = useTranslations('agent.chat');
 
@@ -88,6 +132,10 @@ function AssistantMessage({ message }: { message: UIMessage }) {
                 </Reasoning>
               );
             default:
+              // Handle tool-* parts
+              if (part.type.startsWith('tool-')) {
+                return <ToolCallPart key={`${message.id}-tool-${i}`} part={part as never} />;
+              }
               return null;
           }
         })}
