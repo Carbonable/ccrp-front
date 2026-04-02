@@ -7,44 +7,43 @@ import { useEffect, useRef, useState } from 'react';
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
 
 /**
- * Computes stock allocation ratio and visual properties for a project.
- * Returns ratio (0–1), color class for the bar, and a human label.
+ * availableRatio: 1 = fully free, 0 = nothing left.
+ * The bar represents availability — full bar = lots available, empty = nothing.
  */
 function getStockInfo(project: Project): {
-  ratio: number;
-  allocated: number;
+  availableRatio: number;
+  available: number;
   total: number;
   barColor: string;
-  label: string;
 } {
   const gd = project.global_data;
   const total = gd?.amount ?? 0;
   const allocated = gd?.allocated_units ?? 0;
 
   if (total === 0) {
-    return { ratio: 0, allocated: 0, total: 0, barColor: 'bg-neutral-600', label: 'No data' };
+    return { availableRatio: 0, available: 0, total: 0, barColor: 'bg-neutral-600' };
   }
 
-  const ratio = Math.min(allocated / total, 1);
+  const available = Math.max(total - allocated, 0);
+  const availableRatio = available / total;
 
-  if (allocated === 0) {
-    return { ratio: 0, allocated, total, barColor: 'bg-emerald-500', label: 'Fully available' };
-  }
-  if (ratio < 0.5) {
-    return { ratio, allocated, total, barColor: 'bg-emerald-400', label: `${allocated}/${total} allocated` };
-  }
-  if (ratio < 1) {
-    return { ratio, allocated, total, barColor: 'bg-amber-400', label: `${allocated}/${total} allocated` };
-  }
-  return { ratio: 1, allocated, total, barColor: 'bg-red-400', label: 'Fully allocated' };
+  if (availableRatio > 0.5) return { availableRatio, available, total, barColor: 'bg-emerald-400' };
+  if (availableRatio > 0) return { availableRatio, available, total, barColor: 'bg-amber-400' };
+  return { availableRatio: 0, available: 0, total, barColor: 'bg-red-400' };
 }
 
-function StockBar({ ratio, barColor }: { ratio: number; barColor: string }) {
+function textColor(availableRatio: number): string {
+  if (availableRatio > 0.5) return 'text-emerald-400';
+  if (availableRatio > 0) return 'text-amber-400';
+  return 'text-red-400';
+}
+
+function StockBar({ availableRatio, barColor }: { availableRatio: number; barColor: string }) {
   return (
     <div className="h-1.5 w-full rounded-full bg-neutral-700">
       <div
         className={`h-full rounded-full transition-all ${barColor}`}
-        style={{ width: `${Math.max(ratio * 100, ratio > 0 ? 4 : 0)}%` }}
+        style={{ width: `${Math.max(availableRatio * 100, availableRatio > 0 ? 4 : 0)}%` }}
       />
     </div>
   );
@@ -72,18 +71,12 @@ function ProjectItem({
       <div className="min-w-0 flex-1">
         <div className="flex items-center justify-between gap-2">
           <span className="truncate text-sm font-medium text-neutral-100">{project.name}</span>
-          <span className={`shrink-0 text-[10px] font-medium ${
-            info.ratio === 0 ? 'text-emerald-400' :
-            info.ratio < 0.5 ? 'text-emerald-300' :
-            info.ratio < 1 ? 'text-amber-400' : 'text-red-400'
-          }`}>
-            {info.total === 0 ? '—' :
-             info.ratio === 0 ? 'free' :
-             info.ratio < 1 ? `${Math.round((1 - info.ratio) * 100)}% left` : 'full'}
+          <span className={`shrink-0 text-[10px] font-medium ${textColor(info.availableRatio)}`}>
+            {info.total === 0 ? '—' : `${info.available.toLocaleString()} avail.`}
           </span>
         </div>
         <div className="mt-1.5">
-          <StockBar ratio={info.ratio} barColor={info.barColor} />
+          <StockBar availableRatio={info.availableRatio} barColor={info.barColor} />
         </div>
       </div>
     </button>
@@ -113,7 +106,6 @@ export default function ProjectsList({
     }
   }, [projects, selectedProject, setSelectedProject]);
 
-  // Close on click outside
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
       if (ref.current && !ref.current.contains(e.target as Node)) {
@@ -139,7 +131,7 @@ export default function ProjectsList({
     );
   }
 
-  const selectedInfo = getStockInfo(selectedProject);
+  const si = getStockInfo(selectedProject);
 
   return (
     <div ref={ref} className="relative w-full">
@@ -154,18 +146,12 @@ export default function ProjectsList({
         <div className="min-w-0 flex-1">
           <div className="flex items-center justify-between gap-2">
             <span className="truncate font-medium text-neutral-100">{selectedProject.name}</span>
-            <span className={`shrink-0 text-[10px] font-medium ${
-              selectedInfo.ratio === 0 ? 'text-emerald-400' :
-              selectedInfo.ratio < 0.5 ? 'text-emerald-300' :
-              selectedInfo.ratio < 1 ? 'text-amber-400' : 'text-red-400'
-            }`}>
-              {selectedInfo.total === 0 ? '' :
-               selectedInfo.ratio === 0 ? 'Global stock: free' :
-               selectedInfo.ratio < 1 ? `Global stock: ${Math.round((1 - selectedInfo.ratio) * 100)}% left` : 'Global stock: full'}
+            <span className={`shrink-0 text-[10px] font-medium ${textColor(si.availableRatio)}`}>
+              {si.total > 0 ? `Global: ${si.available.toLocaleString()} / ${si.total.toLocaleString()} avail.` : ''}
             </span>
           </div>
           <div className="mt-2">
-            <StockBar ratio={selectedInfo.ratio} barColor={selectedInfo.barColor} />
+            <StockBar availableRatio={si.availableRatio} barColor={si.barColor} />
           </div>
         </div>
         <ChevronDownIcon
