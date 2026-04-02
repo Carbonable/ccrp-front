@@ -5,6 +5,7 @@ import { ErrorReloadTable, NoDataTable } from '@/components/common/ErrorReload';
 import PaginationComponent from '@/components/common/Pagination';
 import Title from '@/components/common/Title';
 import TableLoading from '@/components/table/TableLoading';
+import ExportButton from '@/components/common/ExportButton';
 import { FinancialAnalysisData, PageInfo } from '@/graphql/__generated__/graphql';
 import { FINANCIAL_ANALYSIS } from '@/graphql/queries/net-zero';
 import { RESULT_PER_PAGE } from '@/utils/constant';
@@ -58,9 +59,39 @@ export default function FinancialAnalysisTable({ businessUnitId }: { businessUni
     refetchData();
   }, [currentPage]);
 
+  const exportColumns = [
+    { header: 'Time Period', key: 'year' },
+    { header: 'Average Spot price ($/t)', key: 'avg_purchased_price' },
+    { header: 'Average Forward price ($/t)', key: 'avg_issued_price' },
+    { header: 'Average price ($/t)', key: 'avg_price' },
+    { header: 'Total Spot amount ($)', key: 'total_purchased_amount' },
+    { header: 'Total Forward amount ($)', key: 'total_issued_amount' },
+    { header: 'Total amount ($)', key: 'total_amount' },
+    { header: 'All time avg purchased price ($/t)', key: 'all_time_avg_purchased_price' },
+    { header: 'All time avg issued price ($/t)', key: 'all_time_avg_issued_price' },
+    { header: 'All time avg price ($/t)', key: 'all_time_avg_price' },
+    { header: 'Cumulative Total Amount ($)', key: 'cumulative_total_amount' },
+  ];
+  const exportData: Record<string, unknown>[] = (financialAnalysis || []).map((d) => ({
+    year: d.year,
+    avg_purchased_price: d.avg_purchased_price,
+    avg_issued_price: d.avg_issued_price,
+    avg_price: d.avg_price,
+    total_purchased_amount: d.total_purchased_amount,
+    total_issued_amount: d.total_issued_amount,
+    total_amount: d.total_amount,
+    all_time_avg_purchased_price: d.all_time_avg_purchased_price,
+    all_time_avg_issued_price: d.all_time_avg_issued_price,
+    all_time_avg_price: d.all_time_avg_price,
+    cumulative_total_amount: d.cumulative_total_amount,
+  }));
+
   return (
     <div className="mt-12 w-full">
-      <Title title={t('financialAnalysis')} />
+      <div className="flex items-center justify-between">
+        <Title title={t('financialAnalysis')} />
+        <ExportButton data={exportData} columns={exportColumns} tableName="financial-analysis" />
+      </div>
       <div className="font-inter mt-4 w-full overflow-x-auto border border-neutral-600 text-sm">
         <table className="min-w-full table-auto text-left">
           <thead className="h-10 whitespace-nowrap bg-neutral-500 text-neutral-100">

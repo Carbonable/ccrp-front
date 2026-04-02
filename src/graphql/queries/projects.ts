@@ -7,6 +7,12 @@ export const GET_PROJECTS = gql`
       name
       slug
       metadata
+      global_data {
+        amount
+        allocated_units
+        available_ex_post
+        available_ex_ante
+      }
     }
   }
 `;

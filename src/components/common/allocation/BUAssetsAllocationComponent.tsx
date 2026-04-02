@@ -9,6 +9,8 @@ import TableLoading from '@/components/table/TableLoading';
 import { RESULT_PER_PAGE } from '@/utils/constant';
 import { SecondaryButton } from '../Button';
 import { Link } from '@/i18n/navigation';
+import ExportButton from '@/components/common/ExportButton';
+import { useTranslations } from 'next-intl';
 
 interface TableLoadingProps {
   data: any;
@@ -48,9 +50,31 @@ export default function BUAssetsAllocationComponent({
     setCurrentPage(data);
   };
 
+  const t = useTranslations('allocation');
+
+  const exportColumns = [
+    { header: 'Project Name', key: 'project_name' },
+    { header: 'Total Carbon Unit (t)', key: 'total_cu' },
+    { header: 'Allocated (t)', key: 'allocated' },
+    { header: 'Generated (t)', key: 'generated' },
+    { header: 'Forward (t)', key: 'forward' },
+    { header: 'Retired (t)', key: 'retired' },
+  ];
+  const exportData: Record<string, unknown>[] = (carbonAssetAllocation || []).map((a) => ({
+    project_name: a.project?.name ?? '',
+    total_cu: a.total_cu,
+    allocated: a.allocated,
+    generated: a.generated,
+    forward: a.forward,
+    retired: a.retired,
+  }));
+
   return (
     <div className="w-full">
-      <div className="font-inter mt-4 w-full overflow-x-scroll border border-neutral-600 text-sm">
+      <div className="flex items-center justify-end mb-2">
+        <ExportButton data={exportData} columns={exportColumns} tableName="bu-allocation" />
+      </div>
+      <div className="font-inter w-full overflow-x-scroll border border-neutral-600 text-sm">
         <table className="min-w-full table-auto text-left">
           <thead className="h-10 whitespace-nowrap bg-neutral-500 text-neutral-100">
             <tr className="table-style">

@@ -5,6 +5,7 @@ import { ErrorReloadTable, NoDataTable } from '@/components/common/ErrorReload';
 import PaginationComponent from '@/components/common/Pagination';
 import Title from '@/components/common/Title';
 import TableLoading from '@/components/table/TableLoading';
+import ExportButton from '@/components/common/ExportButton';
 import { CumulativeData, PageInfo } from '@/graphql/__generated__/graphql';
 import { CUMULATIVE } from '@/graphql/queries/net-zero';
 import { RESULT_PER_PAGE } from '@/utils/constant';
@@ -63,9 +64,29 @@ export default function ProjectDecarbonationTableCumulative({
     refetchData();
   }, [currentPage]);
 
+  const exportColumns = [
+    { header: 'Time Period', key: 'time_period' },
+    { header: 'Cumulative Emissions (t)', key: 'emissions' },
+    { header: 'Cumulative Retired (t)', key: 'ex_post_retired' },
+    { header: 'Cumulative Forward (t)', key: 'ex_post_issued' },
+    { header: 'Cumulative Spot (t)', key: 'ex_post_purchased' },
+    { header: 'Cumulative Emission Debt (t)', key: 'debt' },
+  ];
+  const exportData: Record<string, unknown>[] = (cumulative || []).map((d) => ({
+    time_period: d.time_period,
+    emissions: d.emissions,
+    ex_post_retired: d.ex_post_retired,
+    ex_post_issued: d.ex_post_issued,
+    ex_post_purchased: d.ex_post_purchased,
+    debt: d.debt != null ? roundIfFloat(d.debt) : 'n/a',
+  }));
+
   return (
     <div className="mt-12 w-full">
-      <Title title={t('cumulative')} />
+      <div className="flex items-center justify-between">
+        <Title title={t('cumulative')} />
+        <ExportButton data={exportData} columns={exportColumns} tableName="cumulative" />
+      </div>
       <div className="font-inter mt-4 w-full overflow-x-auto border border-neutral-600 text-sm">
         <table className="min-w-full table-auto text-left">
           <thead className="h-10 whitespace-nowrap bg-neutral-500 text-neutral-100">
