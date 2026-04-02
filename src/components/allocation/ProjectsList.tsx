@@ -7,29 +7,32 @@ import { useEffect, useRef, useState } from 'react';
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
 
 /**
- * availableRatio: 1 = fully free, 0 = nothing left.
- * The bar represents availability — full bar = lots available, empty = nothing.
+ * Uses global_data from the backend:
+ * - allocated_units = sum of successful allocation amounts
+ * - available_ex_post + available_ex_ante = free stock (stock with no allocation, no BU)
+ * - amount = project fundingAmount (total capacity)
+ *
+ * The bar shows free stock as a ratio of total capacity.
  */
 function getStockInfo(project: Project): {
   availableRatio: number;
-  available: number;
+  freeStock: number;
   total: number;
   barColor: string;
 } {
   const gd = project.global_data;
   const total = gd?.amount ?? 0;
-  const allocated = gd?.allocated_units ?? 0;
+  const freeStock = (gd?.available_ex_post ?? 0) + (gd?.available_ex_ante ?? 0);
 
   if (total === 0) {
-    return { availableRatio: 0, available: 0, total: 0, barColor: 'bg-neutral-600' };
+    return { availableRatio: 0, freeStock: 0, total: 0, barColor: 'bg-neutral-600' };
   }
 
-  const available = Math.max(total - allocated, 0);
-  const availableRatio = available / total;
+  const availableRatio = Math.min(freeStock / total, 1);
 
-  if (availableRatio > 0.5) return { availableRatio, available, total, barColor: 'bg-emerald-400' };
-  if (availableRatio > 0) return { availableRatio, available, total, barColor: 'bg-amber-400' };
-  return { availableRatio: 0, available: 0, total, barColor: 'bg-red-400' };
+  if (availableRatio > 0.5) return { availableRatio, freeStock, total, barColor: 'bg-emerald-400' };
+  if (availableRatio > 0) return { availableRatio, freeStock, total, barColor: 'bg-amber-400' };
+  return { availableRatio: 0, freeStock, total, barColor: 'bg-red-400' };
 }
 
 function textColor(availableRatio: number): string {
@@ -72,7 +75,7 @@ function ProjectItem({
         <div className="flex items-center justify-between gap-2">
           <span className="truncate text-sm font-medium text-neutral-100">{project.name}</span>
           <span className={`shrink-0 text-[10px] font-medium ${textColor(info.availableRatio)}`}>
-            {info.total === 0 ? '—' : `${info.available.toLocaleString()} avail.`}
+            {info.total === 0 ? '—' : `${info.freeStock.toLocaleString()} free`}
           </span>
         </div>
         <div className="mt-1.5">
@@ -147,7 +150,7 @@ export default function ProjectsList({
           <div className="flex items-center justify-between gap-2">
             <span className="truncate font-medium text-neutral-100">{selectedProject.name}</span>
             <span className={`shrink-0 text-[10px] font-medium ${textColor(si.availableRatio)}`}>
-              {si.total > 0 ? `Global: ${si.available.toLocaleString()} / ${si.total.toLocaleString()} avail.` : ''}
+              {si.total > 0 ? `${si.freeStock.toLocaleString()} / ${si.total.toLocaleString()} units free` : ''}
             </span>
           </div>
           <div className="mt-2">
