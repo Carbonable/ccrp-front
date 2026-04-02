@@ -60,7 +60,6 @@ function ProjectItem({
   onClick: () => void;
 }) {
   const info = getStockInfo(project);
-  const availableUnits = info.total - info.allocated;
 
   return (
     <button
@@ -73,15 +72,18 @@ function ProjectItem({
       <div className="min-w-0 flex-1">
         <div className="flex items-center justify-between gap-2">
           <span className="truncate text-sm font-medium text-neutral-100">{project.name}</span>
-          <span className="shrink-0 text-xs text-neutral-400">
-            {info.total > 0 ? `${availableUnits.toLocaleString()} avail.` : '—'}
+          <span className={`shrink-0 text-[10px] font-medium ${
+            info.ratio === 0 ? 'text-emerald-400' :
+            info.ratio < 0.5 ? 'text-emerald-300' :
+            info.ratio < 1 ? 'text-amber-400' : 'text-red-400'
+          }`}>
+            {info.total === 0 ? '—' :
+             info.ratio === 0 ? 'free' :
+             info.ratio < 1 ? `${Math.round((1 - info.ratio) * 100)}% left` : 'full'}
           </span>
         </div>
         <div className="mt-1.5">
           <StockBar ratio={info.ratio} barColor={info.barColor} />
-        </div>
-        <div className="mt-1 text-[10px] text-neutral-500">
-          {info.label}
         </div>
       </div>
     </button>
@@ -138,7 +140,6 @@ export default function ProjectsList({
   }
 
   const selectedInfo = getStockInfo(selectedProject);
-  const selectedAvailable = selectedInfo.total - selectedInfo.allocated;
 
   return (
     <div ref={ref} className="relative w-full">
@@ -153,10 +154,14 @@ export default function ProjectsList({
         <div className="min-w-0 flex-1">
           <div className="flex items-center justify-between gap-2">
             <span className="truncate font-medium text-neutral-100">{selectedProject.name}</span>
-            <span className="shrink-0 text-xs text-neutral-400">
-              {selectedInfo.total > 0
-                ? `${selectedAvailable.toLocaleString()} / ${selectedInfo.total.toLocaleString()} available`
-                : '—'}
+            <span className={`shrink-0 text-[10px] font-medium ${
+              selectedInfo.ratio === 0 ? 'text-emerald-400' :
+              selectedInfo.ratio < 0.5 ? 'text-emerald-300' :
+              selectedInfo.ratio < 1 ? 'text-amber-400' : 'text-red-400'
+            }`}>
+              {selectedInfo.total === 0 ? '' :
+               selectedInfo.ratio === 0 ? 'Global stock: free' :
+               selectedInfo.ratio < 1 ? `Global stock: ${Math.round((1 - selectedInfo.ratio) * 100)}% left` : 'Global stock: full'}
             </span>
           </div>
           <div className="mt-2">
