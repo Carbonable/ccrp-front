@@ -1,4 +1,4 @@
-import { auth } from '@clerk/nextjs/server';
+import { auth, currentUser } from '@clerk/nextjs/server';
 import { NextResponse } from 'next/server';
 
 const NOTIFYD_URL = process.env.NOTIFYD_URL || 'https://notifyd.ctrlnz.com';
@@ -8,7 +8,7 @@ const NOTIFYD_API_KEY = process.env.NOTIFYD_API_KEY || '';
  * GET /api/notifications/token
  *
  * Returns a notifyd subscriber JWT for the authenticated Clerk user.
- * The frontend uses this token for inbox REST + SSE calls.
+ * Auto-creates the subscriber in notifyd on first call (upsert).
  */
 export async function GET() {
   const { userId } = await auth();
@@ -21,16 +21,23 @@ export async function GET() {
   }
 
   try {
+    // Upsert subscriber (fire-and-forget, don't block token generation)
+    const user = await currentUser();
+    fetch(`${NOTIFYD_URL}/v1/subscribers`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-Api-Key': NOTIFYD_API_KEY },
+      body: JSON.stringify({
+        id: userId,
+        email: user?.emailAddresses?.[0]?.emailAddress,
+        name: [user?.firstName, user?.lastName].filter(Boolean).join(' ') || undefined,
+      }),
+    }).catch(() => {});
+
+    // Get subscriber token
     const res = await fetch(`${NOTIFYD_URL}/v1/auth/subscriber-token`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Api-Key': NOTIFYD_API_KEY,
-      },
-      body: JSON.stringify({
-        subscriber_id: userId,
-        ttl_hours: 8,
-      }),
+      headers: { 'Content-Type': 'application/json', 'X-Api-Key': NOTIFYD_API_KEY },
+      body: JSON.stringify({ subscriber_id: userId, ttl_hours: 8 }),
     });
 
     if (!res.ok) {
