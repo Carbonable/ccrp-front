@@ -4,8 +4,7 @@ import { useRef, useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { Link } from '@/i18n/navigation';
 import { BellIcon, XMarkIcon, CheckIcon } from '@heroicons/react/24/outline';
-import { useNotifications } from '@/context/NotificationContext';
-import { NotificationType } from '@/data/notifications';
+import { useNotifications, iconToType, NotificationType } from '@/context/NotificationContext';
 import { useLocale, useTranslations } from 'next-intl';
 
 const TYPE_CONFIG: Record<NotificationType, string> = {
@@ -24,7 +23,7 @@ interface Props {
 }
 
 export default function NotificationDropdown({ open, onClose, anchorRef }: Props) {
-  const { notifications, unreadCount, markAllAsRead, markAsRead } = useNotifications();
+  const { notifications, unreadCount, markAllAsRead, markAsRead, loading } = useNotifications();
   const ref = useRef<HTMLDivElement>(null);
   const [position, setPosition] = useState({ top: 0, left: 0 });
   const [mounted, setMounted] = useState(false);
@@ -125,30 +124,39 @@ export default function NotificationDropdown({ open, onClose, anchorRef }: Props
       </div>
 
       <div className="flex-1 overflow-y-auto">
-        {notifications.length === 0 ? (
+        {loading ? (
+          <div className="flex items-center justify-center py-12 text-neutral-500">
+            <div className="h-5 w-5 animate-spin rounded-full border-2 border-neutral-600 border-t-greenish-500" />
+          </div>
+        ) : notifications.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-12 text-neutral-500">
             <BellIcon className="mb-2 h-10 w-10 opacity-40" />
             <p className="text-sm">{t('noNotifications')}</p>
           </div>
         ) : (
           notifications.map((notif) => {
-            const typeClassName = TYPE_CONFIG[notif.type];
+            const type = iconToType(notif.icon);
+            const typeClassName = TYPE_CONFIG[type];
+            // Extract title from body (first line or data.title)
+            const title = (notif.data as Record<string, string>)?.title || notif.body.split('\n')[0];
+            const description =
+              (notif.data as Record<string, string>)?.description || notif.body.split('\n').slice(1).join('\n') || notif.body;
             return (
               <Link
                 key={notif.id}
-                href={notif.href}
+                href={notif.url || '/dashboard'}
                 onClick={() => {
                   markAsRead(notif.id);
                   onClose();
                 }}
                 className={`group flex cursor-pointer gap-3 border-b border-neutral-800 px-4 py-3 transition-colors hover:bg-neutral-800/60 ${
-                  !notif.read ? 'bg-neutral-800/30' : ''
+                  !notif.is_read ? 'bg-neutral-800/30' : ''
                 }`}
               >
                 <div className="mt-1.5 flex-shrink-0">
                   <div
                     className={`h-2 w-2 rounded-full ${
-                      !notif.read ? 'bg-greenish-500' : 'bg-transparent'
+                      !notif.is_read ? 'bg-greenish-500' : 'bg-transparent'
                     }`}
                   />
                 </div>
@@ -157,23 +165,19 @@ export default function NotificationDropdown({ open, onClose, anchorRef }: Props
                   <div className="flex items-start justify-between gap-2">
                     <p
                       className={`text-sm leading-snug ${
-                        !notif.read ? 'font-semibold text-neutral-100' : 'font-normal text-neutral-300'
+                        !notif.is_read ? 'font-semibold text-neutral-100' : 'font-normal text-neutral-300'
                       }`}
                     >
-                      {notif.title}
+                      {title}
                     </p>
                     <span className="mt-0.5 flex-shrink-0 text-xs text-neutral-500">
-                      {formatDate(notif.date)}
+                      {formatDate(notif.created_at)}
                     </span>
                   </div>
-                  <p className="mt-0.5 line-clamp-2 text-xs leading-relaxed text-neutral-400">
-                    {notif.description}
-                  </p>
+                  <p className="mt-0.5 line-clamp-2 text-xs leading-relaxed text-neutral-400">{description}</p>
                   <div className="mt-1.5">
-                    <span
-                      className={`inline-block rounded-full px-2 py-0.5 text-[10px] font-medium ${typeClassName}`}
-                    >
-                      {t(`types.${notif.type}`)}
+                    <span className={`inline-block rounded-full px-2 py-0.5 text-[10px] font-medium ${typeClassName}`}>
+                      {t(`types.${type}`)}
                     </span>
                   </div>
                 </div>
