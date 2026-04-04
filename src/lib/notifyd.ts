@@ -1,11 +1,13 @@
-/**
- * notifyd client for CCRP frontend.
- *
- * Uses the notifyd REST + SSE API for in-app notifications.
- * Requires NEXT_PUBLIC_NOTIFYD_URL and a subscriber JWT from the backend.
- */
+import { createNotifydClient, type InboxNotification as NotifydInboxNotification } from 'notifyd-sdk';
 
 const NOTIFYD_URL = process.env.NEXT_PUBLIC_NOTIFYD_URL || 'https://notifyd.ctrlnz.com';
+
+function getClient(token: string) {
+  return createNotifydClient({
+    url: NOTIFYD_URL,
+    subscriberToken: token,
+  });
+}
 
 export interface InboxNotification {
   id: string;
@@ -26,19 +28,17 @@ export interface InboxResponse {
   offset: number;
 }
 
-interface UnreadCountResponse {
-  unread_count: number;
-}
-
-interface StreamTicketResponse {
-  ticket: string;
-  expires_in_seconds: number;
-}
-
-function headers(token: string): HeadersInit {
+function mapNotification(notification: NotifydInboxNotification): InboxNotification {
   return {
-    Authorization: `Bearer ${token}`,
-    'Content-Type': 'application/json',
+    id: notification.id,
+    body: notification.body,
+    icon: notification.icon,
+    url: notification.url,
+    data: notification.data,
+    is_read: notification.isRead,
+    read_at: notification.readAt,
+    is_todo: notification.isTodo,
+    created_at: notification.createdAt,
   };
 }
 
@@ -48,17 +48,13 @@ export async function fetchInbox(
   token: string,
   opts?: { limit?: number; offset?: number; filter?: string },
 ): Promise<InboxResponse> {
-  const params = new URLSearchParams();
-  if (opts?.limit) params.set('limit', String(opts.limit));
-  if (opts?.offset) params.set('offset', String(opts.offset));
-  if (opts?.filter) params.set('filter', opts.filter);
-
-  const res = await fetch(
-    `${NOTIFYD_URL}/v1/inbox/${subscriberId}?${params}`,
-    { headers: headers(token), cache: 'no-store' },
-  );
-  if (!res.ok) throw new Error(`notifyd inbox: ${res.status}`);
-  return res.json();
+  const response = await getClient(token).getInbox(subscriberId, opts);
+  return {
+    items: response.items.map(mapNotification),
+    total: response.total,
+    limit: response.limit,
+    offset: response.offset,
+  };
 }
 
 /** Get unread count for badge */
@@ -66,13 +62,7 @@ export async function fetchUnreadCount(
   subscriberId: string,
   token: string,
 ): Promise<number> {
-  const res = await fetch(
-    `${NOTIFYD_URL}/v1/inbox/${subscriberId}/unread-count`,
-    { headers: headers(token), cache: 'no-store' },
-  );
-  if (!res.ok) throw new Error(`notifyd unread: ${res.status}`);
-  const data: UnreadCountResponse = await res.json();
-  return data.unread_count;
+  return getClient(token).getUnreadCount(subscriberId);
 }
 
 /** Mark a single notification as read */
@@ -81,14 +71,7 @@ export async function markRead(
   notificationId: string,
   token: string,
 ): Promise<void> {
-  await fetch(
-    `${NOTIFYD_URL}/v1/inbox/${subscriberId}/${notificationId}`,
-    {
-      method: 'PATCH',
-      headers: headers(token),
-      body: JSON.stringify({ read: true }),
-    },
-  );
+  await getClient(token).markRead(subscriberId, notificationId);
 }
 
 /** Mark all as read */
@@ -96,43 +79,24 @@ export async function markAllRead(
   subscriberId: string,
   token: string,
 ): Promise<void> {
-  await fetch(
-    `${NOTIFYD_URL}/v1/inbox/${subscriberId}/read-all`,
-    { method: 'POST', headers: headers(token) },
-  );
-}
-
-/** Get a one-time SSE ticket (avoids JWT in query params) */
-async function getStreamTicket(
-  subscriberId: string,
-  token: string,
-): Promise<string> {
-  const res = await fetch(
-    `${NOTIFYD_URL}/v1/inbox/${subscriberId}/stream-ticket`,
-    { method: 'POST', headers: headers(token) },
-  );
-  if (!res.ok) throw new Error(`notifyd ticket: ${res.status}`);
-  const data: StreamTicketResponse = await res.json();
-  return data.ticket;
+  await getClient(token).markAllRead(subscriberId);
 }
 
 /**
  * Subscribe to realtime SSE events.
- * Returns an EventSource and a cleanup function.
+ * Returns a cleanup function.
  */
 export async function subscribeSSE(
   subscriberId: string,
   token: string,
   onMessage: (event: MessageEvent) => void,
 ): Promise<() => void> {
-  const ticket = await getStreamTicket(subscriberId, token);
-  const es = new EventSource(
-    `${NOTIFYD_URL}/v1/inbox/${subscriberId}/stream?token=${ticket}`,
-  );
-  es.onmessage = onMessage;
-  es.onerror = () => {
-    // Auto-reconnect is handled by EventSource
-    console.warn('[notifyd] SSE connection error, reconnecting...');
-  };
-  return () => es.close();
+  const stream = await getClient(token).openInboxStream(subscriberId, {
+    onMessage: (event) => onMessage({ data: event.data } as MessageEvent),
+    onError: () => {
+      console.warn('[notifyd] SSE connection error, reconnecting...');
+    },
+  });
+
+  return stream.close;
 }

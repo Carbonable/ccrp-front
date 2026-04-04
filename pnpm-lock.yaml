@@ -116,6 +116,9 @@ importers:
       next-sanity:
         specifier: ^12.2.1
         version: 12.2.1(@emotion/is-prop-valid@1.2.2)(@sanity/client@7.20.0)(@sanity/types@5.18.0(@types/react@19.2.14))(next@16.2.1(@babel/core@7.29.0)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react-is@19.2.4)(react@19.2.4)(sanity@5.18.0(@emotion/is-prop-valid@1.2.2)(@noble/hashes@2.0.1)(@oclif/core@4.10.3)(@sanity/cli-core@1.2.1(@noble/hashes@2.0.1)(@sanity/telemetry@0.8.1(react@19.2.4))(@types/node@20.14.11)(jiti@2.6.1)(lightningcss@1.32.0)(yaml@2.8.3))(@types/node@20.14.11)(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(immer@11.1.4)(jiti@2.6.1)(lightningcss@1.32.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(styled-components@6.1.19(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(ts-toolbelt@9.6.0)(typescript@5.5.4))(styled-components@6.1.19(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(typescript@5.5.4)
+      notifyd-sdk:
+        specifier: github:rmzlb/notifyd#00664bd
+        version: https://codeload.github.com/rmzlb/notifyd/tar.gz/00664bdd8ccfb7a7988c44eafe51e82c42d20ef0
       react:
         specifier: ^19.2.4
         version: 19.2.4
@@ -8168,6 +8171,10 @@ packages:
   normalize-range@0.1.2:
     resolution: {integrity: sha512-bdok/XvKII3nUpklnV6P2hxtMNrCboOjAcyBuQnWEhO665FwrSNRxU+AqpsyvO6LgGYPspN+lu5CLtw4jPRKNA==}
     engines: {node: '>=0.10.0'}
+
+  notifyd-sdk@https://codeload.github.com/rmzlb/notifyd/tar.gz/00664bdd8ccfb7a7988c44eafe51e82c42d20ef0:
+    resolution: {tarball: https://codeload.github.com/rmzlb/notifyd/tar.gz/00664bdd8ccfb7a7988c44eafe51e82c42d20ef0}
+    version: 0.1.0
 
   npm-run-path@4.0.1:
     resolution: {integrity: sha512-S48WzZW777zhNIrn7gxOlISNAqi9ZC/uQFnRdbeIHhZhCA6UqpkOT8T1G7BvfdgP4Er8gF4sUbaS0i7QvIfCWw==}
@@ -20015,6 +20022,8 @@ snapshots:
   normalize-path@3.0.0: {}
 
   normalize-range@0.1.2: {}
+
+  notifyd-sdk@https://codeload.github.com/rmzlb/notifyd/tar.gz/00664bdd8ccfb7a7988c44eafe51e82c42d20ef0: {}
 
   npm-run-path@4.0.1:
     dependencies:
