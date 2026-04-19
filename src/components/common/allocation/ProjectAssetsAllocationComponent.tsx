@@ -9,6 +9,7 @@ import { SecondaryButton } from '../Button';
 import PaginationComponent from '../Pagination';
 import { useEffect, useState } from 'react';
 import { Link } from '@/i18n/navigation';
+import ExportButton from '../ExportButton';
 
 export default function ProjectAssetsAllocationComponent({
   data,
@@ -45,8 +46,31 @@ export default function ProjectAssetsAllocationComponent({
     setCurrentPage(data);
   };
 
+  const exportColumns = [
+    { header: 'Business Unit', key: 'business_unit' },
+    { header: 'Allocated (t)', key: 'allocated' },
+    { header: 'Allocation amount ($)', key: 'allocation_amount' },
+    { header: 'Target (%)', key: 'target' },
+    { header: 'Share (%)', key: 'share_of_project' },
+    { header: 'BU Allocation (%)', key: 'actual' },
+    { header: 'Start date', key: 'start_date' },
+  ];
+  const exportData: Record<string, unknown>[] = (carbonAssetAllocation || []).map((a) => ({
+    business_unit: a.business_unit.name,
+    allocated: a.allocated,
+    allocation_amount: a.allocation_amount,
+    target: a.target,
+    share_of_project: a.share_of_project,
+    actual: a.actual,
+    start_date: a.start_date,
+  }));
+
   return (
     <div className="mt-8 w-full">
+      <div className="flex items-center justify-between">
+        <div />  {/* spacer */}
+        <ExportButton data={exportData} columns={exportColumns} tableName="project-allocation" />
+      </div>
       <div className="font-inter mt-4 w-full overflow-x-scroll border border-neutral-600 text-sm">
         <table className="min-w-full table-auto text-left">
           <thead className="h-10 whitespace-nowrap bg-neutral-500 text-neutral-100">
