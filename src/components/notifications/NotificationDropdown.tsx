@@ -4,10 +4,12 @@ import { useRef, useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { Link } from '@/i18n/navigation';
 import { BellIcon, XMarkIcon, CheckIcon } from '@heroicons/react/24/outline';
-import { useNotifications, iconToType, NotificationType } from '@/context/NotificationContext';
+import { useNotifications, iconToType } from '@/context/NotificationContext';
 import { useLocale, useTranslations } from 'next-intl';
 
-const TYPE_CONFIG: Record<NotificationType, string> = {
+type DropdownType = 'project' | 'stock' | 'critical' | 'update' | 'deadline' | 'review';
+
+const TYPE_CONFIG: Record<DropdownType, string> = {
   project: 'bg-blue-900/60 text-blue-300 border border-blue-700',
   stock: 'bg-yellow-900/60 text-yellow-300 border border-yellow-700',
   critical: 'bg-red-900/60 text-red-300 border border-red-700',
@@ -40,26 +42,21 @@ export default function NotificationDropdown({ open, onClose, anchorRef }: Props
     if (diffH < 1) return t('justNow');
     if (diffH < 24) return t('hoursAgo', { count: diffH });
     if (diffD === 1) return t('yesterday');
+    if (diffD < 7) return `${diffD}d ago`;
     return date.toLocaleDateString(locale, { day: 'numeric', month: 'short' });
   }
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  useEffect(() => { setMounted(true); }, []);
 
   useEffect(() => {
     if (!open || !anchorRef.current) return;
-
     const updatePosition = () => {
       const rect = anchorRef.current!.getBoundingClientRect();
-      const dropdownMaxHeight = 520;
-
       setPosition({
-        top: Math.max(8, rect.top - dropdownMaxHeight - 8),
-        left: Math.max(8, rect.left),
+        top: Math.max(8, rect.bottom + 8),
+        left: Math.max(8, rect.right - 380),
       });
     };
-
     updatePosition();
     window.addEventListener('resize', updatePosition);
     window.addEventListener('scroll', updatePosition, true);
@@ -72,17 +69,13 @@ export default function NotificationDropdown({ open, onClose, anchorRef }: Props
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
       if (
-        ref.current &&
-        !ref.current.contains(e.target as Node) &&
-        anchorRef.current &&
-        !anchorRef.current.contains(e.target as Node)
+        ref.current && !ref.current.contains(e.target as Node) &&
+        anchorRef.current && !anchorRef.current.contains(e.target as Node)
       ) {
         onClose();
       }
     }
-    if (open) {
-      document.addEventListener('mousedown', handleClickOutside);
-    }
+    if (open) document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [open, onClose, anchorRef]);
 
@@ -91,9 +84,10 @@ export default function NotificationDropdown({ open, onClose, anchorRef }: Props
   const dropdown = (
     <div
       ref={ref}
-      className="fixed z-[99999] flex w-[380px] max-w-[calc(100vw-2rem)] flex-col rounded-xl border border-neutral-700 bg-neutral-900 shadow-2xl"
+      className="fixed z-[99999] flex w-[400px] max-w-[calc(100vw-2rem)] flex-col rounded-xl border border-neutral-700 bg-neutral-900 shadow-2xl backdrop-blur-sm"
       style={{ top: position.top, left: position.left, maxHeight: '520px' }}
     >
+      {/* Header */}
       <div className="flex items-center justify-between border-b border-neutral-700 px-4 py-3">
         <div className="flex items-center gap-2">
           <BellIcon className="h-5 w-5 text-greenish-500" />
@@ -123,7 +117,8 @@ export default function NotificationDropdown({ open, onClose, anchorRef }: Props
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto">
+      {/* List */}
+      <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-neutral-700">
         {loading ? (
           <div className="flex items-center justify-center py-12 text-neutral-500">
             <div className="h-5 w-5 animate-spin rounded-full border-2 border-neutral-600 border-t-greenish-500" />
@@ -137,10 +132,9 @@ export default function NotificationDropdown({ open, onClose, anchorRef }: Props
           notifications.map((notif) => {
             const type = iconToType(notif.icon);
             const typeClassName = TYPE_CONFIG[type];
-            // Extract title from body (first line or data.title)
             const title = (notif.data as Record<string, string>)?.title || notif.body.split('\n')[0];
-            const description =
-              (notif.data as Record<string, string>)?.description || notif.body.split('\n').slice(1).join('\n') || notif.body;
+            const description = (notif.data as Record<string, string>)?.description || notif.body.split('\n').slice(1).join('\n') || notif.body;
+
             return (
               <Link
                 key={notif.id}
@@ -149,32 +143,37 @@ export default function NotificationDropdown({ open, onClose, anchorRef }: Props
                   markAsRead(notif.id);
                   onClose();
                 }}
-                className={`group flex cursor-pointer gap-3 border-b border-neutral-800 px-4 py-3 transition-colors hover:bg-neutral-800/60 ${
-                  !notif.is_read ? 'bg-neutral-800/30' : ''
+                className={`group flex cursor-pointer gap-3 border-b border-neutral-800/50 px-4 py-3 transition-all duration-150 hover:bg-neutral-800/60 ${
+                  !notif.is_read ? 'bg-neutral-800/20' : ''
                 }`}
               >
-                <div className="mt-1.5 flex-shrink-0">
-                  <div
-                    className={`h-2 w-2 rounded-full ${
-                      !notif.is_read ? 'bg-greenish-500' : 'bg-transparent'
-                    }`}
-                  />
+                {/* Icon */}
+                <div className="mt-0.5 flex-shrink-0">
+                  <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-neutral-800 text-base">
+                    {notif.icon}
+                  </span>
                 </div>
 
+                {/* Content */}
                 <div className="min-w-0 flex-1">
                   <div className="flex items-start justify-between gap-2">
-                    <p
-                      className={`text-sm leading-snug ${
-                        !notif.is_read ? 'font-semibold text-neutral-100' : 'font-normal text-neutral-300'
-                      }`}
-                    >
+                    <p className={`text-sm leading-snug ${
+                      !notif.is_read ? 'font-semibold text-neutral-100' : 'font-normal text-neutral-300'
+                    }`}>
                       {title}
                     </p>
-                    <span className="mt-0.5 flex-shrink-0 text-xs text-neutral-500">
-                      {formatDate(notif.created_at)}
-                    </span>
+                    <div className="mt-0.5 flex flex-shrink-0 items-center gap-1.5">
+                      {!notif.is_read && (
+                        <span className="h-2 w-2 rounded-full bg-greenish-500" />
+                      )}
+                      <span className="text-[11px] text-neutral-500">
+                        {formatDate(notif.created_at)}
+                      </span>
+                    </div>
                   </div>
-                  <p className="mt-0.5 line-clamp-2 text-xs leading-relaxed text-neutral-400">{description}</p>
+                  <p className="mt-0.5 line-clamp-2 text-xs leading-relaxed text-neutral-400">
+                    {description}
+                  </p>
                   <div className="mt-1.5">
                     <span className={`inline-block rounded-full px-2 py-0.5 text-[10px] font-medium ${typeClassName}`}>
                       {t(`types.${type}`)}
@@ -187,6 +186,7 @@ export default function NotificationDropdown({ open, onClose, anchorRef }: Props
         )}
       </div>
 
+      {/* Footer */}
       <div className="border-t border-neutral-700 px-4 py-2 text-center">
         <Link
           href="/settings/notifications"

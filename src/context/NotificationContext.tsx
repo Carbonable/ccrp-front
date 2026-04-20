@@ -1,39 +1,74 @@
 'use client';
 
-import { createContext, useContext, useState, useCallback, useEffect, useRef, ReactNode } from 'react';
-import {
-  fetchInbox,
-  fetchUnreadCount,
-  markRead as apiMarkRead,
-  markAllRead as apiMarkAllRead,
-  subscribeSSE,
-  InboxNotification,
-} from '@/lib/notifyd';
+import { createContext, useContext, useState, useCallback, useEffect, ReactNode } from 'react';
+import { DEMO_NOTIFICATIONS, type DemoNotification, type NotificationType } from '@/lib/demo-notifications';
 
-// Re-export the type under the legacy name used by the dropdown
-export type { InboxNotification as Notification };
+export type { NotificationType };
 
-// Map notifyd icon field → UI type for styling
-export type NotificationType = 'project' | 'stock' | 'critical' | 'update' | 'deadline' | 'review';
+/** Map demo type → dropdown style key (keeps existing TYPE_CONFIG working) */
+type DropdownType = 'project' | 'stock' | 'critical' | 'update' | 'deadline' | 'review';
 
-export function iconToType(icon: string): NotificationType {
-  const map: Record<string, NotificationType> = {
-    alert: 'critical',
-    'alert-triangle': 'critical',
-    stock: 'stock',
-    'trending-down': 'stock',
-    calendar: 'deadline',
-    clock: 'deadline',
-    check: 'update',
-    'check-circle': 'update',
-    upload: 'update',
-    'file-text': 'review',
-    eye: 'review',
-    bell: 'project',
-    folder: 'project',
-    plus: 'project',
+export function iconToType(icon: string): DropdownType {
+  const map: Record<string, DropdownType> = {
+    '🎯': 'update',
+    '📊': 'review',
+    '🔄': 'project',
+    '⚠️': 'critical',
+    '📦': 'stock',
+    '✅': 'update',
+    '✓': 'review',
+    '🔔': 'project',
+    '🆕': 'project',
   };
   return map[icon] || 'update';
+}
+
+export interface InboxNotification {
+  id: string;
+  body: string;
+  icon: string;
+  url: string | null;
+  data: Record<string, unknown> | null;
+  is_read: boolean;
+  read_at: string | null;
+  is_todo: boolean;
+  created_at: string;
+}
+
+const STORAGE_KEY = 'ccpm-notifications-read';
+
+function getReadSet(): Set<string> {
+  if (typeof window === 'undefined') return new Set();
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    return raw ? new Set(JSON.parse(raw)) : new Set();
+  } catch {
+    return new Set();
+  }
+}
+
+function persistReadSet(readSet: Set<string>) {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify([...readSet]));
+  } catch {
+    // localStorage unavailable
+  }
+}
+
+function demoToInbox(demo: DemoNotification, readSet: Set<string>): InboxNotification {
+  const createdAt = new Date(Date.now() - demo.hoursAgo * 60 * 60 * 1000);
+  const isRead = readSet.has(demo.id);
+  return {
+    id: demo.id,
+    body: `${demo.title}\n${demo.body}`,
+    icon: demo.icon,
+    url: demo.href,
+    data: { title: demo.title, description: demo.body },
+    is_read: isRead,
+    read_at: isRead ? new Date().toISOString() : null,
+    is_todo: false,
+    created_at: createdAt.toISOString(),
+  };
 }
 
 interface NotificationContextType {
@@ -47,146 +82,40 @@ interface NotificationContextType {
 
 const NotificationContext = createContext<NotificationContextType | null>(null);
 
-interface TokenData {
-  token: string;
-  subscriberId: string;
-  expiresAt: string;
-}
-
 export function NotificationProvider({ children }: { children: ReactNode }) {
-  const [notifications, setNotifications] = useState<InboxNotification[]>([]);
-  const [unreadCount, setUnreadCount] = useState(0);
+  const [readSet, setReadSet] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const tokenRef = useRef<TokenData | null>(null);
-  const sseCleanupRef = useRef<(() => void) | null>(null);
 
-  // Fetch subscriber token from our API route
-  const getToken = useCallback(async (): Promise<TokenData | null> => {
-    // Reuse if not expired (with 5min buffer)
-    if (tokenRef.current) {
-      const exp = new Date(tokenRef.current.expiresAt).getTime();
-      if (Date.now() < exp - 5 * 60 * 1000) {
-        return tokenRef.current;
-      }
-    }
-
-    try {
-      const res = await fetch('/api/notifications/token');
-      if (!res.ok) {
-        if (res.status === 401) return null; // Not logged in
-        throw new Error(`Token fetch: ${res.status}`);
-      }
-      const data: TokenData = await res.json();
-      tokenRef.current = data;
-      return data;
-    } catch (err) {
-      console.warn('[notifications] token error:', err);
-      return null;
-    }
+  // Load read state from localStorage on mount
+  useEffect(() => {
+    setReadSet(getReadSet());
+    setLoading(false);
   }, []);
 
-  // Load inbox + unread count
-  const loadInbox = useCallback(async () => {
-    const auth = await getToken();
-    if (!auth) {
-      setLoading(false);
-      return;
-    }
+  const notifications = DEMO_NOTIFICATIONS.map((d) => demoToInbox(d, readSet));
+  const unreadCount = notifications.filter((n) => !n.is_read).length;
 
-    try {
-      const [inbox, count] = await Promise.all([
-        fetchInbox(auth.subscriberId, auth.token, { limit: 30 }),
-        fetchUnreadCount(auth.subscriberId, auth.token),
-      ]);
-      setNotifications(inbox.items);
-      setUnreadCount(count);
-      setError(null);
-    } catch (err) {
-      console.warn('[notifications] load error:', err);
-      setError('Failed to load notifications');
-    } finally {
-      setLoading(false);
-    }
-  }, [getToken]);
+  const markAsRead = useCallback((id: string) => {
+    setReadSet((prev) => {
+      const next = new Set(prev);
+      next.add(id);
+      persistReadSet(next);
+      return next;
+    });
+  }, []);
 
-  // Setup SSE realtime
-  const setupSSE = useCallback(async () => {
-    const auth = await getToken();
-    if (!auth) return;
-
-    try {
-      const cleanup = await subscribeSSE(
-        auth.subscriberId,
-        auth.token,
-        (event: MessageEvent) => {
-          try {
-            const data = JSON.parse(event.data);
-            if (data.type === 'count_update') {
-              setUnreadCount(data.unread_count);
-            }
-            if (data.type === 'new_notification') {
-              // Prepend new notification and refresh count
-              loadInbox();
-            }
-          } catch {
-            // Ignore parse errors (keepalive pings etc)
-          }
-        },
-      );
-      sseCleanupRef.current = cleanup;
-    } catch (err) {
-      console.warn('[notifications] SSE error:', err);
-    }
-  }, [getToken, loadInbox]);
-
-  useEffect(() => {
-    loadInbox();
-    setupSSE();
-
-    return () => {
-      sseCleanupRef.current?.();
-    };
-  }, [loadInbox, setupSSE]);
-
-  const markAllAsRead = useCallback(async () => {
-    const auth = await getToken();
-    if (!auth) return;
-
-    // Optimistic update
-    setNotifications((prev) => prev.map((n) => ({ ...n, is_read: true, read_at: new Date().toISOString() })));
-    setUnreadCount(0);
-
-    try {
-      await apiMarkAllRead(auth.subscriberId, auth.token);
-    } catch {
-      // Revert on error
-      loadInbox();
-    }
-  }, [getToken, loadInbox]);
-
-  const markAsRead = useCallback(
-    async (id: string) => {
-      const auth = await getToken();
-      if (!auth) return;
-
-      // Optimistic update
-      setNotifications((prev) =>
-        prev.map((n) => (n.id === id ? { ...n, is_read: true, read_at: new Date().toISOString() } : n)),
-      );
-      setUnreadCount((c) => Math.max(0, c - 1));
-
-      try {
-        await apiMarkRead(auth.subscriberId, id, auth.token);
-      } catch {
-        loadInbox();
-      }
-    },
-    [getToken, loadInbox],
-  );
+  const markAllAsRead = useCallback(() => {
+    setReadSet(() => {
+      const next = new Set(DEMO_NOTIFICATIONS.map((d) => d.id));
+      persistReadSet(next);
+      return next;
+    });
+  }, []);
 
   return (
-    <NotificationContext.Provider value={{ notifications, unreadCount, markAllAsRead, markAsRead, loading, error }}>
+    <NotificationContext.Provider
+      value={{ notifications, unreadCount, markAllAsRead, markAsRead, loading, error: null }}
+    >
       {children}
     </NotificationContext.Provider>
   );
