@@ -4,6 +4,7 @@ import { BusinessUnit } from '@/graphql/__generated__/graphql';
 import { BUSINESS_UNITS } from '@/graphql/queries/business-units';
 import { useQuery } from '@apollo/client/react';
 import { useEffect } from 'react';
+import { useCompanyId } from '@/hooks/useCompanyId';
 
 export default function BUList({
   selectedBU,
@@ -12,7 +13,10 @@ export default function BUList({
   selectedBU: BusinessUnit | undefined;
   setSelectedBU: (project: BusinessUnit) => void;
 }) {
-  const { loading, error, data } = useQuery<any>(BUSINESS_UNITS);
+  const companyId = useCompanyId();
+  const { loading, error, data } = useQuery<any>(BUSINESS_UNITS, {
+    variables: { view: { company_id: companyId } },
+  });
 
   if (error) {
     console.error(error);

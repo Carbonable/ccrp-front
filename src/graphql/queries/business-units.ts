@@ -1,8 +1,8 @@
 import { gql } from '@apollo/client';
 
 export const BUSINESS_UNITS = gql`
-  query BusinessUnits {
-    businessUnits {
+  query BusinessUnits($view: VisualizationViewType) {
+    businessUnits(view: $view) {
       id
       name
       description

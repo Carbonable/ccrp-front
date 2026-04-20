@@ -5,6 +5,7 @@ import { GET_PROJECTS } from '@/graphql/queries/projects';
 import { useQuery } from '@apollo/client/react';
 import { useEffect, useRef, useState } from 'react';
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
+import { useCompanyId } from '@/hooks/useCompanyId';
 
 /**
  * Uses global_data from the backend:
@@ -93,7 +94,10 @@ export default function ProjectsList({
   selectedProject: Project | undefined;
   setSelectedProject: (project: Project) => void;
 }) {
-  const { loading, error, data } = useQuery<any>(GET_PROJECTS);
+  const companyId = useCompanyId();
+  const { loading, error, data } = useQuery<any>(GET_PROJECTS, {
+    variables: { view: { company_id: companyId } },
+  });
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 

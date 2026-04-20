@@ -4,9 +4,13 @@ import { Project } from '@/graphql/__generated__/graphql';
 import { GET_PROJECTS } from '@/graphql/queries/projects';
 import { useQuery } from '@apollo/client/react';
 import { useTranslations } from 'next-intl';
+import { useCompanyId } from '@/hooks/useCompanyId';
 
 export default function ProjectsList() {
-  const { loading, error, data } = useQuery<any>(GET_PROJECTS);
+  const companyId = useCompanyId();
+  const { loading, error, data } = useQuery<any>(GET_PROJECTS, {
+    variables: { view: { company_id: companyId } },
+  });
   const t = useTranslations('portfolio');
   const tc = useTranslations('common');
 

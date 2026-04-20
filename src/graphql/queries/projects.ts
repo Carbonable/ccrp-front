@@ -1,8 +1,8 @@
 import { gql } from '@apollo/client';
 
 export const GET_PROJECTS = gql`
-  query Projects {
-    projects {
+  query Projects($view: VisualizationViewType) {
+    projects(view: $view) {
       id
       name
       slug

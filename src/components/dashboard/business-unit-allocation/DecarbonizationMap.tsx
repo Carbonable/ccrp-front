@@ -6,10 +6,14 @@ import Block from './Block';
 import { useQuery } from '@apollo/client/react';
 import { BusinessUnit } from '@/graphql/__generated__/graphql';
 import ErrorReload from '@/components/common/ErrorReload';
+import { useCompanyId } from '@/hooks/useCompanyId';
 
 export default function DecarbonizationMap() {
   const t = useTranslations('allocation');
-  const { loading, error, data, refetch } = useQuery<any>(BUSINESS_UNITS);
+  const companyId = useCompanyId();
+  const { loading, error, data, refetch } = useQuery<any>(BUSINESS_UNITS, {
+    variables: { view: { company_id: companyId } },
+  });
 
 
   const businessUnits: BusinessUnit[] = data?.businessUnits;
