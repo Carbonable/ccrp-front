@@ -1,6 +1,6 @@
 'use client';
 
-import { UserButton } from '@clerk/nextjs';
+import { UserButton, OrganizationSwitcher } from '@clerk/nextjs';
 import { dark } from '@clerk/themes';
 import NotificationBell from '@/components/notifications/NotificationBell';
 import LanguageSwitcher from '@/components/common/LanguageSwitcher';
@@ -14,6 +14,20 @@ export default function Logout() {
 
   return (
     <div className="flex w-full flex-col gap-3">
+      <div className="px-1">
+        <OrganizationSwitcher
+          appearance={{
+            baseTheme: dark,
+            elements: {
+              organizationSwitcherTrigger: 'text-neutral-300 hover:text-white w-full',
+              organizationSwitcherTriggerIcon: 'text-neutral-400',
+              organizationPreviewTextContainer: 'text-neutral-300',
+              organizationSwitcherPopoverCard: 'bg-neutral-900 border border-neutral-700 shadow-2xl',
+              organizationSwitcherPopoverActionButton: 'text-neutral-300 hover:bg-neutral-800',
+            },
+          }}
+        />
+      </div>
       <div className="flex items-center justify-between px-1">
         <UserButton
           signInUrl={`/${locale}/sign-in`}

@@ -5,7 +5,8 @@ import { useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import PaginationComponent from '../../common/Pagination';
 import { FINANCIAL_ANALYSIS } from '@/graphql/queries/net-zero';
-import { CARBONABLE_COMPANY_ID, RESULT_PER_PAGE } from '@/utils/constant';
+import { RESULT_PER_PAGE } from '@/utils/constant';
+import { useCompanyId } from '@/hooks/useCompanyId';
 import { FinancialAnalysisData, PageInfo } from '@/graphql/__generated__/graphql';
 import TableLoading from '@/components/table/TableLoading';
 import { ErrorReloadTable, NoDataTable } from '../../common/ErrorReload';
@@ -16,11 +17,12 @@ export default function FinancialAnalysisTable() {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState<number>(1);
   const t = useTranslations('tables');
+  const companyId = useCompanyId();
 
   const { loading, error, data, refetch } = useQuery<any>(FINANCIAL_ANALYSIS, {
     variables: {
       view: {
-        company_id: CARBONABLE_COMPANY_ID,
+        company_id: companyId,
       },
       pagination: {
         page: currentPage,
@@ -32,7 +34,7 @@ export default function FinancialAnalysisTable() {
   const refetchData = () => {
     refetch({
       view: {
-        company_id: CARBONABLE_COMPANY_ID,
+        company_id: companyId,
       },
       pagination: {
         page: currentPage,

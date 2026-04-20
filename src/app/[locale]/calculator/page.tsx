@@ -4,7 +4,7 @@ import { useRef, useEffect } from 'react';
 import { InformationCircleIcon } from '@heroicons/react/24/outline';
 import { useQuery } from '@apollo/client/react';
 import { NET_ZERO_PLANNING } from '@/graphql/queries/net-zero';
-import { CARBONABLE_COMPANY_ID } from '@/utils/constant';
+import { useCompanyId } from '@/hooks/useCompanyId';
 
 interface NetZeroPlanningRow {
   vintage: number;
@@ -23,9 +23,10 @@ interface NetZeroPlanningQuery {
 export default function CalculatorPage() {
   const iframeUrl = 'https://kalculator.carbonable.io';
   const iframeRef = useRef<HTMLIFrameElement>(null);
+  const companyId = useCompanyId();
 
   const { data, loading, error } = useQuery<NetZeroPlanningQuery>(NET_ZERO_PLANNING, {
-    variables: { view: { company_id: CARBONABLE_COMPANY_ID } },
+    variables: { view: { company_id: companyId } },
   });
 
   const sendDataToIframe = () => {

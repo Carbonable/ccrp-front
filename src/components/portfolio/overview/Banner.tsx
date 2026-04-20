@@ -4,14 +4,15 @@ import { useQuery } from '@apollo/client/react';
 import BannerKPI from '@/components/common/BannerKPI';
 import { GlobalData } from '@/graphql/__generated__/graphql';
 import { GET_GLOBAL_DATA } from '@/graphql/queries/net-zero';
-import { CARBONABLE_COMPANY_ID } from '@/utils/constant';
 import { useTranslations } from 'next-intl';
+import { useCompanyId } from '@/hooks/useCompanyId';
 
 export default function Banner() {
+  const companyId = useCompanyId();
   const { loading, error, data } = useQuery<any>(GET_GLOBAL_DATA, {
     variables: {
       view: {
-        company_id: CARBONABLE_COMPANY_ID,
+        company_id: companyId,
       },
     },
   });

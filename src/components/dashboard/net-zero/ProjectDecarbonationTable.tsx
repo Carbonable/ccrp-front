@@ -2,17 +2,19 @@
 
 import ProjectDecarbonationTableComponent from '@/components/common/net-zero/ProjectDecarbonationTableComponent';
 import { ANNUAL } from '@/graphql/queries/net-zero';
-import { CARBONABLE_COMPANY_ID, RESULT_PER_PAGE } from '@/utils/constant';
+import { RESULT_PER_PAGE } from '@/utils/constant';
 import { useQuery } from '@apollo/client/react';
 import { useEffect, useState } from 'react';
+import { useCompanyId } from '@/hooks/useCompanyId';
 
 export default function ProjectDecarbonationTable() {
   const [currentPage, setCurrentPage] = useState(1);
+  const companyId = useCompanyId();
 
   const { loading, error, data, refetch } = useQuery<any>(ANNUAL, {
     variables: {
       view: {
-        company_id: CARBONABLE_COMPANY_ID,
+        company_id: companyId,
       },
       pagination: {
         page: currentPage,
@@ -24,7 +26,7 @@ export default function ProjectDecarbonationTable() {
   const refetchData = () => {
     refetch({
       view: {
-        company_id: CARBONABLE_COMPANY_ID,
+        company_id: companyId,
       },
       pagination: {
         page: currentPage,

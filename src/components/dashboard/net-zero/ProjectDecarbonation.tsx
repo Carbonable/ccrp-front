@@ -2,14 +2,15 @@
 
 import ProjectDecarbonationComponent from '@/components/common/net-zero/ProjectDecarbonation';
 import { NET_ZERO_PLANNING } from '@/graphql/queries/net-zero';
-import { CARBONABLE_COMPANY_ID } from '@/utils/constant';
 import { useQuery } from '@apollo/client/react';
+import { useCompanyId } from '@/hooks/useCompanyId';
 
 export default function ProjectDecarbonation({ isFullScreen }: { isFullScreen: boolean }) {
+  const companyId = useCompanyId();
   const { loading, error, data, refetch } = useQuery<any>(NET_ZERO_PLANNING, {
     variables: {
       view: {
-        company_id: CARBONABLE_COMPANY_ID,
+        company_id: companyId,
       },
     },
   });

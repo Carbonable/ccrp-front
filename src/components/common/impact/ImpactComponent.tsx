@@ -1,7 +1,6 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
-import { CARBONABLE_COMPANY_ID } from '@/utils/constant';
 import ErrorReload from '../ErrorReload';
 import { ImpactTitle } from '../Title';
 import { ImpactMetrics, Sdg } from '@/graphql/__generated__/graphql';
