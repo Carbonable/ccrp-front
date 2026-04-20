@@ -5,6 +5,7 @@ export const GET_COMPANY_ALLOCATIONS = gql`
     companyCarbonAssetAllocation(id: $id, pagination: $pagination) {
       data {
         project_name
+        project_slug
         business_units {
           id
           name

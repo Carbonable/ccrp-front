@@ -208,7 +208,7 @@
     "dataUpload": "Import de données",
     "resetDatabase": "Réinitialiser la base de données",
     "resetDatabaseWarning": "Cette action réinitialisera l'intégralité de la base de données. Cette action est irréversible.",
-    "uploadsDescription": "Templates d’onboarding orientés client pour la démo CCRP. Seuls les 3 flux d’import réalistes sont exposés : Projects, Business Units et Emission Estimates.",
+    "uploadsDescription": "Démarrez avec CCPM grâce à des templates d'intégration simples. Vous pouvez importer des projets, des business units et des estimations d'émissions.",
     "acceptedFormats": "Formats acceptés",
     "downloadTemplate": "Télécharger le template",
     "downloadTemplateTitle": "Télécharger le template {title}",
@@ -219,17 +219,17 @@
     "uploads": {
       "projects": {
         "title": "Projects",
-        "description": "Importer les métadonnées projet avec un template orienté client, aligné avec le tableur d’onboarding réaliste.",
+        "description": "Importez les informations de vos projets à l'aide d'un template facile à suivre qui correspond à votre fichier d'intégration.",
         "uploadCta": "Importer Projects"
       },
       "business-units": {
         "title": "Business Units",
-        "description": "Importer les business units suivies dans le dashboard et les flows de reporting.",
+        "description": "Importez les business units que vous souhaitez suivre et gérer dans votre tableau de bord et vos rapports.",
         "uploadCta": "Importer Business Units"
       },
       "emission-estimates": {
         "title": "Emission Estimates",
-        "description": "Importer un calendrier annuel d’estimations d’émissions par business unit pour alimenter la demande de référence et la planification net-zero.",
+        "description": "Importez un calendrier annuel d'émissions par business unit pour comprendre votre baseline et planifier vos objectifs net-zero.",
         "uploadCta": "Importer Emission Estimates"
       }
     }

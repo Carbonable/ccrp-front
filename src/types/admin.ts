@@ -25,7 +25,7 @@ export const adminUploadTemplates: AdminUploadTemplate[] = [
     uploadType: PROJECT,
     title: 'Projects',
     description:
-      'Import project metadata with a client-facing template aligned with the realistic onboarding spreadsheet.',
+      'Upload your project information using an easy-to-follow template that matches your onboarding file.',
     acceptedFormats: '.xlsx, .csv',
     uploadCta: 'Upload Projects',
     templateFileName: 'projects-template.xlsx',
@@ -35,7 +35,7 @@ export const adminUploadTemplates: AdminUploadTemplate[] = [
     uploadType: BUSINESS_UNITS,
     title: 'Business Units',
     description:
-      'Import the business units that will be tracked across the dashboard and reporting flows.',
+      'Import the business units you want to track and manage across your dashboard and reports.',
     acceptedFormats: '.xlsx, .csv',
     uploadCta: 'Upload Business Units',
     templateFileName: 'business-units-template.xlsx',
@@ -45,7 +45,7 @@ export const adminUploadTemplates: AdminUploadTemplate[] = [
     uploadType: EMISSION_ESTIMATES,
     title: 'Emission Estimates',
     description:
-      'Import a yearly emissions calendar per business unit to feed baseline demand and net-zero planning.',
+      'Upload an annual emissions calendar by business unit to understand your baseline and plan your net-zero goals.',
     acceptedFormats: '.xlsx, .csv',
     uploadCta: 'Upload Emission Estimates',
     templateFileName: 'emission-estimates-template.xlsx',

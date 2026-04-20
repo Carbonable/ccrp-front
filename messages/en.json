@@ -208,7 +208,7 @@
     "dataUpload": "Data upload",
     "resetDatabase": "Reset Database",
     "resetDatabaseWarning": "This action will reset the entire database. This is irreversible.",
-    "uploadsDescription": "Client-facing onboarding templates for the CCRP demo. Only the 3 realistic import flows are exposed: Projects, Business Units and Emission Estimates.",
+    "uploadsDescription": "Get started with CCPM using simple onboarding templates. You can import projects, business units, and emission estimates.",
     "acceptedFormats": "Accepted formats",
     "downloadTemplate": "Download template",
     "downloadTemplateTitle": "Download {title} template",
@@ -219,17 +219,17 @@
     "uploads": {
       "projects": {
         "title": "Projects",
-        "description": "Import project metadata with a client-facing template aligned with the realistic onboarding spreadsheet.",
+        "description": "Upload your project information using an easy-to-follow template that matches your onboarding file.",
         "uploadCta": "Upload Projects"
       },
       "business-units": {
         "title": "Business Units",
-        "description": "Import the business units that will be tracked across the dashboard and reporting flows.",
+        "description": "Import the business units you want to track and manage across your dashboard and reports.",
         "uploadCta": "Upload Business Units"
       },
       "emission-estimates": {
         "title": "Emission Estimates",
-        "description": "Import a yearly emissions calendar per business unit to feed baseline demand and net-zero planning.",
+        "description": "Upload an annual emissions calendar by business unit to understand your baseline and plan your net-zero goals.",
         "uploadCta": "Upload Emission Estimates"
       }
     }

@@ -8,6 +8,7 @@ import { ErrorReloadTable, NoDataTable } from '../ErrorReload';
 import SquaredInitials from '../SquaredInitials';
 import { getNumericPercentage } from '@/utils/utils';
 import { SecondaryButton } from '../Button';
+import { Link } from '@/i18n/navigation';
 import PaginationComponent from '../Pagination';
 
 interface CompanyAssetsAllocationProps {
@@ -126,12 +127,24 @@ function ProjectFundingAllocationLoaded({
             className="group h-12 items-center whitespace-nowrap border-b border-neutral-600 bg-neutral-800 text-neutral-200 last:border-b-0 hover:brightness-110"
           >
             <td className="sticky left-0 z-10 bg-neutral-800 px-4">
-              <div className="flex w-max items-center justify-start text-neutral-100">
-                <div className="p-2">
-                  <SquaredInitials text={allocation.project_name} color="random" />
+              {allocation.project_slug ? (
+                <Link
+                  href={`/projects/${allocation.project_slug}`}
+                  className="flex w-max items-center justify-start text-neutral-100 hover:underline"
+                >
+                  <div className="p-2">
+                    <SquaredInitials text={allocation.project_name} color="random" />
+                  </div>
+                  <div className="ml-2 font-bold">{allocation.project_name}</div>
+                </Link>
+              ) : (
+                <div className="flex w-max items-center justify-start text-neutral-100">
+                  <div className="p-2">
+                    <SquaredInitials text={allocation.project_name} color="random" />
+                  </div>
+                  <div className="ml-2 font-bold">{allocation.project_name}</div>
                 </div>
-                <div className="ml-2 font-bold">{allocation.project_name}</div>
-              </div>
+              )}
             </td>
             <td className="px-4">{allocation.type}</td>
             <td className="px-4">{allocation.total_potential}</td>
