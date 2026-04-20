@@ -52,8 +52,12 @@ export default function NotificationDropdown({ open, onClose, anchorRef }: Props
     if (!open || !anchorRef.current) return;
     const updatePosition = () => {
       const rect = anchorRef.current!.getBoundingClientRect();
+      const spaceBelow = window.innerHeight - rect.bottom;
+      const dropdownHeight = 520;
+      // Open above if not enough space below
+      const openAbove = spaceBelow < dropdownHeight && rect.top > spaceBelow;
       setPosition({
-        top: Math.max(8, rect.bottom + 8),
+        top: openAbove ? Math.max(8, rect.top - dropdownHeight - 8) : Math.max(8, rect.bottom + 8),
         left: Math.max(8, rect.right - 380),
       });
     };
